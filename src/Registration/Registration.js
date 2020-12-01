@@ -1,23 +1,20 @@
 import React from 'react';
-import './Login.css';
+import './Registration.css';
 import header_photo from './Header_Photo.png'
 
 export default class Login extends React.Component {
 
 
-    loginBtn() {
+    registerBtn() {
         alert('yes')
         //בדיקות קלט
         //בדיקה שהשמתשמ+סיסמא נכונים
         //מעבר לדף חיפוש
     };
-    register() {
+    goBack() {
         alert('no')
     };
 
-    forgotpw() {
-        alert('ops')
-    };
 
     render() {
         return (
@@ -27,7 +24,12 @@ export default class Login extends React.Component {
                 </header>
                 <section className="Body">
                     <div className="Form">
-                        <h1>התחברות</h1>
+                        <h1>הרשמה</h1>
+                        <label>
+                            דוא"ל:
+                            <input type='text' name="email" />
+                        </label>
+                        <p />
                         <label>
                             שם משתמש:
                             <input type='text' name="username" />
@@ -38,15 +40,17 @@ export default class Login extends React.Component {
                             <input type='password' name="pw" />
                         </label>
                         <p />
-                        <input type="submit" value="כניסה" onClick={() => this.loginBtn()} />
+                        <label>
+                            אימות סיסמא:
+                            <input type='password' name="confirm_pw" />
+                        </label>
                         <p />
-                        <button id="Register" onClick={() => this.register()}>
-                            הרשמה
+                        <input type="submit" value="הרשם" onClick={() => this.registerBtn()} />
+                        <p />
+                        <button id="Register" onClick={() => this.goBack()}>
+                            חזרה
                         </button>
                         <p />
-                        <button id="GetPW" onClick={() => this.forgotpw()}>
-                            שכחתי סיסמא
-                        </button>
                     </div>
                 </section>
 

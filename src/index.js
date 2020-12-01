@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+
 import Login_Screen from './Login/Login';
+import Registration_screen from './Registration/Registration';
 
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Login_Screen />
+    <Registration_screen />
   </React.StrictMode>,
   document.getElementById('root')
 );
