@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.scss";
-import { Login, Register } from "./components/login/index";
-
+import { Login, Register } from "./index";
+import head_photo from '../imgs/Header_Photo.png'
 
 class App extends React.Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class App extends React.Component {
 
         <div className="App">
           <header className = "Head">
-            <img src = './Header_Photo.jpg'></img>
+            <img className = "head_photo" src = {head_photo}></img>
           </header>
           <div className="login">
             <div className="container" ref={ref => (this.container = ref)}>
@@ -56,7 +56,6 @@ class App extends React.Component {
             />
           </div>
         </div>
-      
     );
   }
 }
