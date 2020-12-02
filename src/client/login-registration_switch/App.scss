@@ -2,6 +2,9 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
 .App {
+  background-image: url('../imgs/back.png');
+  background-size: cover;
+  background-repeat: no-repeat;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -9,47 +12,23 @@
   font-family: "Open Sans", sans-serif;
 }
 .Head{
-  background: blue;
   position: absolute;
   top:0%;
   height:20%;
   width:100%
 }
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.head_photo{
+  height:100%;
+  width:100%
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 //Login Main Container
 .login {
+  top:5%;
   width: 27em;
-  height: 25em;
-  //min-height: 44em;
+  height: 39em;
+  min-height: 25em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,7 +42,7 @@
     background-color: #fff;
     box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.2);
     border-radius: 4px;
-    position: relative;
+    position: absolute;
     z-index: 99;
     width: 100%;
     height: 100%;
