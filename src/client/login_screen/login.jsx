@@ -1,7 +1,8 @@
 import React from "react";
 import './login.scss';
-import header_photo from '../imgs/login-photo.png'
-
+import header_photo from './login-photo.png'
+// Redux to install, replacing props + Hooks
+//TAILWIND instead of bootstrap
 
 export class Login extends React.Component {
   constructor(props) {

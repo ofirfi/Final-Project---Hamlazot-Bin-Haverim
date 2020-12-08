@@ -1,6 +1,6 @@
 import React from "react";
 import './register.scss';
-import header_photo from '../imgs/sign-photo.png'
+import header_photo from './sign-photo.png'
 
 export class Register extends React.Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.scss";
-import { Login, Register } from "./index";
-import head_photo from '../imgs/Header_Photo.png'
+import { Login, Register } from "./switch";
+import head_photo from './Header_Photo.png'
 
 class App extends React.Component {
   constructor(props) {
