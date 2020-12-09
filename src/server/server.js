@@ -2,7 +2,7 @@ const express = require('express'),
     routers = require('./routes/routes.js');
 
 const app = express();
-const port = 8000;
+const port = 8001;
 
 
 const server = app.listen(port, () => {
@@ -12,4 +12,5 @@ const server = app.listen(port, () => {
 
   
 
+app.use(express.json());
 app.use('/', routers);

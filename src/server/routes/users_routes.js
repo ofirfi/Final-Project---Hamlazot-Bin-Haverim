@@ -1,94 +1,83 @@
-const { resolveSoa } = require('dns');
 const fs = require('fs');
-const dataPath = '../Database/users.json';
-
-// helper methods
-const readFile = (callback, returnJson = false, filePath = dataPath, encoding = 'utf8') => {
-    fs.readFile(filePath, encoding, (err, data) => {
-        if (err) {
-            console.log(err);
-        }
-        callback(returnJson ? JSON.parse(data) : data);
-    });
-};
-
-const writeFile = (fileData, callback, filePath = dataPath, encoding = 'utf8') => {
-    fs.writeFile(filePath, fileData, encoding, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        callback();
-    });
-};
+const usersData = require("../Database/users.json");
+const dataPath = "./src/server/Database/users.json";
+//const usersData = read ?
 
 
 module.exports = {
-    //READ
+    //Check if nothing is missing
     read_users: function (req, res) {
-        fs.readFile(dataPath, 'utf8', (err, data) => {
-            if (err) {
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else
-                res.send(JSON.parse(data));
-        });
+        res.json(usersData);     
     },
 
-    // CREATE
+    
     create_user: function (req, res) {
-        readFile(data => {
-            // add the new user
-            if (!req.body.id) return res.sendStatus(500);
 
-            //check if user already exists -> error
+        if(!req.body) return res.status(400).send("Bad request");
+        const {userName,email,password} = req.body;
+        if(!userName) return res.status(400).send("Bad request, Missing userName");
+        if(!email) return res.status(400).send("Bad request, Missing email");
+        if(!password) return res.status(400).send("Bad request, Missing password");
+        
 
-            //if any info is missing -> error
+        if(usersData[userName]) return res.status(400).send("User already exists");
+        
+        //encrypt + salt for password
 
-            data[req.body.id] = {
-                "Email": req.body["Email"],
-                "Password": req.body["Password"],
-                "Friends": [],
-                "Recommendations": []
-            }
-     
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send('new user added');
-            });
-        },true);
+        usersData[userName] = {
+            "Email":email,
+            "Password":password,
+            "Friends":[],
+            "Recommendations":[]
+        }
+
+        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status: 'success',data: usersData[userName] });
+        })
+
+
     },
 
 
-    // UPDATE
     update_user: function (req, res) {
-        readFile(data => {
-            const userId = req.params["id"];
-            if(!usedId) return res.status(400).send('Missing user id');
-            if (!data[userId]) return res.status(400).send("User id does not exists");   
+        if(!req.params) return res.status(400).send("Bad request");
+        if(!req.params.id)  return res.status(404).send("The user does not exists");
+        
+        //check changing friends,recommendations or userName
+        //Also secure password (encrypt and salt)
+            
+        const id = req.params.id;
+        let {email,password} = req.body;
+        if(!email) 
+            email = usersData[id].Email;
+        if(!password)
+            password = usersData[id].Password;
+        
 
-            //if(req.body[info])
-            //check about password 
+        usersData[id] = {
+            "Email": email,
+            "Password": password,
+            "Friends": usersData[id].Friends,
+            "Recommendations": usersData[id].Recommendations
+        }
 
-            //change data[userId] = 
-            data[userId] = req.body;
+        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status: 'success',data: null });
+        }) 
 
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send(`users id:${userId} updated`);
-            });
-        },true);
     },
 
-    // DELETE
-    delete_user: function (req, res) {
-        readFile(data => {
-            const userId = req.params["id"];
-            if(!userID) return res.status(400).send('No user id');
-            if(!data[userId]) return res.status(400).send('This Uid does not exists');
 
-            delete data[userId];
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send(`user id:${userId} was deleted`);
-            });
-        },true);
+    delete_user: function (req, res) {
+        if(!req.params || !req.params.id) return res.status(400).send("Bad request");
+        if(!usersData[req.params.id])  return res.status(404).send("The user couldn't be found");
+
+        delete usersData[req.params.id];
+        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status: 'success',data: null });
+        }) 
     }
 };

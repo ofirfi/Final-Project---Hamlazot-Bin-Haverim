@@ -1,147 +1,81 @@
 const fs = require('fs');
-const dataPath = '../Database/recommendations.json';
+const recommendationsData = require("../Database/recommendations.json");
+const dataPath = "./src/server/Database/recommendations.json";
 
-// helper methods
-const readFile = (callback, returnJson = false, filePath = dataPath, encoding = 'utf8') => {
-    fs.readFile(filePath, encoding, (err, data) => {
-        if (err) {
-            console.log(err);
-        }
-        callback(returnJson ? JSON.parse(data) : data);
-    });
-};
-
-const writeFile = (fileData, callback, filePath = dataPath, encoding = 'utf8') => {
-    fs.writeFile(filePath, fileData, encoding, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        callback();
-    });
-};
-
-
-
+//const recommendationsData = read...
 
 module.exports = {
-    // READ
+    // Check if nothing is missing
     read_recommendations: function (req, res) {
-        readFile((err, data) => {
-            if (err) {
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else
-                res.send(JSON.parse(data));
-        });
+        res.json(recommendationsData);
     },
 
-    // CREATE
+
     create_recommendation: function (req, res) {
-        readFile(data => {
-
-            if (!req.body) return res.status(400);
-
-            if (!req.body["Pid"]) {
-                res.statusMessage = "missing 'Pid' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Uid"]) {
-                res.statusMessage = "missing 'Uid' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Comment"]) {
-                res.statusMessage = "missing 'Comment' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Rate"]) {
-                res.statusMessage = "missing 'Rate' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Date"]) {
-                res.statusMessage = "missing 'Date' attribute";
-                return res.sendStatus(400);
-            }
-
-            
-
-            data[req.body["Pid"]].req.body["Uid"] = {
-                "Comment": req.body["Comment"],
-                "Rate": req.body["Rate"],
-                "Date": req.body["Date"]
-            }
-
-
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send('The new comment was added');
-            });
-        },true);
+        if (!req.body) return res.status(400).send("Bad request");
+        if (!req.body["pid"]) return res.status(400).send("missing 'pid' attribute");
+        if (!req.body["uid"]) return res.status(400).send("missing uid' attribute");
+        if (!req.body["comment"]) return res.status(400).send("missing 'comment' attribute");
+        if (!req.body["rate"]) return res.status(400).send("missing 'rate' attribute");
+        
+          
+        recommendationsData[req.body["pid"]][req.body["uid"]] = {
+            "Comment": req.body["comment"],
+            "Rate": req.body["rate"],
+            "Date":new Date()
+        }
+        
+        //Need to add the recommendation to the user!!!
+        fs.writeFile(dataPath,JSON.stringify(recommendationsData),err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status:"sucess",data:recommendationsData[req.body["pid"]]})
+        })
     },
 
 
-    // UPDATE
+
+
+
+
     update_recommendation: function (req, res) {
-        readFile(data => {
-            var cid = req.params["id"];
-            if (!cid || !req.body) {
-                res.statusMessage = "Bad request";
-                return res.sendStatus(400);
-            }
-            if (!data[cid]) {
-                res.statusMessage = "Comment was not found";
-                return res.sendStatus(404);
-            }
-            if (!req.body["Uid"]) {
-                res.statusMessage = "missing 'Uid' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Comment"]) {
-                res.statusMessage = "missing 'Comment' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Rate"]) {
-                res.statusMessage = "missing 'Rate' attribute";
-                return res.sendStatus(400);
-            }
-            if (!req.body["Date"]) {
-                res.statusMessage = "missing 'Date' attribute";
-                return res.sendStatus(400);
-            }
+        if(!req.params || !req.body) return res.status(400).send("Bad request");
+        if(!req.body["comment"] || !req.body["rate"]) return res.status(400).send("Bad request");
+        if(!req.params.pid || !recommendationsData[req.params.pid]
+           || !req.body["uid"] || !recommendationsData[req.params.pid][req.body["uid"]])
+                return res.status(404).send("The recommendation couldn't be found");
+        
+        //check parameters fits the input type!!!
 
-            data[i].req.body["Uid"] = {
-                "Comment": req.body["Comment"],
-                "Rate": req.body["Rate"],
-                "Date": req.body["Date"]
-            }
+        recommendationsData[req.params.pid][req.body["uid"]] = {
+            "Comment": req.body["comment"],
+            "Rate": req.body["rate"],
+            "Date":new Date()
+        }
 
-
-
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send('the commend was added');
-            });
-        },true);
+        fs.writeFile(dataPath,JSON.stringify(recommendationsData),err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status:"sucess",data:recommendationsData[req.body["pid"]]})
+        })   
     },
 
 
-    // DELETE
     delete_recommendation: function (req, res) {
-        readFile(data => {
-            var cid = req.params["id"];
-            if (!cid) {
-                res.statusMessage = "Bad request";
-                return res.sendStatus(400);
-            }
-            // delete an comment
-            if (!data[cid]) {
-                res.statusMessage = "the comment was not found";
-                return res.sendStatus(400);
-            }
+        if(!req.params) return res.status(400).send("Bad request");
+        if(!req.params.pid || !req.body["uid"]) return res.status(404).send("The recommendation couldn't be found");
+        
+        delete recommendationsData[req.params.pid][req.body["uid"]];
 
-            delete data[cid];
+        if(!Object.keys(recommendationsData[req.params.pid]).length)
+            delete recommendationsData[req.params.pid];
+        
+        //need to delete from the user as well
+        
+        fs.writeFile(dataPath,JSON.stringify(recommendationsData),err =>{
+            if(err) return res.status(500).send("An error occured");
+            res.status(201).json({status: 'success',data: null })
+        })
+        
 
-            writeFile(JSON.stringify(data, null, 2), () => {
-                res.status(200).send(`comment id:${cid} was removed`);
-            });
-        },true);
+
     }
 };
