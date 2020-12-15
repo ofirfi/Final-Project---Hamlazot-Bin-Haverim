@@ -4,12 +4,10 @@ const express = require('express'),
 
 
 router.route('/')
-    .get(recommendationsController.read_recommendations)
-    .post(recommendationsController.create_recommendation);
-
-
-router.route('/pid')
+    .get(recommendationsController.getRecommendations)
+    .post(recommendationsController.create_recommendation)
     .put(recommendationsController.update_recommendation)
     .delete(recommendationsController.delete_recommendation);
+    
 
 module.exports = router;

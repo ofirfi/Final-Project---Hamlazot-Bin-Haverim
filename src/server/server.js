@@ -1,12 +1,13 @@
 const express = require('express'),
-    routers = require('./routes/routes.js');
-    // connectDB = require('./Config/database.js');
+    routers = require('./routes/index.js'),
+    connector = require('./config/database');
 
 const app = express();
 
-const port = 8001;
+const port = process.env.PORT || 8001;
 
-//Connect to database
+//connect to DB
+connector();
 
 //Initializing MiddleWare
 app.use(express.json());
@@ -14,7 +15,9 @@ app.use(express.json());
 //Defining routes
 app.use('/', routers);
 
-
+//Server listening
 const server = app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
+
+

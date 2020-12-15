@@ -10,21 +10,21 @@ const RecommendationSchema = new mongoose.Schema({
     ref: `user`,
     required: true,
   },
-  Comment:{
+  comment:{
     type: String,
     maxlength: 50,
   },
-  Rate:{
+  rate:{
     type: Number,
     required :true,
     min: 0,
     max: 5,
   },
-  Date:{
+  date:{
     type: Date,
-    required : true,
+    default : Date.now()
   },
 
 });
 
-module.exports = Recommendation = mongoose.model('recommendation', recommendationSchema);
+module.exports = Recommendation = mongoose.model('Recommendations', RecommendationSchema);

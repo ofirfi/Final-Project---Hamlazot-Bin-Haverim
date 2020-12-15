@@ -1,0 +1,4 @@
+{
+    "mongoURI":"mongodb+srv://OfirFi:GturamEvDt91geOf@cluster0.ygaxo.mongodb.net/RBF?retryWrites=true&w=majority",
+    "DATABASE_LOCAL":"mongod://localhost:27017/RBF"
+}
