@@ -40,8 +40,8 @@ export default class Search extends React.Component {
       return(
         <div className="page">
             <header className="navbar">
-                <button style={{ position: "relative", top: "10%", left: "40%", backgroundColor: "transparent", border: "none" }}><FcSettings style={{ fontSize:36 }}/></button>
-                <button style={{ position: "relative", top: "10%", right: "40%", backgroundColor: "transparent", border: "none", color: "rgb(53, 111, 123)" }}><GiExitDoor style={{fontSize:36}}/></button>
+                <button style={{ position: "relative", top: "10%", left: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer" }}><FcSettings style={{ fontSize:36 }}/></button>
+                <button style={{ position: "relative", top: "10%", right: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer", color: "rgb(53, 111, 123)" }}><GiExitDoor style={{fontSize:36}}/></button>
                 <div style={{ position:"relative", top:"45%"}}>
                     <input id="search-box" type="text" placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"/>
                 </div>
