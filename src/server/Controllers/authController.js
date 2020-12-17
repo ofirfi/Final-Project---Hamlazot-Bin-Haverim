@@ -1,56 +1,42 @@
-const bcrypt = require('bcryptjs'),
-    jwt = require('jsonwebtoken'),
-    User = require('../models/User_model');
+const jwt = require('jsonwebtoken'),
+    User = require('../models/User_model'),
+    config = require('config'),
+    AppError = require('../utils/appError'),
+    catchAsync = require('../utils/catchAsync')
 
+const signToken = id => jwt.sign({id},config.get('JWT_SECRET'),{expiresIn:config.get('JWT_EXPIRES_IN')});
 
 module.exports = {
-        //In progress
-    logIn : async (req,res) => {
-        if(!req.body) return res.status(400).json({status:"fail",error:"Bad request"});
+    
+    login : catchAsync(async (req,res,next) => {
         const {email,password} = req.body;
-        if(!email || !password) return res.status(400).json({status:"fail",error:"נתונים חסרים"});
+        if(!email || !password)
+            return next(new AppError('Please provide an email and a password',400));
         
-        const user = await User.find({ email });
-        if(!user) return res.status(404).json({status:"fail",error:"שם משתמש/סיסמא אינם נכונים"});
+        const user = await User.findOne({ email }).select('+password');
+        if(!user || !(await user.checkPassword(password,user.password)))
+            return next(new AppError('Wrong email or password',404));
 
-        console.log(user);
-        res.send('ok');
-        //compare passwords
-    //    res.status(201).json({
-    //        user
-    //    })
-        //if(!password) return res.status(404).json({status:"fail",error:"שם משתמש/סיסמא אינם נכונים"});
+        res.status(201).json({
+            status:"success",
+            token: signToken(user._id)
+        })
+    }),
 
-        //sign in + get token?
+    register: catchAsync(async (req, res, next) => {
+        const user = await User.create({
+            userName : req.body.userName,
+            email : req.body.email,
+            password : req.body.password,
+            friendsList: [],
+            recommendationsList: []
+        });
 
-    },
-
-        //In progress - work on errors
-    register: async (req,res) => {
-        
-        try{
-        // if(!req.body) return res.status(400).json({error:"missing arguments"});
-            let {userName,email,password} = req.body;
-        // if(!userName) return res.status(400).json({error:"Bad request, Missing userName"});
-        // if(!email) return res.status(400).json({error:"Bad request, Missing email"});
-        // if(!password) return res.status(400).json({error:"Bad request, Missing password"});   
-        // let user = await User.findOne({ userName });
-        // if(user) return res.status(400).json({ status:"failure",error:  `משתמש כבר קיים במערכת` });
-        
-            const salt = await bcrypt.genSalt(10);
-            password = await bcrypt.hash(password, salt);
- 
-            const user = await User.create({
-                userName,
-                email,
-                password,
-                friendsList:[],
-                recommendationsList:[]
-            })
-            res.status(201).json({status:"success",data:user})
-        }catch(err){
-            res.status(400).json({status:"fail",message:"Invalid data sent"});
-        }
-    }
+        res.status(201).json({
+            status: "success",
+            token : signToken(user._id),
+            data: user
+        });
+    })
 }
     

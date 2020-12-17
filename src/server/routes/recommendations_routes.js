@@ -1,13 +1,13 @@
 const express = require('express'),
-    recommendationsController = require('./../Controllers/recommendationsController'),
+    RecommendationsController = require('./../Controllers/recommendationsController'),
     router = express.Router();
 
 
 router.route('/')
-    .get(recommendationsController.getRecommendations)
-    .post(recommendationsController.create_recommendation)
-    .put(recommendationsController.update_recommendation)
-    .delete(recommendationsController.delete_recommendation);
+    .get(RecommendationsController.getRecommendations)
+    .post(RecommendationsController.create_recommendation)
+    .put(RecommendationsController.update_recommendation)
+    .delete(RecommendationsController.delete_recommendation);
     
 
 module.exports = router;

@@ -1,12 +1,14 @@
 const express = require('express'),
-    usersController = require('./../Controllers/usersController'),
+    FriendsRoute = require('./friends_routes'),
+    UsersController = require('./../Controllers/usersController'),
     router = express.Router();
 
 
 router.route('/')
-    .get(usersController.read_user)
-    .put(usersController.update_user)
-    .delete(usersController.delete_user);
+    .get(UsersController.read_user)
+    .put(UsersController.update_user)
+    .delete(UsersController.delete_user);
 
+router.use('/friends',FriendsRoute);
     
 module.exports = router;
