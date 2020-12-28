@@ -9,7 +9,7 @@ const Recommendation = require('../models/Recommendation_model'),
 module.exports = {
             //Check about the sort [and userName instead of _id]
     getRecommendations : catchAsync(async (req, res,next) => {
-        const recommendations = await Recommendation.find().sort('placeId');
+        const recommendations = await Recommendation.find().sort('placeId userName');
         res.status(201).json({
             status: "success",
             results: recommendations.length,
@@ -28,9 +28,10 @@ module.exports = {
             { comment, rate },
             { new: true, runValidators: true }
         )
-        if (recommend)
-        return res.status(201).json({ stats: "success", data: recommend });
         
+        if (recommend)
+            return res.status(201).json({ stats: "success", data: recommend });
+    
                 //a new recommendation, if none is existed
         recommend = await Recommendation.create({
             placeId,
@@ -39,7 +40,7 @@ module.exports = {
             rate,
         })
                 //Add the recommendation to the user's list
-        user.recommendationsList.push({ recommend });
+        user.recommendationsList.push(recommend);
         await user.save();
 
         return res.status(201).json({ stats: "success", data: recommend });
@@ -56,7 +57,7 @@ module.exports = {
         );
                 //If the recommendation does not exist
         if(!recommend)
-            return next(new AppError('recommendation does not exists',404));
+            return next(new AppError('recommendation was not found',404));
         
         res.status(201).json({
             status:"success",
@@ -65,18 +66,20 @@ module.exports = {
     }),
 
     
-    //In progress - need to delete from the user as well
     delete_recommendation: catchAsync(async(req, res,next) => {
         const { placeId, userName } = req.body;
         let user = await User.findOne({ userName });
         if(!user)
-            return next(new AppError('user does not exists',404));
+            return next(new AppError('User was not found',404));
+     
+        const recommend = await Recommendation.findOneAndDelete({placeId,userName:user});
+        if(!recommend)
+            return next(new AppError('Recommendation was not found',404));
 
-        const recommand = await Recommendation.findOne({placeId,userName:user});
-        if(!recommand)
-            return next(new AppError('recommendation does not exists',404));
-        
-        recommand.delete();
+        await User.findOneAndUpdate({ userName: req.body.userName, }, {
+            $pull: { recommendationsList: recommend._id }
+        });
+
         res.status(204).send({
             status:"success",
             data:"null"

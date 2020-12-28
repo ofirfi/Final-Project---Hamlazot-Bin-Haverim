@@ -40,10 +40,8 @@ const UserSchema = new mongoose.Schema({
   ],
   recommendationsList:[
     {
-      recommendationsRef:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: `recommendation`,
-      }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: `recommendation`,
     }
   ],
 
@@ -51,13 +49,14 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save',async function(next){
-  if(!this.isModified('password')) return next();
-
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  
+  if(this.isModified('password')){
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
   next();
 });
+
+
 
 UserSchema.methods.checkPassword = async function (inputPassword,rightPassword){
   return await bcrypt.compare(inputPassword,rightPassword);

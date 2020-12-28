@@ -5,11 +5,11 @@ const User = require('../models/User_model'),
 
 
 module.exports = {
-        //In progress
+        //In progress -  the user's info
     read_user: catchAsync(async(req, res ,next) => {
         res.status(500).json({status:"fail",message:"route in progess"});
     }),
-        //In progress
+        //In progress - for change the password
     update_user: catchAsync(async(req, res,next) => {
         res.status(500).json({status:"fail",message:"route in progess"});
     }),
