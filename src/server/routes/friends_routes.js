@@ -1,13 +1,13 @@
 const express = require('express'),
     FriendsController = require('./../Controllers/friendsController'),
+    authController = require('../Controllers/authController');
     router = express.Router();
 
 
 router.route('/')
-    .get(FriendsController.get_friends)         //get Friends List
-    .post(FriendsController.add_friend)         //Add a new friend to the list
-    .put(FriendsController.update_friend)      //Change friend's "reliabillty"
-    .delete(FriendsController.delete_friend);  //Delete a friend from the list
+    .post(authController.protect,FriendsController.add_friend)         //Add a new friend to the list
+    .put(authController.protect,FriendsController.update_friend)      //Change friend's "reliabillty"
+    .delete(authController.protect,FriendsController.delete_friend);  //Delete a friend from the list
 
     
 module.exports = router;

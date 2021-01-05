@@ -1,21 +1,7 @@
-const { default: validator } = require('validator');
-const { findOneAndUpdate } = require('../models/User_model');
 const User = require('../models/User_model'),
     catchAsync = require('../utils/catchAsync'),
     AppError = require('../utils/appError');
 
-
-
-const get_Friends_list = async friendsList => {
-    let friends = []
-    for (i = 0; i < friendsList.length; i++) {
-        const user = await User.findById(friendsList[i].userRef);
-        let reliability = friendsList[i].reliability;
-        let user_name = user.userName;
-        friends.push({ user_name, reliability })
-    }
-    return friends
-};
 
 const if_exists = (friendsList, new_friend) => {
     for (i = 0; i < friendsList.length; i++)
@@ -25,21 +11,6 @@ const if_exists = (friendsList, new_friend) => {
 }
 
 module.exports = {
-    //Check about the sort [and userName instead of _id]
-    get_friends: catchAsync(async (req, res, next) => {
-        const user = await User.findOne({ userName: req.body.userName });
-        if (!user)
-            return next(new AppError('User was not found', 404));
-
-        const friends = await get_Friends_list(user.friendsList);
-
-        return res.status(201).json({
-            stats: "success",
-            results: friends.length,
-            data: friends
-        });
-    }),
-
 
     add_friend: catchAsync(async (req, res, next) => {
         let user = await User.findOne({ userName: req.body.userName });
@@ -67,6 +38,7 @@ module.exports = {
         });
     }),
 
+    
     //Change the friend's reliability
     update_friend: catchAsync(async (req, res, next) => {
         const user = await User.findOne({ userName: req.body.userName });
@@ -94,7 +66,6 @@ module.exports = {
 
     }),
 
-
     
     delete_friend: catchAsync(async (req, res, next) => {
         let user = await User.findOne({ userName: req.body.userName });
@@ -110,6 +81,5 @@ module.exports = {
             status:"success",
             data: null
         });
-
     }),
 };

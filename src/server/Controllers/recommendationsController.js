@@ -7,7 +7,7 @@ const Recommendation = require('../models/Recommendation_model'),
 
 
 module.exports = {
-            //Check about the sort [and userName instead of _id]
+            //Change the userName from the user id to user name
     getRecommendations : catchAsync(async (req, res,next) => {
         const recommendations = await Recommendation.find().sort('placeId userName');
         res.status(201).json({
@@ -21,7 +21,6 @@ module.exports = {
     create_recommendation: catchAsync(async (req, res,next) => {
         const { placeId, userName, comment, rate } = req.body;
         let user = await User.findOne({ userName });
-
                 //Update the existing recommendation
         let recommend = await Recommendation.findOneAndUpdate(
             { placeId, userName: user },
@@ -30,7 +29,7 @@ module.exports = {
         )
         
         if (recommend)
-            return res.status(201).json({ stats: "success", data: recommend });
+            return res.status(201).json({ status: "success", data: recommend });
     
                 //a new recommendation, if none is existed
         recommend = await Recommendation.create({
@@ -38,7 +37,7 @@ module.exports = {
             userName: user,
             comment,
             rate,
-        })
+        });
                 //Add the recommendation to the user's list
         user.recommendationsList.push(recommend);
         await user.save();
@@ -80,7 +79,7 @@ module.exports = {
             $pull: { recommendationsList: recommend._id }
         });
 
-        res.status(204).send({
+        res.status(204).json({
             status:"success",
             data:"null"
         })

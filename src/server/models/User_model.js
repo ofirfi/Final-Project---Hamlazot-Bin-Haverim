@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const validator = require('validator'),
+const mongoose = require('mongoose'),
+  validator = require('validator'),
   bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
@@ -55,7 +55,6 @@ UserSchema.pre('save',async function(next){
   }
   next();
 });
-
 
 
 UserSchema.methods.checkPassword = async function (inputPassword,rightPassword){

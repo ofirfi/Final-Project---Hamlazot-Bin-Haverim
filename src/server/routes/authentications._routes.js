@@ -4,6 +4,7 @@ const express = require('express'),
 
 router
     .post('/login',authController.login)
-    .post('/signup',authController.register);
+    .post('/signup',authController.register)
+    .put('/changePassword',authController.protect,authController.update_password);
 
 module.exports = router;
