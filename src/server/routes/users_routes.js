@@ -4,8 +4,10 @@ const express = require('express'),
     authController = require('../Controllers/authController');
     router = express.Router();
 
+
 router.route('/:userName')
-    .get(authController.protect,UsersController.read_user)
+    .get(authController.protect,UsersController.get_users_profile)
+
 router.route('/')
     .delete(authController.protect,UsersController.delete_user);
 

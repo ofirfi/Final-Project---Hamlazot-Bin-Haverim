@@ -33,6 +33,9 @@ module.exports = {
 
 
     register: catchAsync(async (req, res, next) => {
+        const {password,confirm_password} = req.body
+        if(password.toString() !== confirm_password.toString())
+            return next(new AppError("password and confirm password do not match"))
         const new_user = await User.create({
             userName : req.body.userName,
             email : req.body.email,
@@ -104,7 +107,7 @@ module.exports = {
             passwordResetToken: hashedToken,
             passwordResetExpires: { $gt: Date.now() }
         });
-        if(req.body.password !== req.body.confirmPassword)
+        if(req.body.password !== req.body.confirm_password)
             return next(new AppError('Password and confirm password dont match',400));
 
         user.password = req.body.password;
