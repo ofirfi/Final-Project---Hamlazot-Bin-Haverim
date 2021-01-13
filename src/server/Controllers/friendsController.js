@@ -56,7 +56,7 @@ module.exports = {
             { runValidators: true });
 
 
-        return res.status(201).json({
+        return res.status(200).json({
             stats: "success",
             data: {
                 userName: friend.userName,
@@ -77,7 +77,7 @@ module.exports = {
             $pull: { friendsList: { userRef: friend._id } }
         });
 
-        res.status(201).json({
+        res.status(204).json({
             status:"success",
             data: null
         });

@@ -4,64 +4,60 @@ const Recommendation = require('../models/Recommendation_model'),
     catchAsync = require('../utils/catchAsync'),
     AppError = require('../utils/appError');
 
+const updateRecommendation = async req => {
+    const { placeId, userName, comment, rate } = req.body;
+    let user = await User.findOne({ userName });
+    let recommend = await Recommendation.findOneAndUpdate(
+        { placeId, userName: user },
+        { comment, rate, date:Date.now() },
+        { new: true, runValidators: true }
+    );
+    return {recommend,user};
+}
 
+const create_Send_Data = (res,data,results,statusCode) =>  res.status(statusCode).json({
+    status: "success",
+    results,
+    data
+});
 
 module.exports = {
             //Change the userName from the user id to user name
     getRecommendations : catchAsync(async (req, res,next) => {
         const recommendations = await Recommendation.find().sort('placeId userName');
-        res.status(201).json({
-            status: "success",
-            results: recommendations.length,
-            data: { recommendations }
-        });
+        create_Send_Data(res,{recommendations},recommendations.length,200);
     }),
 
     
     create_recommendation: catchAsync(async (req, res,next) => {
-        const { placeId, userName, comment, rate } = req.body;
-        let user = await User.findOne({ userName });
-                //Update the existing recommendation
-        let recommend = await Recommendation.findOneAndUpdate(
-            { placeId, userName: user },
-            { comment, rate },
-            { new: true, runValidators: true }
-        )
+        let {recommend,user} = await updateRecommendation(req);
         
         if (recommend)
             return res.status(201).json({ status: "success", data: recommend });
-    
+
                 //a new recommendation, if none is existed
         recommend = await Recommendation.create({
-            placeId,
+            placeId : req.body.placeId,
             userName: user,
-            comment,
-            rate,
+            comment: req.body.comment,
+            rate: req.body.rate,
         });
+
                 //Add the recommendation to the user's list
         user.recommendationsList.push(recommend);
         await user.save();
 
-        return res.status(201).json({ stats: "success", data: recommend });
+        create_Send_Data(res,recommend,1,200);
     }),
 
 
     update_recommendation: catchAsync(async(req, res,next) => {
-        const {placeId, userName, comment, rate } = req.body;
-        let user = await User.findOne({ userName });
-        let recommend = await Recommendation.findOneAndUpdate(
-            { placeId, userName: user },
-            { comment, rate },
-            { new: true, runValidators: true }
-        );
+        const {recommend,user} = await updateRecommendation(req);
                 //If the recommendation does not exist
         if(!recommend)
             return next(new AppError('recommendation was not found',404));
         
-        res.status(201).json({
-            status:"success",
-            data: recommend
-        });
+        create_Send_Data(res,recommend,1,200);
     }),
 
     
@@ -79,9 +75,7 @@ module.exports = {
             $pull: { recommendationsList: recommend._id }
         });
 
-        res.status(204).json({
-            status:"success",
-            data:"null"
-        })
+        create_Send_Data(res,null,0,204);
+
     }),
 };

@@ -13,7 +13,7 @@ const createSendtoken = (user,statusCode,res) =>{
     res.status(statusCode).json({
         status: "success",
         token : signToken(user._id),
-        data: user
+        data: null
     });
 }
 
@@ -28,7 +28,7 @@ module.exports = {
         if(!user || !(await user.checkPassword(password,user.password)))
             return next(new AppError('Wrong email or password',401));
 
-        createSendtoken(user,201,res);
+        createSendtoken(user,200,res);
     }),
 
 
@@ -66,7 +66,7 @@ module.exports = {
         user.password = password;
         await user.save()
 
-        createSendtoken(user,201,res)   
+        createSendtoken(user,204,res)   
     }),
 
 
@@ -92,6 +92,7 @@ module.exports = {
                 status:"success",
                 message:"Reset email was sent"
             });
+            
         } catch(err){
             user.passwordResetToken = undefined;
             user.passwordResetExpires = undefined;
@@ -115,7 +116,7 @@ module.exports = {
         user.passwordResetExpires = undefined;
         await user.save();
 
-        res.status(201).json({
+        res.status(204).json({
             status:"success",
             data:null
         });

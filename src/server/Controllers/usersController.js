@@ -11,14 +11,14 @@ const get_Friends_list = async (friendsList,personal_profile) => {
         let user_name = user.userName;
         if(personal_profile){
             let reliability = friendsList[i].reliability;
-            friends.push({ user_name, reliability })
+            friends.push({ user_name, reliability });
         } else
-            friends.push({ user_name})
+            friends.push({ user_name});
     }
     return friends
 };
 
-const create_send_Data = (res,data) =>  res.status(200).json({
+const send_Data = (res,data) =>  res.status(200).json({
     status: "success",
     results: 1,
     data
@@ -35,8 +35,7 @@ module.exports = {
 
         const friends = await get_Friends_list(user.friendsList,false);
         
-        create_send_Data(res,{userName: user.userName,friends_length: friends.length,friends})        
-
+        send_Data(res,{userName: user.userName,friends_length: friends.length,friends});        
     }),
 
         //The logged-in user profile
@@ -47,17 +46,7 @@ module.exports = {
         
         const friends = await get_Friends_list(user.friendsList,true);
 
-        create_send_Data(res,{email:user.email,userName: user.userName,friends_length: friends.length,friends})        
-        // return res.status(200).json({
-        //     stats: "success",
-        //     results: 1,
-        //     data: {
-        //         email: user.email,
-        //         userName: user.userName,
-        //         friends_length: friends.length,
-        //         friends
-        //     }
-        // });
+        send_Data(res,{email:user.email,userName: user.userName,friends_length: friends.length,friends});
     }),
 
 
