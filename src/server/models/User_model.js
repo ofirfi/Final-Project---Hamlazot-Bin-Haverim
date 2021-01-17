@@ -16,8 +16,12 @@ const UserSchema = new mongoose.Schema({
     required: [true,'למשתמש חייב להיות מייל'],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail],
     trim:true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error("Please enter a valid E-mail!");
+      }
+    },
   },
   password: {
     type: String,

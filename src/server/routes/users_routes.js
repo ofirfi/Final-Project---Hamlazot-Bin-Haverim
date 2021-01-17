@@ -8,7 +8,7 @@ const express = require('express'),
 router.route('/:userName')
     .get(authController.protect,UsersController.get_users_profile)
 
-router.route('/')
+router.route('/:userName')
     .delete(authController.protect,UsersController.delete_user);
 
 router.use('/friends',FriendsRoute);

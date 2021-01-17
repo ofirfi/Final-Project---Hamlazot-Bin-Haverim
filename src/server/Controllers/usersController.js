@@ -35,7 +35,7 @@ module.exports = {
 
         const friends = await get_Friends_list(user.friendsList,false);
         
-        send_Data(res,{userName: user.userName,friends_length: friends.length,friends});        
+        send_Data(res,{userName: user.userName,friendsLength: friends.length,friends});        
     }),
 
         //The logged-in user profile
@@ -53,6 +53,26 @@ module.exports = {
 
         //In progress - also delete all of this user's recommendations?
     delete_user: catchAsync(async(req, res,next) => {
-        res.status(500).json({status:"fail",message:"route in progess"});
+        const userToDel = await User.findOneAndDelete({userName:req.params.userName});
+        if(!userToDel)
+            return next(new AppError('User was not found', 404));
+
+            //Deleting the user's recommendations
+        recommendations = await Recommendation.find({userName:userToDel});
+        for (let i = 0 ;i<recommendations.length;i++)
+            await Recommendation.findByIdAndDelete(recommendations[i]._id);
+
+            //Deleting the user from other users friends list
+        let users = await User.find({friendsList : {$elemMatch: {userRef: userToDel} } });
+        for (let i = 0; i<users.length;i++){
+            await User.findByIdAndUpdate(users[i]._id,{
+                $pull: {friendsList : {userRef: userToDel }  }
+            });
+        }
+
+        res.status(204).json({
+            status:"success",
+            data:null
+        });
     }),
 };
