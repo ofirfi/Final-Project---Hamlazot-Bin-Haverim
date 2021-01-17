@@ -10,7 +10,19 @@ const if_exists = (friendsList, new_friend) => {
     return false;
 }
 
+
 module.exports = {
+
+    search_users: catchAsync(async(req,res,next)=>{
+        let {userName} = req.params
+        const users = await User.find({userName : {$regex : userName}  },{userName});
+        res.status(200).json({
+            status:"success",
+            results: users.length,
+            data: users
+        });
+    }),
+
 
     add_friend: catchAsync(async (req, res, next) => {
         let user = await User.findOne({ userName: req.body.userName });

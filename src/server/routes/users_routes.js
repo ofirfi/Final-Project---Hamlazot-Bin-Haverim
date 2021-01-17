@@ -5,10 +5,9 @@ const express = require('express'),
     router = express.Router();
 
 
-router.route('/:userName')
-    .get(authController.protect,UsersController.get_users_profile)
 
 router.route('/:userName')
+    .get(authController.protect,UsersController.get_users_profile)
     .delete(authController.protect,UsersController.delete_user);
 
 router.use('/friends',FriendsRoute);
