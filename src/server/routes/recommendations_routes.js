@@ -1,15 +1,14 @@
 const express = require('express'),
-    recommendationsController = require('./../Controllers/recommendationsController'),
+    RecommendationsController = require('./../Controllers/recommendationsController'),
+    authController = require('../Controllers/authController'),
     router = express.Router();
 
 
 router.route('/')
-    .get(recommendationsController.read_recommendations)
-    .post(recommendationsController.create_recommendation);
-
-
-router.route('/pid')
-    .put(recommendationsController.update_recommendation)
-    .delete(recommendationsController.delete_recommendation);
+    .get(authController.protect,RecommendationsController.getRecommendations)
+    .post(authController.protect,RecommendationsController.create_recommendation)
+    .put(authController.protect,RecommendationsController.update_recommendation)
+    .delete(authController.protect,RecommendationsController.delete_recommendation);
+    
 
 module.exports = router;

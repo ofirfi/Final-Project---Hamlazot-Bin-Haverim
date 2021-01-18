@@ -1,84 +1,78 @@
-const fs = require('fs'),
-    usersData = require("../Database/users.json"),
-    dataPath = "./../Database/users.json";
+const User = require('../models/User_model'),
+    Recommendation = require('../models/Recommendation_model'),
+    AppError = require('../utils/appError'),
+    catchAsync = require('../utils/catchAsync');
 
-//const usersData = read ?
+
+const get_Friends_list = async (friendsList,personal_profile) => {
+    let friends = []
+    for (i = 0; i < friendsList.length; i++) {
+        const user = await User.findById(friendsList[i].userRef);
+        let user_name = user.userName;
+        if(personal_profile){
+            let reliability = friendsList[i].reliability;
+            friends.push({ user_name, reliability });
+        } else
+            friends.push({ user_name});
+    }
+    return friends
+};
+
+const send_Data = (res,data) =>  res.status(200).json({
+    status: "success",
+    results: 1,
+    data
+});
+
 
 
 module.exports = {
-    //Check if nothing is missing
-    read_users: function (req, res) {
-        res.json(usersData);     
-    },
+        //a user's profile
+    get_users_profile: catchAsync(async(req, res ,next) => {
+        let user = await User.findOne({ userName: req.params.userName });
+        if(!user)
+            return next(new AppError('User was not found', 404));
 
-    
-    create_user: function (req, res) {
-
-        if(!req.body) return res.status(400).send("Bad request");
-        const {userName,email,password} = req.body;
-        if(!userName) return res.status(400).send("Bad request, Missing userName");
-        if(!email) return res.status(400).send("Bad request, Missing email");
-        if(!password) return res.status(400).send("Bad request, Missing password");
+        const friends = await get_Friends_list(user.friendsList,false);
         
+        send_Data(res,{userName: user.userName,friendsLength: friends.length,friends});        
+    }),
 
-        if(usersData[userName]) return res.status(400).send("User already exists");
+        //The logged-in user profile
+    get_profile: catchAsync(async(req,res,next)=>{
+        let user = await User.findOne({ userName: req.body.userName });
+        if(!user)
+            return next(new AppError('User was not found', 404));
         
-        //encrypt + salt for password
+        const friends = await get_Friends_list(user.friendsList,true);
 
-        usersData[userName] = {
-            "Email":email,
-            "Password":password,
-            "Friends":[],
-            "Recommendations":[]
+        send_Data(res,{email:user.email,userName: user.userName,friends_length: friends.length,friends});
+    }),
+
+
+
+        //In progress - also delete all of this user's recommendations?
+    delete_user: catchAsync(async(req, res,next) => {
+        const userToDel = await User.findOneAndDelete({userName:req.params.userName});
+        if(!userToDel)
+            return next(new AppError('User was not found', 404));
+
+            //Deleting the user's recommendations
+        recommendations = await Recommendation.find({userName:userToDel});
+        for (let i = 0 ;i<recommendations.length;i++)
+            await Recommendation.findByIdAndDelete(recommendations[i]._id);
+
+            //Deleting the user from other users friends list
+        let users = await User.find({friendsList : {$elemMatch: {userRef: userToDel} } });
+        for (let i = 0; i<users.length;i++){
+            await User.findByIdAndUpdate(users[i]._id,{
+                $pull: {friendsList : {userRef: userToDel }  }
+            });
         }
 
-        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
-            if(err) return res.status(500).send("An error occured");
-            res.status(201).json({status: 'success',data: usersData[userName] });
-        })
-
-
-    },
-
-
-    update_user: function (req, res) {
-        if(!req.params) return res.status(400).send("Bad request");
-        if(!req.params.id)  return res.status(404).send("The user does not exists");
-        
-        //check changing friends,recommendations or userName
-        //Also secure password (encrypt and salt)
-            
-        const id = req.params.id;
-        let {email,password} = req.body;
-        if(!email) 
-            email = usersData[id].Email;
-        if(!password)
-            password = usersData[id].Password;
-        
-
-        usersData[id] = {
-            "Email": email,
-            "Password": password,
-            "Friends": usersData[id].Friends,
-            "Recommendations": usersData[id].Recommendations
-        }
-
-        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
-            if(err) return res.status(500).send("An error occured");
-            res.status(201).json({status: 'success',data: null });
-        }) 
-
-    },
-
-
-    delete_user: function (req, res) {
-        if(!req.params || !req.params.id) return res.status(400).send("Bad request");
-        if(!usersData[req.params.id])  return res.status(404).send("The user couldn't be found");
-
-        delete usersData[req.params.id];
-        fs.writeFile(dataPath,JSON.stringify(usersData), err =>{
-            if(err) return res.status(500).send("An error occured");
-            res.status(201).json({status: 'success',data: null });
-        }) 
-    }
+        res.status(204).json({
+            status:"success",
+            data:null
+        });
+    }),
 };

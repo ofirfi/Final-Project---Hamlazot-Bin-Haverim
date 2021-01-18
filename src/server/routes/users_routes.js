@@ -1,15 +1,15 @@
 const express = require('express'),
-    usersController = require('./../Controllers/usersController'),
+    FriendsRoute = require('./friends_routes'),
+    UsersController = require('./../Controllers/usersController'),
+    authController = require('../Controllers/authController');
     router = express.Router();
 
-router.route('/')
-    .get(usersController.read_users)
-    .post(usersController.create_user);
+
+
+router.route('/:userName')
+    .get(authController.protect,UsersController.get_users_profile)
+    .delete(authController.protect,UsersController.delete_user);
+
+router.use('/friends',FriendsRoute);
     
-router.route('/:id')
-    .put(usersController.update_user)
-    .delete(usersController.delete_user);
-
-
-
 module.exports = router;

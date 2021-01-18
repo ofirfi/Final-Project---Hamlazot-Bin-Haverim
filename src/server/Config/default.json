@@ -1,0 +1,6 @@
+{
+    "mongoURI":"mongodb+srv://OfirFi:GturamEvDt91geOf@cluster0.ygaxo.mongodb.net/RBF?retryWrites=true&w=majority",
+    "DATABASE_LOCAL":"mongod://localhost:27017/RBF",
+    "JWT_SECRET" : "mSj5AfeiUm2OACsGdHxX4YagN7gbxvOalUOR9MgYcwD2V4WU9sLYsGLhacQVPfF0",
+    "JWT_EXPIRES_IN" : "1h"
+}
