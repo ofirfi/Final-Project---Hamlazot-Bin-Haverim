@@ -10,8 +10,14 @@ const if_exists = (friendsList, new_friend) => {
     return false;
 }
 
+const send_data = (res,statusCode,data) =>{
+    res.status(statusCode).json({
+        status: "success",
+        data
+    });
+};
 
-module.exports = {
+module.exports  = {
 
     search_users: catchAsync(async(req,res,next)=>{
         let {userName} = req.params
@@ -34,20 +40,17 @@ module.exports = {
             return next(new AppError("Can't add yourself", 400));
 
         if (if_exists(user.friendsList, new_friend._id))
-            return next(new AppError('Friend already exists', 500));
+            return next(new AppError('Friend already exists', 400));
+
 
         user.friendsList.push({
             userRef: new_friend,
             reliability: req.body.reliability
         });
         await user.save();
-        return res.status(201).json({
-            stats: "success",
-            data: {
-                userName: new_friend.userName,
-                reliability: req.body.reliability
-            }
-        });
+
+        send_data(res,200,{ userName: new_friend.userName,reliability: req.body.reliability});
+    
     }),
 
     
@@ -58,24 +61,12 @@ module.exports = {
         if (!user || !friend || !if_exists(user.friendsList, friend._id))
             return next(new AppError('User was not found', 404));
 
-        await User.findOneAndUpdate({
-            userName: req.body.userName,
-            'friendsList.userRef': friend._id
-        },
-            {
-                $set: { 'friendsList.$.reliability': req.body.reliability }
-            },
+        await User.findOneAndUpdate(
+            { userName: req.body.userName, 'friendsList.userRef': friend._id },
+            { $set: { 'friendsList.$.reliability': req.body.reliability }},
             { runValidators: true });
 
-
-        return res.status(200).json({
-            stats: "success",
-            data: {
-                userName: friend.userName,
-                reliability: req.body.reliability
-            }
-        });
-
+        send_data(res,200,{ userName: friend.userName, reliability: req.body.reliability});
     }),
 
     
@@ -89,9 +80,6 @@ module.exports = {
             $pull: { friendsList: { userRef: friend._id } }
         });
 
-        res.status(204).json({
-            status:"success",
-            data: null
-        });
+        send_data(res,204,null);
     }),
 };

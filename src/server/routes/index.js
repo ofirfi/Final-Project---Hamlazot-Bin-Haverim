@@ -1,6 +1,5 @@
 const express = require('express'),
     userRoutes = require('./users_routes'),
-    profileRoutes = require('./profile_routes'),
     recommendationRoutes = require('./recommendations_routes'),
     auth = require('./authentications._routes'),
     router = express.Router(),
@@ -13,7 +12,6 @@ router.get('/', (req, res,next) => {
 
 
 router
-    .use('/profile',profileRoutes)
     .use('/users',userRoutes) //Read,Update and Delete
     .use('/recommendations',recommendationRoutes) //
     .use('/auth',auth);   //login+registration 

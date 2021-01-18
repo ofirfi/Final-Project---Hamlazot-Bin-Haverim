@@ -18,35 +18,40 @@ const get_Friends_list = async (friendsList,personal_profile) => {
     return friends
 };
 
-const send_Data = (res,data) =>  res.status(200).json({
-    status: "success",
-    results: 1,
-    data
-});
+
+const make_Data = (user,friends,personal_profile) =>{
+    let data = {
+        userName: user.userName,
+        friends_length: friends.length,
+        friends
+    };
+    if(personal_profile)
+        data.email = user.email;
+    return data;
+};
+
+
+const send_Data = (res,data,statusCode) =>  
+    res.status(statusCode).json({
+        status: "success",
+        data
+    });
 
 
 
 module.exports = {
-        //a user's profile
-    get_users_profile: catchAsync(async(req, res ,next) => {
+
+        //Get a profile
+    get_profile: catchAsync(async(req,res,next)=>{
         let user = await User.findOne({ userName: req.params.userName });
         if(!user)
             return next(new AppError('User was not found', 404));
 
-        const friends = await get_Friends_list(user.friendsList,false);
+        const friends = await get_Friends_list(user.friendsList,req.body.self);
+            
+        const data =  make_Data(user,friends,req.body.self);
         
-        send_Data(res,{userName: user.userName,friendsLength: friends.length,friends});        
-    }),
-
-        //The logged-in user profile
-    get_profile: catchAsync(async(req,res,next)=>{
-        let user = await User.findOne({ userName: req.body.userName });
-        if(!user)
-            return next(new AppError('User was not found', 404));
-        
-        const friends = await get_Friends_list(user.friendsList,true);
-
-        send_Data(res,{email:user.email,userName: user.userName,friends_length: friends.length,friends});
+        send_Data(res,data,200);
     }),
 
 
@@ -70,9 +75,6 @@ module.exports = {
             });
         }
 
-        res.status(204).json({
-            status:"success",
-            data:null
-        });
+        send_Data(res,null,204);
     }),
 };
