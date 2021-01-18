@@ -1,6 +1,7 @@
 import React from "react";
 import './register.scss';
 import header_photo from './sign-photo.png'
+import { FaUser } from 'react-icons/fa';
 
 export class Register extends React.Component {
   constructor(props) {
@@ -28,7 +29,8 @@ export class Register extends React.Component {
                 <input type="text" required/>
                 <span class="highlight"></span>
                 <span class="bar"></span>
-                <label>שם פרטי</label>
+                <label>שם פרטי <FaUser/></label>
+                
               </div>
               <div class="group">
                 <input type="text" required/>

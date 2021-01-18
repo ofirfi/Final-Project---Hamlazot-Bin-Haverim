@@ -1,6 +1,6 @@
 import React from "react";
 import './login.scss';
-import header_photo from './login-photo.png'
+import header_photo from './user-icon.jpg'
 // Redux to install, replacing props + Hooks
 //TAILWIND instead of bootstrap
 
