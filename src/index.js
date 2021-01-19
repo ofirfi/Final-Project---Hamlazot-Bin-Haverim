@@ -9,7 +9,7 @@ import User from './client/user_screen/user'
 import Place from './client/place_screen/place';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<Place />, document.getElementById('root'));
+ReactDOM.render(<Login />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

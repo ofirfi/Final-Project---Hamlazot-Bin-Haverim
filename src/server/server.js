@@ -1,6 +1,7 @@
 const express = require('express'),
     routers = require('./routes/index'),
     connector = require('./config/database'),
+    cors = require('cors'),
     errorsHandler = require('./Controllers/errorController');
 
 const app = express();
@@ -12,6 +13,7 @@ connector();
 
 //Initializing MiddleWare
 app.use(express.json());
+app.use(cors());
 
 //Defining routes
 app.use('/', routers);
