@@ -13,13 +13,11 @@
     align-content: center;
 }
 
-.infoSectionp{
+.infoSectionP{
     position: relative;
     text-align: center;
     align-content: center;
     align-items: center;
-    // background-image: url(../search_screen/section-background.jpg);
-    // background-size: cover;
     background-color: whitesmoke;
     height: 80%;
     width: 80%;
@@ -35,7 +33,9 @@
     height: 100%;
     width: 50%;
     text-align: start;
-    background-color: yellowgreen;
+    background-color: #d95540;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 #h1p{
@@ -48,19 +48,45 @@
     padding-right: 30px;
 }
 
+.listP{
+    position: relative;
+    height: 65%;
+    width: 95%;
+    overflow: auto; 
+}
+
+.boxP{
+    background-color: #346c7b;
+    height: auto;
+    border-radius: 4px;
+}
+
 .lip{
-    margin: 1%;
-    color: whitesmoke;
-    font-size: 20px;
+    color: bl;
+    font-size: 18px;
+}
+
+#text{
+    margin: 5px;
+    padding: 5px;
 }
 
 #pics{
     position: relative;
     height: 100%;
     width: 50%;
-    background-color: violet;
+    background-color: #346c7b;
+    align-content: center;
+    align-items: center;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
 }
 
+#image{
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
 
 .btn1{
     position: relative;
@@ -75,10 +101,6 @@
     padding-left: 2px;
     border-radius: 4px;
     border-color: rgb(53, 111, 123);
-    // border-top-left-radius: 10px;
-    // border-top-right-radius: 10px;
-    // border-bottom-right-radius: 10px;
-    // border-bottom-left-radius: 10px;
     background-color: rgb(53, 111, 123);
     color: whitesmoke;
     font-size: 15px;

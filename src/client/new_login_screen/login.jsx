@@ -15,7 +15,9 @@ export default class Login extends React.Component {
                   <input className="input1" placeholder="שם משתמש" required/>
                   <input className="input1" placeholder="סיסמא" required/>
                   <text id="forgotPass"> שכחת סיסמא? </text>
-                  <button className="btn1">התחבר</button>
+                  <button className="btnl">התחבר</button>
+                  {/* <text id="">או</text> */}
+                  <button className="btnl" id="registerBtnl">הרשם</button>
               </section>
             </div>
         </div>
