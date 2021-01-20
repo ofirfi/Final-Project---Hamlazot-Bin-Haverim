@@ -8,16 +8,30 @@ export default () => {
   const [password,setPassword] = useState('');
   const [token,setToken] = useState('');
 
+  
   const login = ()=>{
     axios.post("http://localhost:8001/auth/login",{
       email,
       password
     })
     .then(res =>{
-      setToken(res.data.token)
+      setToken(res.data.token);
+      console.log('clicked on login');
     })
     .catch(err=>{
       console.log(err.response.data.message);
+    })
+  }
+
+  const forgotPassword = ()=>{
+    axios.post("http://localhost:8001/auth/forgotPassword",{
+      email,
+    })
+    .then(res =>{
+      console.log('נשלח')
+    })
+    .catch(err=>{
+      console.log('נשלח');
     })
   }
 
@@ -44,7 +58,7 @@ export default () => {
             onChange = {event => setPassword(event.target.value)}
             required />
 
-          <text id="forgotPass"> שכחת סיסמא? </text>
+          <text id="forgotPass" onClick ={forgotPassword}> שכחת סיסמא? </text>
           <button className="btnl" onClick ={login}>
             התחבר
           </button>
