@@ -1,41 +1,27 @@
-import React,{useState} from "react";
+import React,{useState} from 'react';
 import './login.scss';
 import axios from 'axios'
+import {useHistory} from 'react-router-dom'
 
 
 export default () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [token,setToken] = useState('');
+  const history = useHistory();
 
-  
   const login = ()=>{
     axios.post("http://localhost:8001/auth/login",{
       email,
       password
     })
     .then(res =>{
-      setToken(res.data.token);
-      console.log('clicked on login');
+      setToken(res.data.token)  
     })
     .catch(err=>{
       console.log(err.response.data.message);
     })
   }
-
-  const forgotPassword = ()=>{
-    axios.post("http://localhost:8001/auth/forgotPassword",{
-      email,
-    })
-    .then(res =>{
-      console.log('נשלח')
-    })
-    .catch(err=>{
-      console.log('נשלח');
-    })
-  }
-
-
 
   return (
     <div className="page">
@@ -58,12 +44,17 @@ export default () => {
             onChange = {event => setPassword(event.target.value)}
             required />
 
-          <text id="forgotPass" onClick ={forgotPassword}> שכחת סיסמא? </text>
+          <text id="forgotPass"> שכחת סיסמא? </text>
           <button className="btnl" onClick ={login}>
             התחבר
           </button>
     
-          <button className="btnl" id="registerBtnl">הרשם</button>
+          <button className="btnl"
+            id="registerBtnl"
+            onClick = {()=>history.push('/signup')}
+            >
+              הרשם
+            </button>
         </section>
       </div>
     </div>

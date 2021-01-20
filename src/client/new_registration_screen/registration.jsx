@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import './registration.scss';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios'
-
+import {useHistory} from 'react-router-dom'
 
 export default ()=>{
   const [email,setEmail] = useState('');
@@ -11,7 +11,7 @@ export default ()=>{
   const [confirmPassword,setConfirmPassword] = useState('');
   const [firstName,setFirstName] = useState('');
   const [surname,setSurname] = useState('');
-  
+  const history = useHistory();
 
   const signup = () =>{
     axios.post("http://localhost:8001/auth/signup",{
@@ -79,7 +79,12 @@ export default ()=>{
                   >
                   הרשם
                   </button>
-                <button className="btnr" id="loginbtnr">התחבר</button>
+                <button className="btnr"
+                  id="loginbtnr"
+                  onClick = {()=>history.goBack()}
+                  >
+                    התחבר
+                  </button>
                 
             </section>
         </div>
