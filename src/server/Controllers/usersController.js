@@ -43,7 +43,7 @@ module.exports = {
 
         //Get a profile
     get_profile: catchAsync(async(req,res,next)=>{
-        let user = await User.findOne({ userName: req.params.userName });
+        let user = await User.findOne({ userName: req.body.userName });
         if(!user)
             return next(new AppError('User was not found', 404));
 
@@ -58,7 +58,7 @@ module.exports = {
 
         //In progress - also delete all of this user's recommendations?
     delete_user: catchAsync(async(req, res,next) => {
-        const userToDel = await User.findOneAndDelete({userName:req.params.userName});
+        const userToDel = await User.findOneAndDelete({userName:req.body.userName});
         if(!userToDel)
             return next(new AppError('User was not found', 404));
 

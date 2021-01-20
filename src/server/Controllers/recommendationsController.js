@@ -1,5 +1,4 @@
 const Recommendation = require('../models/Recommendation_model'),
-    Recs = require('../models/Recommendation_model2'),
     User = require('../models/User_model'),
     catchAsync = require('../utils/catchAsync'),
     AppError = require('../utils/appError');

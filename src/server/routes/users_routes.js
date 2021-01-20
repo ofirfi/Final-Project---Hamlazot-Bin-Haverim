@@ -5,7 +5,7 @@ const express = require('express'),
     router = express.Router();
 
 
-router.route('/:userName')
+router.route('/')
     .post(authController.protect,UsersController.get_profile)
     .delete(authController.protect,UsersController.delete_user);
 
