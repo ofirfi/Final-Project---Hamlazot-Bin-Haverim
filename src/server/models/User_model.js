@@ -49,6 +49,18 @@ const UserSchema = new mongoose.Schema({
       ref: `recommendation`,
     }
   ],
+  first_name:{
+    type: String,
+    required:[true,'אנא אכנס שם פרטי'],
+    trim:true,
+    minlength:2,
+  },
+  last_name:{
+    type: String,
+    required:[true,'אנא אכנס שם משפחה'],
+    trim:true,
+    minlength:2,
+  },
   passwordResetToken: String,
   passwordResetExpires: Date
 

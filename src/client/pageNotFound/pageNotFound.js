@@ -1,9 +1,9 @@
 import './pageNotFound.css';
 import React from 'react';
-import {useHistory,Link} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 
-export default () => {
+const PageNotFound = () => {
     const history = useHistory()
     return (
         <div>
@@ -14,3 +14,5 @@ export default () => {
         </div>
     );
 };
+
+export default PageNotFound;

@@ -51,9 +51,8 @@ function RecommendationsList(props) {
     );
 }
 
-export default class Place extends React.Component {
-
-  render(){
+const PlacePage = () =>{
+ 
       return(
         <div className="pagep">
             <header className="navbarp">
@@ -77,5 +76,7 @@ export default class Place extends React.Component {
             </section>
         </div>
       );
-  };
+
 };
+
+export default PlacePage;

@@ -9,11 +9,11 @@ const jwt = require('jsonwebtoken'),
 
 const signToken = id => jwt.sign({id},config.get('JWT_SECRET'),{expiresIn:config.get('JWT_EXPIRES_IN')});
 
-const createSendtoken = (user,statusCode,res) =>{
+const createSendtoken = (user,statusCode,res,data) =>{
     res.status(statusCode).json({
         status: "success",
         token : signToken(user._id),
-        data: null
+        data
     });
 }
 
@@ -27,8 +27,8 @@ module.exports = {
         const user = await User.findOne({ email }).select('+password');
         if(!user || !(await user.checkPassword(password,user.password)))
             return next(new AppError('Wrong email or password',401));
-
-        createSendtoken(user,200,res);
+        
+        createSendtoken(user,200,res,{userName:user.userName});
     }),
 
 
@@ -40,10 +40,12 @@ module.exports = {
             userName : req.body.userName,
             email : req.body.email,
             password : req.body.password,
+            first_name:req.body.first_name,
+            last_name:req.body.last_name,
             friendsList: [],
             recommendationsList: []
         });
-        createSendtoken(new_user,201,res);
+        createSendtoken(new_user,201,res,null);
     }),
 
 
@@ -66,7 +68,7 @@ module.exports = {
         user.password = password;
         await user.save()
 
-        createSendtoken(user,204,res)   
+        createSendtoken(user,204,res,null)   
     }),
 
 

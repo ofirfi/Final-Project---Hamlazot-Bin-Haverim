@@ -1,61 +1,95 @@
-import React from "react";
+import React,{useState} from 'react';
 import './login.scss';
-import header_photo from './user-icon.jpg'
-// Redux to install, replacing props + Hooks
-//TAILWIND instead of bootstrap
+import axios from 'axios'
+import {useHistory} from 'react-router-dom'
 
-export class Login extends React.Component {
-  constructor(props) {
-    super(props);
+
+const LoginPage = () => {
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [token,setToken] = useState('');
+  const history = useHistory();
+
+  const login = () => {
+    axios.post("http://localhost:8001/auth/login",{
+      email,
+      password
+    })
+    .then(res =>{
+      setToken(res.data.token);
+      alert(res.data.data.userName+' ברוך הבא');
+      history.push('/main');
+    })
+    .catch(err=>{
+      console.log(err.response.data.message);
+      if(err.response.data.message === "Please provide an email and a password")
+        alert('אנא הכנס מייל וסיסמא');
+      if(err.response.data.message === 'Wrong email or password')
+        alert('מייל או סיסמא שגויים')
+    })
+  }
+  const forgot_password = () => {
+    axios.post("http://localhost:8001/auth/forgotPassword",{
+      email,
+    })
+    .then(res =>{
+      alert('מייל לשחזור סיסמא נשלח ל-'+email);
+      setEmail('');
+    })
+    .catch(err=>{
+      alert('מייל לשחזור סיסמא נשלח ל-'+email);
+      setEmail('');
+      
+    })
   }
 
-  log(){
-    alert('logged')
-  }
-  getPW(){
-    alert('forgot')
+  const signup = () => {
+    history.push('/signup')
   }
 
+  return (
+    <div className="page">
+      <header className="navbar1">
 
+      </header>
+      <div className="boxl">
+        <section className="section1">
+          <h2 id="h2l"> ברוך הבא! </h2>
 
-  render() {
-    return (
-      <div className="LoginPage">
-        <header className="Header">
-          <img className="HeaderImg" src={header_photo} />
-        </header>
+          <input className="input1"
+            placeholder="מייל"
+            value = {email}
+            onChange = {event => setEmail(event.target.value)}
+            required />
 
-        <div>
-          <h1>התחבר</h1>
+          <input className="input1"
+            placeholder="סיסמא"
+            type="password"
+            value = {password}
+            onChange = {event => setPassword(event.target.value)}
+            required />
 
-          <div className='box'>
-            <div class="group">
-              <input type="text" required/>
-                <span class="highlight"></span>
-                <span class="bar"></span>
-                <label>שם משתמש</label>
-            </div>
-            <div class="group">
-              <input id = 'pw' type="password" required/>
-                <span class="highlight"></span>
-                <span class="bar"></span>
-                <label>סיסמא</label>
-            </div>
+          <text id="forgotPass"
+            onClick = {forgot_password}
+           >
+              שכחת סיסמא?
+            </text>
 
-            <div className="btns">
-            <button className ="button" id="enter" onClick={() => this.log()}>
-              הכנס
+          <button className="btnl" onClick ={login}>
+            התחבר
+          </button>
+    
+          <button className="btnl"
+            id="registerBtnl"
+            onClick = {signup}
+            >
+              הרשם
             </button>
-            </div>
-            <div className="btns">
-            <button className="button" id="GetPW" onClick={() => this.getPW()}>
-              שכחתי סיסמא
-            </button>
-            </div>
-          </div>
-
-        </div>
+        </section>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+
+export default LoginPage;

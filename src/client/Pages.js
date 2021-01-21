@@ -8,8 +8,8 @@ import {
     Redirect
 } from 'react-router-dom'
 
-import LoginPage from './new_login_screen/login'
-import RegistrationPage from './new_registration_screen/registration'
+import LoginPage from './login_screen/login'
+import RegistrationPage from './registration_screen/registration'
 import PlacePage from './place_screen/place'
 import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
