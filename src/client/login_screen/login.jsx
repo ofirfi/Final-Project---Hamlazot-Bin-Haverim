@@ -3,11 +3,17 @@ import './login.scss';
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 
+import { useDispatch, useSelector } from 'react-redux'
+
 
 const LoginPage = () => {
+  
+  const token = useSelector(state => state.token);
+  const logged = useSelector(state => state.logged);
+  const dispatch = useDispatch();
+
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
-  const [token,setToken] = useState('');
   const history = useHistory();
 
   const login = () => {
@@ -16,7 +22,9 @@ const LoginPage = () => {
       password
     })
     .then(res =>{
-      setToken(res.data.token);
+      dispatch({type:"SETTOKEN",payload:res.data.token})
+      dispatch({type:"SETUSER",payload:res.data.data.userName});
+      dispatch({type:"SETLOGGED",payload:true});
       alert(res.data.data.userName+' ברוך הבא');
       history.push('/main');
     })
@@ -38,8 +46,7 @@ const LoginPage = () => {
     })
     .catch(err=>{
       alert('מייל לשחזור סיסמא נשלח ל-'+email);
-      setEmail('');
-      
+      setEmail('');    
     })
   }
 

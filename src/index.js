@@ -1,11 +1,16 @@
 
 import ReactDOM from 'react-dom';
 import './index.css';
-import Pages from './client/Pages'
+import Pages from './client/Pages';
 import * as serviceWorker from './serviceWorker';
 
+import { createStore } from 'redux';
+import  { Provider } from 'react-redux';
+import rootReducer from './client/rootReducer';
 
-ReactDOM.render(<Pages />, document.getElementById('root'));
+const store = createStore(rootReducer);
+
+ReactDOM.render(<Provider store={store}><Pages/></Provider>, document.getElementById('root'));
 
 
 

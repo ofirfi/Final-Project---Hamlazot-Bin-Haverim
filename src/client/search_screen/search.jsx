@@ -9,6 +9,7 @@ import { FcSettings } from 'react-icons/fc'
 import { useHistory } from 'react-router-dom'
 import axios from "axios";
 
+import { useDispatch, useSelector } from 'react-redux'
 
 const IMAGES =
 [{
@@ -39,9 +40,16 @@ const IMAGES =
 
 
 const SearchPage = ()=>{
+    const user = useSelector(state => state.userName);
+    const token = useSelector(state => state.token);
+    const dispatch = useDispatch();
     const history = useHistory();
 
     const log_out = ( )=> {
+        alert('להתראות '+user+' מקווים לראותך שוב!')
+        dispatch("SETUSERNAME",{payload:null});
+        dispatch("SETTOKEN",{payload:null});
+        dispatch("SETLOGGED",{payload:false});
         history.push('/');
     }
     const go_profile = () => {
