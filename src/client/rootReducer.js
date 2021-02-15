@@ -3,7 +3,8 @@ import axios from 'axios'
 const initialState = {
     userName: null,
     token: null,
-    logged : false
+    logged: false,
+    recommendations: null,
 }
 
 
@@ -15,22 +16,27 @@ const initialState = {
 
 
 
-const rootReducer =  (state = initialState,{type,payload})=>{
-    switch (type){
+const rootReducer = (state = initialState, { type, payload }) => {
+    switch (type) {
         case "SETUSER":
-            return{ 
+            return {
                 ...state,
-                userName : payload
+                userName: payload
             }
         case "SETTOKEN":
-            return{ 
+            return {
                 ...state,
-                token : payload
+                token: payload
             }
         case "SETLOGGED":
             return {
                 ...state,
-                logged : payload
+                logged: payload
+            }
+        case "SETRECOOMENDATIONS":
+            return {
+                ...state,
+                recommendations: payload
             }
         default:
             return state
