@@ -3,7 +3,7 @@ const Recommendation = require('../models/Recommendation_model'),
     catchAsync = require('../utils/catchAsync'),
     AppError = require('../utils/appError');
 
-const updateRecommendation = async req => {
+const recommendation_update = async req => {
     const { placeId, userName, comment, rate } = req.body;
     let user = await User.findOne({ userName });
     let recommend = await Recommendation.findOneAndUpdate(
@@ -14,25 +14,42 @@ const updateRecommendation = async req => {
     return {recommend,user};
 }
 
-const create_Send_Data = (res,data,results,statusCode) =>  res.status(statusCode).json({
+const send_data = (res,data,results,statusCode) =>  res.status(statusCode).json({
     status: "success",
     results,
     data
 });
 
+const convert_recommendations = async (res,recs,statusCode) =>{
+    let recommendations = []
+    for (i = 0; i < recs.length; i++) {
+        const user = await User.findById(recs[i].userName);
+        let user_name = user.userName;
+        recommendations.push({
+            placeId:recs[i].placeId,
+            userName:user_name,
+            comment:recs[i].comment,
+            date:recs[i].date,
+            rate:recs[i].rate,
+        })
+    }
+    // return recs
+    send_data(res,recommendations,recs.length,statusCode);
+}
+
 module.exports = {
             //Change the userName from the user id to user name
     getRecommendations : catchAsync(async (req, res,next) => {
-        const recommendations = await Recommendation.find().sort('placeId userName');
-        create_Send_Data(res,{recommendations},recommendations.length,200);
+        const recs = await Recommendation.find().sort('placeId userName');
+        await convert_recommendations(res,recs,200)
     }),
 
     
     create_recommendation: catchAsync(async (req, res,next) => {
-        let {recommend,user} = await updateRecommendation(req);
+        let {recommend,user} = await recommendation_update(req);
         
-        if (recommend)
-            return res.status(201).json({ status: "success", data: recommend });
+        if (recommend) return await convert_recommendations(res,[recommend],201)
+            // return send_data(res,recommend,1,201)
 
                 //a new recommendation, if none is existed
         recommend = await Recommendation.create({
@@ -46,17 +63,17 @@ module.exports = {
         user.recommendationsList.push(recommend);
         await user.save();
 
-        create_Send_Data(res,recommend,1,200);
+        await convert_recommendations(res,[recommend],201)
     }),
 
 
     update_recommendation: catchAsync(async(req, res,next) => {
-        const {recommend,user} = await updateRecommendation(req);
+        const {recommend,user} = await recommendation_update(req);
                 //If the recommendation does not exist
         if(!recommend)
             return next(new AppError('recommendation was not found',404));
         
-        create_Send_Data(res,recommend,1,200);
+        await convert_recommendations(res,[recommend],201)
     }),
 
     
@@ -74,7 +91,6 @@ module.exports = {
             $pull: { recommendationsList: recommend._id }
         });
 
-        create_Send_Data(res,null,0,204);
-
+        send_data(res,null,0,204);
     }),
 };
