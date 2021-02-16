@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './user.scss';
 import vr46 from './vr46.jpg'
 import { GiExitDoor } from 'react-icons/gi'
@@ -21,7 +21,14 @@ const ProfilePage = ()=>{
     const [newPassword,setNewPassword] = useState('')
     const [confirmPassword,setConfirmPassword] = useState('')
     const [display,setDisplay] = useState('')
+    const recs = useSelector(state=>state.recommendations)
+    const [myRecs,setMyRecs] = useState('')
 
+
+
+    useEffect(()=>{
+        getRecommendations()
+    },[])
 
 
     function FriendsList(props) {
@@ -41,18 +48,20 @@ const ProfilePage = ()=>{
         );
     }
     
-    function RecommendationsList(props) {
-        const recommandations = props.recommandations;
-        const listItems = recommandations.map((recommandation) => 
-            <li className="li" key={recommandation.key} >
-                <text style={{ position: "relative", float: "right" }}>{recommandation}</text>
-                <button className="listButton" style={{ width: "100px" }}>ערוך המלצה</button>
-            </li>
-        );
-        return (
-          <ul style={{ listStyleType: "none" }}>{listItems}</ul>
-        );
-    }
+    // function RecommendationsList(props) {
+    //     const recommandations = props.recommandations;
+    //     const listItems = recommandations.map((recommandation) => 
+    //         <li className="li" key={recommandation.key} >
+    //             <text style={{ position: "relative", float: "right" }}>{recommandation}</text>
+    //             <button className="listButton" style={{ width: "100px" }}>ערוך המלצה</button>
+    //         </li>
+    //     );
+    //     return (
+    //       <ul style={{ listStyleType: "none" }}>{listItems}</ul>
+    //     );
+    // }
+
+
     
     const log_out = () => {
         history.push('/');
@@ -61,7 +70,6 @@ const ProfilePage = ()=>{
     const go_profile = () => {
         history.push('/profile')
     }
-
 
 
     const displayFriends = () => {
@@ -75,16 +83,38 @@ const ProfilePage = ()=>{
     setDisplay(toDisplay)
     }
 
+    const getRecommendations = () =>{
+        setMyRecs('')
+        recs.map(recommend => {
+            let a = <div>
+                <ul className="li" key={recommend.key}>
+                <text style={{ position: "relative", left:'0%'}}>{recommend.placeId}</text>
+                <text style={{ position: "relative", left:'5%'}}>{recommend.rate}</text>
+                <text style={{ position: "relative", left:'10%'}}>{recommend.comment}</text>
+                <text style={{ position: "relative", left:'20%'}}>{recommend.date.substring(0,10)}</text>
+                </ul>
+                </div>
+            setMyRecs(old=>[...old,a])
+        })
+    }
+
+
+
     const displayRecommendations = () => {
         let toDisplay = <div className="box">
             <text style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> ההמלצות שלי </text>
             <div className="list">
-                <RecommendationsList recommandations={recommandations} />
+                
+                
+                {myRecs}
+                    
+                
             </div>
             <text style={{ position: "relative", fontSize: "10px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> תוכל לערוך ולדרג מחדש את ההמלצות שלך </text>
         </div>
     setDisplay(toDisplay)
     }
+    
     const displayChangePassword = () =>{
         let toDisplay = <div className="box">
             <text style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> החלף סיסמא </text>

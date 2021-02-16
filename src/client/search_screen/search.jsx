@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Gallery from 'react-grid-gallery';
 import './search.scss';
 import { FaTheaterMasks } from 'react-icons/fa';
@@ -45,6 +45,19 @@ const SearchPage = ()=>{
     const dispatch = useDispatch();
     const history = useHistory();
 
+    useEffect(()=>{
+        axios.get("http://localhost:8001/recommendations",{
+            headers: {
+                Authorization: "Bearer " +token
+            }
+        }).then((res)=>{
+            dispatch({type:"SETRECOMMENDATIONS",payload:res.data.data})
+            
+        }).catch(err => console.log(err))
+    })
+
+
+
     const log_out = ( )=> {
         alert('להתראות '+user+' מקווים לראותך שוב!')
         dispatch("SETUSERNAME",{payload:null});
@@ -55,7 +68,6 @@ const SearchPage = ()=>{
     const go_profile = () => {
         history.push('/profile')
     }
-
     const searcher = () => {
         history.push('/place');
     }

@@ -33,7 +33,7 @@ const rootReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 logged: payload
             }
-        case "SETRECOOMENDATIONS":
+        case "SETRECOMMENDATIONS":
             return {
                 ...state,
                 recommendations: payload
