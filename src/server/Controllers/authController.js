@@ -50,8 +50,8 @@ module.exports = {
 
 
     update_password: catchAsync(async (req,res,next) =>{
-        const {email,password,confirm_password,current_password} = req.body;
-        let user = await User.findOne({email}).select('+password');
+        const {userName,password,confirm_password,current_password} = req.body;
+        let user = await User.findOne({userName}).select('+password');
 
         if(!user)
             return next(new AppError('User was not found', 404));    
