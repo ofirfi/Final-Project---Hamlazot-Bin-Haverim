@@ -1,8 +1,10 @@
-import React, {useState} from "react";
-import './registration.scss';
-import { FaUser } from 'react-icons/fa';
+import React, {useState} from "react"
+import './registration.scss'
+import { FaUser } from 'react-icons/fa'
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+
 
 const RegistrationPage = ()=>{
   const [email,setEmail] = useState('');
@@ -12,6 +14,7 @@ const RegistrationPage = ()=>{
   const [firstName,setFirstName] = useState('');
   const [surname,setSurname] = useState('');
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const signup = () =>{
     axios.post("http://localhost:8001/auth/signup",{
@@ -23,7 +26,9 @@ const RegistrationPage = ()=>{
       last_name:surname
     })
     .then((res)=>{
-      console.log(res.data)
+      dispatch({type:"SETTOKEN",payload:res.data.token})
+      dispatch({type:"SETUSER",payload:userName});
+      dispatch({type:"SETLOGGED",payload:true});
       alert(userName + " ברוך הבא, שמחים שהצטרפת!");
       history.push('/main');
     })

@@ -8,12 +8,12 @@ const get_Friends_list = async (friendsList,personal_profile) => {
     let friends = []
     for (i = 0; i < friendsList.length; i++) {
         const user = await User.findById(friendsList[i].userRef);
-        let user_name = user.userName;
+        let userName = user.userName;
         if(personal_profile){
             let reliability = friendsList[i].reliability;
-            friends.push({ user_name, reliability });
+            friends.push({ userName, reliability });
         } else
-            friends.push({ user_name});
+            friends.push({ userName});
     }
     return friends
 };
@@ -22,6 +22,8 @@ const get_Friends_list = async (friendsList,personal_profile) => {
 const make_Data = (user,friends,personal_profile) =>{
     let data = {
         userName: user.userName,
+        firstName: user.first_name,
+        lastName: user.last_name,
         friends_length: friends.length,
         friends
     };
