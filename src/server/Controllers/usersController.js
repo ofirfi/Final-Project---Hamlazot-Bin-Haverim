@@ -4,6 +4,8 @@ const User = require('../models/User_model'),
     catchAsync = require('../utils/catchAsync');
 
 
+
+
 const get_Friends_list = async (friendsList,personal_profile) => {
     let friends = []
     for (i = 0; i < friendsList.length; i++) {
@@ -15,6 +17,7 @@ const get_Friends_list = async (friendsList,personal_profile) => {
         } else
             friends.push({ userName});
     }
+    friends.sort((friend1,friend2) => friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0)
     return friends
 };
 
@@ -49,7 +52,7 @@ module.exports = {
         if(!user)
             return next(new AppError('User was not found', 404));
 
-        const friends = await get_Friends_list(user.friendsList,req.body.self);
+        const friends = await get_Friends_list(user.friendsList.sort(),req.body.self);
             
         const data =  make_Data(user,friends,req.body.self);
         

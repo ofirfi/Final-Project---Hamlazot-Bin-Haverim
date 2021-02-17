@@ -47,14 +47,13 @@ const ProfilePage = ()=>{
         setMyRecommandations('')
         recommandations.map(recommend => {
             if (recommend.userName == userName) {
-                let toInsert = <div>
-                    <ul className="li" key={recommend.key}>
-                        <text style={{ position: "relative", left: '0%' }}>{recommend.placeId}</text>
-                        <text style={{ position: "relative", left: '5%' }}>{recommend.rate}</text>
-                        <text style={{ position: "relative", left: '10%' }}>{recommend.comment}</text>
-                        <text style={{ position: "relative", left: '20%' }}>{recommend.date.substring(0, 10)}</text>
-                    </ul>
-                </div>
+                let toInsert = 
+                    <tr>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.placeId}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.rate}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.comment}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.date.substring(0, 10)}</td>
+                    </tr>
                 setMyRecommandations(old => [...old, toInsert])
             }
         })
@@ -81,15 +80,13 @@ const ProfilePage = ()=>{
         friendsList.map(friend => {
             let i = 1;
             let toInsert =
-                <div>
-                    <li className="li" key={i} >
-                        <text style={{ position: "relative", float: "right" }}>{friend.userName}</text>
-                        <text style={{ position: "relative", float: "right", right: "10%" }}>{friend.reliability}</text>
-                        <button className="listButton">מעט</button>
-                        <button className="listButton">בינוני</button>
-                        <button className="listButton">הרבה</button>
-                    </li>
-                </div>
+                    <tr>  
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{friend.userName}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{friend.reliability}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}><button className="listButton">מעט</button></td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}><button className="listButton">בינוני</button></td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}><button className="listButton">הרבה</button></td>  
+                    </tr>
             setmyFriends(old => [...old, toInsert])
             i++;
         })
@@ -113,7 +110,18 @@ const ProfilePage = ()=>{
             <div className="box">
                 <text style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> החברים שלי </text>
                 <div className="list">
-                    {myFriends}
+                    <table>
+                        <thead>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>שם משתמש</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>דירוג נוכחי</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}></td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>דירוג</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}></td>
+                        </thead>
+                        <tbody>
+                            {myFriends}
+                        </tbody>
+                    </table>
                 </div>
                 <text style={{ position: "relative", fontSize: "10px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון - 1 סומך מעט, 5- סומך מאוד </text>
             </div>
@@ -126,7 +134,17 @@ const ProfilePage = ()=>{
             <div className="box">
                 <text style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> ההמלצות שלי </text>
                 <div className="list">
-                    {myRecommandations}   
+                    <table>
+                        <thead>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>שם פריט</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>דירוג</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>הערה</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>תאריך</td>
+                        </thead>
+                        <tbody>
+                            {myRecommandations}   
+                        </tbody>
+                    </table>
                 </div>
                 <text style={{ position: "relative", fontSize: "10px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> תוכל לערוך ולדרג מחדש את ההמלצות שלך </text>
             </div>
