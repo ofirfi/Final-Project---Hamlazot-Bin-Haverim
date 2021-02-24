@@ -90,7 +90,7 @@ const ProfilePage = ()=>{
                     </button>
 
                     <button className="button"
-                        onClick={()=>setDisplay(<ChangePassword userName={userName}/>)}
+                        onClick={()=>setDisplay(<ChangePassword userName={userName} token ={token} />)}
                     >
                         החלף סיסמא
                             <FaLock style={{ float: "left" }} />
