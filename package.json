@@ -32,6 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:prod": "cd ./src/server && nodemon ./server.js",
+    "build:css": "cd ./src && tailwind build style.css -o client/utils/style.css",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -53,5 +54,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "autoprefixer": "^9.8.6",
+    "postcss": "^7.0.35",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
   }
 }
