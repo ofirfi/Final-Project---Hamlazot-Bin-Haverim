@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom'
 import axios from "axios";
 
 import { useDispatch, useSelector } from 'react-redux'
+import { Recommendations } from "../movie_screen/movieRecommendation";
 
 const IMAGES =
 [{
@@ -41,7 +42,8 @@ const IMAGES =
 
 const SearchPage = ()=>{
     const user = useSelector(state => state.userName);
-    const token = useSelector(state => state.token);
+    // const token = useSelector(state => state.token);
+    const token = window.localStorage.getItem('token')
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -54,7 +56,7 @@ const SearchPage = ()=>{
             dispatch({type:"SETRECOMMENDATIONS",payload:res.data.data})
             
         }).catch(err => console.log(err))
-    })
+    },[])
 
 
 

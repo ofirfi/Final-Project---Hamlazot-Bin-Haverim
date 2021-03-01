@@ -28,6 +28,7 @@ const LoginPage = () => {
         dispatch({ type: "SETUSER", payload: res.data.data.userName });
         dispatch({ type: "SETLOGGED", payload: true });
         window.localStorage.setItem('logged', true);
+        window.localStorage.setItem('token', res.data.token);
         alert(res.data.data.userName + ' ברוך הבא');
         history.push('/');
       })
