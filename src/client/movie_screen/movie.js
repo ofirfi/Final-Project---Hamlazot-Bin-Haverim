@@ -5,12 +5,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
-
+import { FcSettings } from 'react-icons/fc'
+import { GiExitDoor } from 'react-icons/gi'
 import { Recommendations } from './movieRecommendation'
 
 const MoviePage = () => {
     const token = useSelector(state => state.token)
     const userName = useSelector(state => state.userName)
+    const history = useHistory();
+
 
     const [movie,setMovie] = useState('')
     const [genres,setGenres] = useState('')
@@ -19,7 +22,6 @@ const MoviePage = () => {
     useEffect(()=>{
         axios.get("https://api.themoviedb.org/3/movie/414771?api_key=a69ec695d12d89a6b5e1178a4640d2ef&language=he")
         .then((res)=>{
-            // console.log(res.data)
             setMovie(res.data)
             getGeneres(res.data)
         }).catch(err => console.log(err))
@@ -34,14 +36,35 @@ const MoviePage = () => {
         setGenres(gens)
     }
 
+    const go_profile = () => {
+        history.push('/profile')
+    }
 
+    const log_out = ( )=> {
+        alert('להתראות '+userName+' מקווים לראותך שוב!')
+        window.localStorage.setItem('logged', false)
+        history.push('/login');
+    }
 
     return (
-        <div class="flex flex-col bg-fixed items-center "
+        <div class="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
         >
-            <header class="flex flex-col h-1/6 sm:h-2/6 w-full">
-                <img src={Header} alt="" class="h-full" />
+            <header class="flex flex-row items-start h-24 sm:h-56 w-full grid"
+            style = {{backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
+            >
+                
+                <button class = "justify-self-start mt-5 sm:mt-10 ml-5 sm:ml-10 bg-transparent"
+                    onClick = {log_out}>
+                        <GiExitDoor class = "text-3xl sm:text-5xl"/>
+                </button>
+                
+                <button class = "justify-self-end mt-5 sm:mt-10 mr-5 sm:mr-10 bg-transparent"
+                    onClick = {go_profile} 
+                    >
+                    <FcSettings class = "text-3xl sm:text-5xl"/>
+                </button>
+
             </header>
 
             <div class = "flex flex-col my-24 bg-white box-border w-3/4 sm:h-5/6 sm:w-2/4 border-4 rounded-lg">

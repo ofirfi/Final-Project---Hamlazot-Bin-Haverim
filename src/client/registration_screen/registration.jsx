@@ -28,9 +28,9 @@ const RegistrationPage = ()=>{
     .then((res)=>{
       dispatch({type:"SETTOKEN",payload:res.data.token})
       dispatch({type:"SETUSER",payload:userName});
-      dispatch({type:"SETLOGGED",payload:true});
+      window.localStorage.setItem('logged', true);
       alert(userName + " ברוך הבא, שמחים שהצטרפת!");
-      history.push('/main');
+      history.push('/');
     })
     .catch((err)=>{
       console.log(err.response.data.message);

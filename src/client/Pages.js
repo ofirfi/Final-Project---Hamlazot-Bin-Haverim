@@ -5,7 +5,7 @@ import MoviePage from './movie_screen/movie'
 import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
 import PageNotFound from './pageNotFound/pageNotFound'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 import {
     BrowserRouter as Router,
@@ -16,26 +16,30 @@ import {
 
 
 const Pages = () => {
-    const logged = useSelector(state => state.logged)
 
+    let log = JSON.parse(window.localStorage.getItem('logged'))
+    useEffect(()=>{
+        log = JSON.parse(window.localStorage.getItem('logged'))
+    })
+    
     return <Router>
-        {logged ?
+        {log ?
             (
                 <Switch>
-                    <Route exact path="/" component={LoginPage} />
+                    <Route exact path="/" component={SearchPage} />
+                    <Route exact path="/login" component={LoginPage} />
                     <Route exact path="/404" component={PageNotFound} />
                     <Route exact path="/signUp" component={RegistrationPage} />
                     <Route exact path="/place" component={PlacePage} />
                     <Route exact path="/movie" component={MoviePage} />
                     <Route exact path="/profile" component={UserPage} />
-                    <Route exact path="/main" component={SearchPage} />
                     <Redirect to="/404" />
                 </Switch>
             ) : (
                 <Switch>
-                    <Route exact path="/" component={LoginPage} />
+                    <Route exact path="/login" component={LoginPage} />
                     <Route exact path="/signUp" component={RegistrationPage} />
-                    <Redirect to="/" />
+                    <Redirect to="/login" />
                 </Switch>
             )}
     </Router>

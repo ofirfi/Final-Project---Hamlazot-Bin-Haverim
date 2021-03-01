@@ -60,10 +60,8 @@ const SearchPage = ()=>{
 
     const log_out = ( )=> {
         alert('להתראות '+user+' מקווים לראותך שוב!')
-        dispatch("SETUSERNAME",{payload:null});
-        dispatch("SETTOKEN",{payload:null});
-        dispatch("SETLOGGED",{payload:false});
-        history.push('/');
+        window.localStorage.setItem('logged', false)
+        history.push('/login');
     }
     const go_profile = () => {
         history.push('/profile')

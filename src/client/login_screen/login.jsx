@@ -1,5 +1,5 @@
 import '../utils/style.css'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -13,6 +13,9 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  useEffect(()=>{
+    window.localStorage.setItem('log',false);
+  },[])
 
 
   const login = () => {
@@ -24,8 +27,9 @@ const LoginPage = () => {
         dispatch({ type: "SETTOKEN", payload: res.data.token })
         dispatch({ type: "SETUSER", payload: res.data.data.userName });
         dispatch({ type: "SETLOGGED", payload: true });
+        window.localStorage.setItem('logged', true);
         alert(res.data.data.userName + ' ברוך הבא');
-        history.push('/main');
+        history.push('/');
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -55,7 +59,7 @@ const LoginPage = () => {
 
 
   return (
-    <div class="flex flex-col bg-fixed bg-blue-700  h-full  sm:h-full w-full"
+    <div class="flex flex-col bg-fixed  h-full  sm:h-full w-full"
       style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
     >
       <header class="flex flex-col h-1/6 sm:h-2/6 w-full justify-center">

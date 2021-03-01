@@ -48,7 +48,9 @@ const ProfilePage = ()=>{
 
     
     const log_out = () => {
-        history.push('/');
+        alert('להתראות '+user+' מקווים לראותך שוב!')
+        window.localStorage.setItem('logged', false)
+        history.push('/login')
     }
 
     const go_profile = () => {
