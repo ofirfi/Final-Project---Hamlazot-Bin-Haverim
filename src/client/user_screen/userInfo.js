@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { GiConsoleController } from "react-icons/gi";
+
 
 export function Friends (props) {
     const token = props.token
@@ -67,12 +69,14 @@ export function Friends (props) {
 
 export function Recommendations(props){
     const userName = props.userName
-    const recommandations = useSelector(state=>state.recommendations)
+    // const recommandations = useSelector(state=>state.recommendations)
+    const recommendations = JSON.parse(window.localStorage.getItem('recommendations'))
     const [myRecommandations,setMyRecommandations] = useState('')
 
 
     useEffect(()=>{
-        recommandations.map(recommend => {
+        
+        recommendations.map(recommend => {
             if (recommend.userName == userName) {
                 let toInsert = 
                     <tr>

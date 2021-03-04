@@ -6,6 +6,8 @@ import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
 import PageNotFound from './pageNotFound/pageNotFound'
 import { useEffect } from 'react'
+import axios from 'axios'
+
 
 import {
     BrowserRouter as Router,
@@ -15,15 +17,35 @@ import {
 } from 'react-router-dom'
 
 
+
 const Pages = () => {
 
-    let log = JSON.parse(window.localStorage.getItem('logged'))
+    let logged = window.localStorage.getItem('logged')    
+
     useEffect(()=>{
-        log = JSON.parse(window.localStorage.getItem('logged'))
+       checkAuth()
+       logged = window.localStorage.getItem('logged')
     })
     
+    const checkAuth = () => {
+        const token = window.localStorage.getItem('token')
+        axios.get('http://localhost:8001/auth/checkAuth',{
+            headers:{
+                Authorization: "Bearer "+ token
+            }})
+        .then(res=>{
+            window.localStorage.setItem('logged',true)
+            console.log(logged)
+        })
+        .catch(err=>{
+            window.localStorage.setItem('logged',false)      
+            console.log(logged)
+        })
+    }
+
+
     return <Router>
-        {log ?
+        {logged ?
             (
                 <Switch>
                     <Route exact path="/" component={SearchPage} />

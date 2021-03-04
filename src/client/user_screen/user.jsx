@@ -7,14 +7,16 @@ import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
 import {useHistory} from 'react-router-dom'
 
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+
 import  {Friends, Recommendations, ChangePassword } from './userInfo'
 
 const ProfilePage = ()=>{
     const history = useHistory();
 
-    const token = useSelector(state=>state.token)
-    const userName = useSelector(state=>state.userName)
+    const userName = window.localStorage.getItem('userName')
+    const token = window.localStorage.getItem('token')
+    
+    
     const [fullName,setFullName] = useState('')
     const [email,setEmail] = useState('')
     const [display,setDisplay] = useState('')
@@ -48,7 +50,7 @@ const ProfilePage = ()=>{
 
     
     const log_out = () => {
-        alert('להתראות '+user+' מקווים לראותך שוב!')
+        alert('להתראות '+userName+' מקווים לראותך שוב!')
         window.localStorage.setItem('logged', false)
         history.push('/login')
     }

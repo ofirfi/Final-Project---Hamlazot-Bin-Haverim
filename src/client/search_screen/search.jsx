@@ -41,9 +41,8 @@ const IMAGES =
 
 
 const SearchPage = ()=>{
-    const user = useSelector(state => state.userName);
-    // const token = useSelector(state => state.token);
     const token = window.localStorage.getItem('token')
+    const userName = window.localStorage.getItem('userName')
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -54,14 +53,18 @@ const SearchPage = ()=>{
             }
         }).then((res)=>{
             dispatch({type:"SETRECOMMENDATIONS",payload:res.data.data})
+            window.localStorage.setItem('recommendations',JSON.stringify(res.data.data))
             
-        }).catch(err => console.log(err))
+        }).catch(err => {
+            window.localStorage.setItem('logged',false)
+            console.log('err in useEffect')
+        })
     },[])
 
 
 
     const log_out = ( )=> {
-        alert('להתראות '+user+' מקווים לראותך שוב!')
+        alert('להתראות '+userName+' מקווים לראותך שוב!')
         window.localStorage.setItem('logged', false)
         history.push('/login');
     }

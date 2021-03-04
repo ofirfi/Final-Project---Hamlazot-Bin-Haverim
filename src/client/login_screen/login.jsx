@@ -1,7 +1,7 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
-import { useDispatch } from 'react-redux'
+
 import { useHistory } from 'react-router-dom'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
@@ -10,7 +10,7 @@ import BackGround from '../images/background.jpg'
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  
   const history = useHistory();
 
   useEffect(()=>{
@@ -24,11 +24,9 @@ const LoginPage = () => {
       password
     })
       .then(res => {
-        dispatch({ type: "SETTOKEN", payload: res.data.token })
-        dispatch({ type: "SETUSER", payload: res.data.data.userName });
-        dispatch({ type: "SETLOGGED", payload: true });
         window.localStorage.setItem('logged', true);
         window.localStorage.setItem('token', res.data.token);
+        window.localStorage.setItem('userName', res.data.data.userName);
         alert(res.data.data.userName + ' ברוך הבא');
         history.push('/');
       })

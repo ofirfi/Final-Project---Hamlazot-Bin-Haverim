@@ -1,7 +1,7 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux'
+
 import { useHistory } from 'react-router-dom'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
@@ -10,8 +10,9 @@ import { GiExitDoor } from 'react-icons/gi'
 import { Recommendations } from './movieRecommendation'
 
 const MoviePage = () => {
-    const token = useSelector(state => state.token)
-    const userName = useSelector(state => state.userName)
+    const userName = window.localStorage.getItem('userName')
+    const token = window.localStorage.getItem('token')
+
     const history = useHistory();
 
 
