@@ -9,6 +9,9 @@ import { FcSettings } from 'react-icons/fc'
 import { GiExitDoor } from 'react-icons/gi'
 import { Recommendations } from './movieRecommendation'
 
+import { Navbar } from '../navbar/navbar'
+
+
 const MoviePage = () => {
     const userName = window.localStorage.getItem('userName')
     const token = window.localStorage.getItem('token')
@@ -51,25 +54,7 @@ const MoviePage = () => {
         <div class="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
         >
-            <div class="flex items-start h-36 sm:h-56 w-full"
-            style = {{backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
-            >
-                <div class = "w-1/2 flex justify-start mt-5 sm:mt-10 ml-5 sm:ml-10">
-                <button class = "bg-green-300"
-                    onClick={log_out}>
-                    <GiExitDoor class="text-3xl sm:text-5xl" />
-                </button>
-                </div>
-
-                <div class = "w-1/2 flex justify-end mt-5 sm:mt-10 mr-5 sm:mr-10">
-                <button class=""
-                    onClick={go_profile}
-                >
-                    <FcSettings class="text-3xl sm:text-5xl" />
-                </button>
-                </div>
-
-            </div>
+            <Navbar/>
 
             <div class = "flex flex-col my-24 bg-white box-border w-3/4 sm:h-5/6 sm:w-2/4 border-4 rounded-lg">
 
