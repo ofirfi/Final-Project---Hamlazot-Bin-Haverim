@@ -1,45 +1,53 @@
 import '../utils/style.css'
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'
-
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import axios from 'axios'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
+
 
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const dispatch = useDispatch();
   const history = useHistory();
 
-  useEffect(()=>{
-    window.localStorage.setItem('log',false);
-  },[])
 
 
   const login = () => {
+    if (!email || !password) {
+      console.log('אנא הכנס מייל וסיסמא');
+      return;
+    }
+
     axios.post("http://localhost:8001/auth/login", {
       email,
       password
     })
       .then(res => {
-        window.localStorage.setItem('logged', true);
         window.localStorage.setItem('token', res.data.token);
         window.localStorage.setItem('userName', res.data.data.userName);
+        dispatch({ type: "SETLOGGED", payload: true });
         alert(res.data.data.userName + ' ברוך הבא');
-        history.push('/');
+        history.push('');
       })
       .catch(err => {
-        console.log(err.response.data.message);
         if (err.response.data.message === "Please provide an email and a password")
-          alert('אנא הכנס מייל וסיסמא');
-        if (err.response.data.message === 'Wrong email or password')
-          alert('מייל או סיסמא שגויים')
+          alert('אנא הכנס מייל וסיסמא.');
+        else if (err.response.data.message === 'Wrong email or password')
+          alert('מייל או סיסמא שגויים.');
+        else
+          alert('ארע שגיאה אנא נסה שנית.')
       })
   }
 
   const forgot_password = () => {
+    if (email === "") {
+      alert('אנא הכנס מייל לשחזור סיסמא');
+      return;
+    }
     axios.post("http://localhost:8001/auth/forgotPassword", {
       email,
     })
