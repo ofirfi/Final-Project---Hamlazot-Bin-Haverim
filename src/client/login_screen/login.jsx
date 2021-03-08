@@ -66,24 +66,24 @@ const LoginPage = () => {
 
 
   return (
-    <div class="flex flex-col bg-fixed  h-full  sm:h-full w-full"
+    <div className="flex flex-col bg-fixed  h-full  sm:h-full w-full"
       style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
     >
-      <header class="flex flex-col h-1/6 sm:h-2/6 w-full justify-center">
-        <img src={Header} alt="" class="h-full" />
+      <header className="flex flex-col h-1/6 sm:h-2/6 w-full justify-center">
+        <img src={Header} alt="" className="h-full" />
       </header>
 
 
 
-      <div class="flex flex-col self-center w-1/2 h-56 sm:h-1/2 sm:w-1/4 sm:h-3/4 bg-red-400 rounded-lg shadow-xl text-center items-center my-28">
+      <div className="flex flex-col self-center w-1/2 h-56 sm:h-1/2 sm:w-1/4 sm:h-3/4 bg-red-400 rounded-lg shadow-xl text-center items-center my-28">
 
-        <div id="top" class="mb-3">
+        <div id="top" className="mb-3">
           !ברוך הבא
         </div>
 
-        <div class="flex flex-col text-center items-center sm:space-y-3">
+        <div className="flex flex-col text-center items-center sm:space-y-3">
           <div>
-            <input class="bg-blue-100 text-black placeholder-black sm:mt-2 text-center rounded"
+            <input className="bg-blue-100 text-black placeholder-black sm:mt-2 text-center rounded"
               placeholder="מייל"
               value={email}
               onChange={event => setEmail(event.target.value)}
@@ -91,14 +91,14 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <input class="bg-blue-100 text-black placeholder-black mt-2 text-center rounded flex flex-col"
+            <input className="bg-blue-100 text-black placeholder-black mt-2 text-center rounded flex flex-col"
               placeholder="סיסמא"
               type="password"
               value={password}
               onChange={event => setPassword(event.target.value)}
               required />
 
-            <text class="text-xs text-white sm:w-1/2"
+            <text className="text-xs text-white sm:w-1/2"
               onClick={forgot_password}
             >
               ?שכחת סיסמא
@@ -106,7 +106,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <button class="border-1 sm:border-4 rounded-full mt-3 sm:py:3 sm:px-6 focus:ring-4 focus:ring-white focus:ring-opacity-50 bg-indigo-500 border-none text-white"
+            <button className="border-1 sm:border-4 rounded-full mt-3 sm:py:3 sm:px-6 focus:ring-4 focus:ring-white focus:ring-opacity-50 bg-indigo-500 border-none text-white"
               onClick={login}
             >
               התחבר
@@ -114,7 +114,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <button class="border-1 sm:border-4 rounded-full mt-3 sm:py:3 sm:px-6 focus:ring-4 focus:ring-white focus:ring-opacity-50 bg-indigo-500 border-none text-white"
+            <button className="border-1 sm:border-4 rounded-full mt-3 sm:py:3 sm:px-6 focus:ring-4 focus:ring-white focus:ring-opacity-50 bg-indigo-500 border-none text-white"
               onClick={signup}
               >
               הרשם

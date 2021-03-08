@@ -28,39 +28,39 @@ const recommandations = [["עידן",4,"קפה מעולה מנות גדולות 
 
 function starNumber(stars) {
     if(stars === 1)
-        return ( <div class = "flex flex-row jusitfy-center"><AiTwotoneStar/></div>)
+        return ( <div className = "flex flex-row jusitfy-center"><AiTwotoneStar/></div>)
     else if(stars === 2)
-        return (<div class = "flex flex-row content-center"> <AiTwotoneStar/><AiTwotoneStar/></div>)
+        return (<div className = "flex flex-row content-center"> <AiTwotoneStar/><AiTwotoneStar/></div>)
     else if(stars === 3)
-        return (<div class = "flex flex-row jusitfy-center"> <AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
+        return (<div className = "flex flex-row jusitfy-center"> <AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
     else if(stars === 4)
-        return (<div class = "flex flex-row jusitfy-center"><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
+        return (<div className = "flex flex-row jusitfy-center"><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
     else if(stars === 5)
-        return (<div class = "flex flex-row content-center"><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
+        return (<div className = "flex flex-row content-center"><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/><AiTwotoneStar/></div>)
 }
 
 const PlacePage = () => {
 
     return (
-        <div class="flex flex-col bg-fixed items-center"
+        <div className="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
         >
 
-            <div class="flex items-start h-56 w-full"
+            <div className="flex items-start h-56 w-full"
                 style={{ backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
             >
-                <div class="w-1/2 flex justify-start mt-5 sm:mt-10 ml-5 sm:ml-10">
-                    <button class="bg-green-300"
+                <div className="w-1/2 flex justify-start mt-5 sm:mt-10 ml-5 sm:ml-10">
+                    <button className="bg-green-300"
                         onClick={() => { }}>
-                        <GiExitDoor class="text-3xl sm:text-5xl" />
+                        <GiExitDoor className="text-3xl sm:text-5xl" />
                     </button>
                 </div>
 
-                <div class="w-1/2 flex justify-end mt-5 sm:mt-10 mr-5 sm:mr-10">
-                    <button class=""
+                <div className="w-1/2 flex justify-end mt-5 sm:mt-10 mr-5 sm:mr-10">
+                    <button className=""
                         onClick={() => { }}
                     >
-                        <FcSettings class="text-3xl sm:text-5xl" />
+                        <FcSettings className="text-3xl sm:text-5xl" />
                     </button>
                 </div>
 
@@ -69,19 +69,30 @@ const PlacePage = () => {
 
 
 
-            <div class = "flex flex-row my-10 w-3/5 bg-red-400 rounded-xl ">
 
-                <div class = "w-1/2 max-h-1/2">
+
+
+
+
+
+
+
+
+
+            <div className = "flex flex-row my-10 w-3/5 bg-red-400 rounded-xl ">
+
+                <div className = "w-1/2 h-full">
                     <img src={IMAGES.src}/>
                 </div>
 
 
-                <div class = "flex flex-col w-1/2 ">
-                    <div class =" self-center text-lg sm:text-3xl mt-2">{starNumber(IMAGES.stars)}</div>
-                    <div class = "text-3xl sm:text-6xl self-center font-extrabolds">{IMAGES.name}</div>
-                    <div class = "text-xs sm:text-lg self-end mt-6">שעות פתיחה: {IMAGES.opening}</div>
-                    <div class = "text-xl self-end font-bold underline">המלצות</div>
-                    <div class = "h-1/3  overflow-y-auto text-right">
+                <div className = "flex flex-col w-1/2 ">
+                    <div className =" self-center text-lg sm:text-3xl mt-2">{starNumber(IMAGES.stars)}</div>
+                    <div className = "text-3xl sm:text-6xl self-center font-extrabolds">{IMAGES.name}</div>
+                    <div className = "text-xs sm:text-lg self-end mt-8">שעות פתיחה: {IMAGES.opening}</div>
+                    <div className = "text-xs sm:text-lg self-end mt-6">כתובת: {IMAGES.opening}</div>
+                    <div className = "text-xl self-end font-bold underline">המלצות</div>
+                    <div className = "h-96  overflow-y-auto text-right">
                     <RecommendationsList recommandations={recommandations} />
                     </div>
                 </div>
@@ -90,15 +101,29 @@ const PlacePage = () => {
             </div>
 
 
-            {/* <section className="infoSectionP">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            {/* <section classNameName="infoSectionP">
                 <div id="info">
                     <h1 id="h1p">{IMAGES.name} {starNumber(IMAGES.stars)}</h1>
-                    <text className="info">{IMAGES.place}</text>
+                    <text classNameName="info">{IMAGES.place}</text>
                     <p/>
-                    <text className="info">שעות פתיחה: {IMAGES.opening}</text>
+                    <text classNameName="info">שעות פתיחה: {IMAGES.opening}</text>
                     <p/>
-                    <text className="info">המלצות החברים שלך</text>
-                    <div className="listP">
+                    <text classNameName="info">המלצות החברים שלך</text>
+                    <div classNameName="listP">
                         <RecommendationsList recommandations={recommandations} />
                     </div>
                 </div>
