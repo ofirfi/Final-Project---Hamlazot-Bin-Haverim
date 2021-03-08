@@ -4,10 +4,10 @@ const Recommendation = require('../models/Recommendation_model'),
     AppError = require('../utils/appError');
 
 const recommendation_update = async req => {
-    const { placeId, userName, comment, rate } = req.body;
+    const { rId, userName, type, comment, rate } = req.body;
     let user = await User.findOne({ userName });
     let recommend = await Recommendation.findOneAndUpdate(
-        { placeId, userName: user },
+        { rId, userName: user, type },
         { comment, rate, date:Date.now() },
         { new: true, runValidators: true }
     );
@@ -26,8 +26,9 @@ const convert_recommendations = async (res,recs,statusCode) =>{
         const user = await User.findById(recs[i].userName);
         let user_name = user.userName;
         recommendations.push({
-            placeId:recs[i].placeId,
+            rId:recs[i].rId,
             userName:user_name,
+            type:recs[i].type,
             comment:recs[i].comment,
             date:recs[i].date,
             rate:recs[i].rate,
@@ -40,7 +41,7 @@ const convert_recommendations = async (res,recs,statusCode) =>{
 module.exports = {
             //Change the userName from the user id to user name
     getRecommendations : catchAsync(async (req, res,next) => {
-        const recs = await Recommendation.find().sort('placeId userName');
+        const recs = await Recommendation.find().sort('rId userName');
         await convert_recommendations(res,recs,200)
     }),
 
@@ -53,8 +54,9 @@ module.exports = {
 
                 //a new recommendation, if none is existed
         recommend = await Recommendation.create({
-            placeId : req.body.placeId,
+            rId : req.body.rId,
             userName: user,
+            type: req.body.type,
             comment: req.body.comment,
             rate: req.body.rate,
         });
@@ -78,12 +80,12 @@ module.exports = {
 
     
     delete_recommendation: catchAsync(async(req, res,next) => {
-        const { placeId, userName } = req.body;
+        const { rId, userName, type } = req.body;
         let user = await User.findOne({ userName });
         if(!user)
             return next(new AppError('User was not found',404));
      
-        const recommend = await Recommendation.findOneAndDelete({placeId,userName:user});
+        const recommend = await Recommendation.findOneAndDelete({rId,userName:user,type});
         if(!recommend)
             return next(new AppError('Recommendation was not found',404));
 
