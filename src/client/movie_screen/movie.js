@@ -1,33 +1,22 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-
-import { useHistory } from 'react-router-dom'
-import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
-import { FcSettings } from 'react-icons/fc'
-import { GiExitDoor } from 'react-icons/gi'
 import { Recommendations } from './movieRecommendation'
-
 import { Navbar } from '../navbar/navbar'
 
 
 const MoviePage = () => {
-    const userName = window.localStorage.getItem('userName')
-    const token = window.localStorage.getItem('token')
-
-    const history = useHistory();
-
-
     const [movie,setMovie] = useState('')
     const [genres,setGenres] = useState('')
-
+    const [poster,setPoster] = useState('')
 
     useEffect(()=>{
         axios.get("https://api.themoviedb.org/3/movie/414771?api_key=a69ec695d12d89a6b5e1178a4640d2ef&language=he")
         .then((res)=>{
             setMovie(res.data)
             getGeneres(res.data)
+            setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`)
         }).catch(err => console.log(err))
     },[])
 
@@ -40,15 +29,7 @@ const MoviePage = () => {
         setGenres(gens)
     }
 
-    const go_profile = () => {
-        history.push('/profile')
-    }
 
-    const log_out = ( )=> {
-        alert('להתראות '+userName+' מקווים לראותך שוב!')
-        window.localStorage.setItem('logged', false)
-        history.push('/login');
-    }
 
     return (
         <div className="flex flex-col bg-fixed items-center"
@@ -77,7 +58,7 @@ const MoviePage = () => {
                         {/*Photo*/}
                 <div className="flex flex-row w-full h-2/6  grid justify-items-center bg-gray-300"> 
                     <div className = "flex flex-row w-1/2">
-                    <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}/>
+                    <img src={poster} alt=""/>
                     </div>
                 </div>
                 
@@ -97,7 +78,7 @@ const MoviePage = () => {
                         המצלות
                     </div>
                     <div className = "max-h-52 overflow-y-auto">
-                    <Recommendations/>
+                    <Recommendations movieId = "414771"/>
                     </div>
                 </div>
             </div>

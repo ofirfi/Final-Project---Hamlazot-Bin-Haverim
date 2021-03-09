@@ -78,7 +78,7 @@ export function Recommendations(props){
             if (recommend.userName === userName) 
                 return( 
                     <tr>
-                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.placeId}</td>
+                        <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.name}</td>
                         <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.rate}</td>
                         <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.comment}</td>
                         <td style ={{"borderWidth":"30px", 'borderColor':"transparent", 'borderStyle':'solid'}}>{recommend.date.substring(0, 10)}</td>
@@ -97,7 +97,7 @@ export function Recommendations(props){
                 <div className="list">
                     <table>
                         <thead>
-                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>שם פריט</td>
+                            <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>שם</td>
                             <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>דירוג</td>
                             <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>הערה</td>
                             <td style = {{borderWidth:"30px", 'borderColor':"transparent"}}>תאריך</td>
