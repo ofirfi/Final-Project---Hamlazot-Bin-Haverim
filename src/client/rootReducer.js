@@ -1,6 +1,7 @@
 const initialState = {
     logged: false,
     recommendations: null,
+    isForm: false
 }
 
 
@@ -16,6 +17,11 @@ const rootReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 recommendations: payload
+            }
+        case "TOGGLEFORM":
+            return{
+                ...state,
+                isForm: !state.isForm
             }
         default:
             return state
