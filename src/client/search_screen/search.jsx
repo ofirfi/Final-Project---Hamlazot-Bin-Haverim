@@ -72,7 +72,31 @@ const SearchPage = ()=>{
         history.push('/profile')
     }
     const searcher = () => {
-        history.push('/place');
+        axios({
+            method : 'get',
+            url : `https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAwDMLyr-bnACemh9KSmaW74rB5GLGFun0&input=צדקיהו`
+        })
+        .then(res => {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+    
+
+
+    const searchBooks = () => {
+        axios({
+            method : 'get',
+            url : `https://www.googleapis.com/books/v1/volumes?q=מקום+טוב&key=AIzaSyCxqgytYz4Y_bRBMlJ1vms2aA5fU1Lm074`
+        })
+        .then(res => {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 
     return(
@@ -85,11 +109,11 @@ const SearchPage = ()=>{
                 </div>
             </header>
             <section className="section">
-                <button className="btn"><IoRestaurant style={{fontSize:36}}/><p/>מסעדה</button>
-                <button className="btn"><SiCoffeescript style={{fontSize:36}}/><p/>בית קפה</button>
-                <button className="btn"><FaTheaterMasks style={{fontSize:36}}/><p/>הצגה</button>
+                <button onClick = {()=> history.push('/movie')} className="btn"><IoRestaurant style={{fontSize:36}}/><p/>מסעדה</button>
+                <button onClick = {()=> history.push('/place')} className="btn"><SiCoffeescript style={{fontSize:36}}/><p/>בית קפה</button>
+                <button onClick = {searcher} className="btn"><FaTheaterMasks style={{fontSize:36}}/><p/>הצגה</button>
                 <button className="btn"><GiPopcorn style={{fontSize:36}}/><p/>סרט</button>
-                <button className="btn"><GiWhiteBook style={{fontSize:36}}/><p/>ספר</button>
+                <button onClick = {searchBooks} className="btn"><GiWhiteBook style={{fontSize:36}}/><p/>ספר</button>
 
                 <div style={{ position: "absolute", right: "30%" }}>
                     <h1 style={{ color:"rgb(53, 111, 123)"}}>מומלצים</h1>

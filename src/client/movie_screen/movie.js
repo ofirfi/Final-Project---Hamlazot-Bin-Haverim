@@ -8,6 +8,7 @@ import BackGround from '../images/background.jpg'
 import { FcSettings } from 'react-icons/fc'
 import { GiExitDoor } from 'react-icons/gi'
 import { Recommendations } from './movieRecommendation'
+const movieApiKey = require("../utils/config.json").MOVIE_API_KEY
 
 const MoviePage = () => {
     const userName = window.localStorage.getItem('userName')
@@ -21,7 +22,7 @@ const MoviePage = () => {
 
 
     useEffect(()=>{
-        axios.get("https://api.themoviedb.org/3/movie/414771?api_key=a69ec695d12d89a6b5e1178a4640d2ef&language=he")
+        axios.get(`https://api.themoviedb.org/3/movie/414771?api_key=${movieApiKey}&language=he`)
         .then((res)=>{
             setMovie(res.data)
             getGeneres(res.data)

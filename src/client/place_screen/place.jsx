@@ -7,6 +7,9 @@ import { FcSettings } from 'react-icons/fc'
 import { GiExitDoor } from 'react-icons/gi'
 import { AiTwotoneStar } from "react-icons/ai"
 import { RecommendationsList } from './recommendations'
+import axios from 'axios'
+const placeApiKey = require("../utils/config.json").PLACE_API_KEY
+
 
 
 const IMAGES = {
@@ -41,6 +44,18 @@ function starNumber(stars) {
 
 const PlacePage = () => {
 
+    const test = () => {
+        axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=%D7%A6%D7%93%D7%A7%D7%99%D7%94%D7%95&inputtype=textquery&key=AIzaSyAwDMLyr-bnACemh9KSmaW74rB5GLGFun0`,
+        {headers : {"Access-Control-Allow-Origin": "*"}
+        })
+        .then(res => {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     return (
         <div class="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
@@ -58,7 +73,7 @@ const PlacePage = () => {
 
                 <div class="w-1/2 flex justify-end mt-5 sm:mt-10 mr-5 sm:mr-10">
                     <button class=""
-                        onClick={() => { }}
+                        onClick={test}
                     >
                         <FcSettings class="text-3xl sm:text-5xl" />
                     </button>
