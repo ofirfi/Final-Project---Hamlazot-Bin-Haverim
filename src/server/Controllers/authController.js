@@ -123,12 +123,7 @@ module.exports = {
             data:null
         });
     }),
-    check_auth: catchAsync(async (req,res,next) =>{
-        res.status(200).json({
-            status:"success",
-            data:null
-        })
-    }),
+
 
     protect: catchAsync(async (req, res, next) => {
         let token;

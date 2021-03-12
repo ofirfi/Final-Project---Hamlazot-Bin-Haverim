@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 
 const RecommendationSchema = new mongoose.Schema({
-  placeId: {
+  rId: {
     type: String,
     required: [true,"להמלצה חייב להיות שם המקום שממליצים עליו"],
     trim:true,
+  },
+  name:{
+    type:String,
+    required: [true,"להמלצה צריך להיות שם הפריט שהומלץ"],
+    trie:true
+  },
+  type:{
+    type: String,
+    trim:true,
+    required: [true,"להמלצה חייב להיות סוג"],
+    enum: ["סרט","מקום","ספר"]
   },
   userName: {
     type: mongoose.Schema.Types.ObjectId,

@@ -1,8 +1,8 @@
 import React, {useState} from "react"
 import './registration.scss'
-
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 
 const RegistrationPage = ()=>{
@@ -13,9 +13,37 @@ const RegistrationPage = ()=>{
   const [firstName,setFirstName] = useState('');
   const [surname,setSurname] = useState('');
   const history = useHistory();
-  
+  const dispatch = useDispatch();
+
+
+  const fieldCheck = () =>{
+    if (!firstName ||!surname || !userName || !email || !password || !confirmPassword){
+      alert('אנא מלא את כל השדות');
+      return false;
+    }
+    if(password.length < 8){
+      alert('הסיסמא צריכה להיות בין 8 ל-16 תווים');
+      return false;
+    }
+    if (password !== confirmPassword){
+      alert('הסיסמאות אינן תואמות');
+      return false;
+    }
+    if (userName.length < 5){
+      alert('שם משתמש חייב להיות לפחות באורך 5 תווים');
+      return false;
+    }
+    if (firstName.length < 2|| surname.length < 2){
+      alert('שם פרטי ומשפחה חייבים להיות לפחות באורך 2 תווים');
+      return false;
+    }
+    return true;
+  }
 
   const signup = () =>{
+    if (!fieldCheck())
+      return;
+
     axios.post("http://localhost:8001/auth/signup",{
       email,
       userName,
@@ -27,13 +55,17 @@ const RegistrationPage = ()=>{
     .then((res)=>{
       window.localStorage.setItem('token', res.data.token);
       window.localStorage.setItem('userName', userName);
-      window.localStorage.setItem('logged', true);
-
+      dispatch({ type: "SETLOGGED", payload: true });
       alert(userName + " ברוך הבא, שמחים שהצטרפת!");
-      history.push('/');
+      history.push('');
     })
     .catch((err)=>{
-      console.log(err.response.data.message);
+      if (err.response.data.message.startsWith("Duplicated"))
+        alert(`${err.response.data.message.substring(17,err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
+      else{
+        console.log(err.response.data.message);
+        alert('ארע שגיאה, אנא נסה נסית');
+      }  
     })
   }
 

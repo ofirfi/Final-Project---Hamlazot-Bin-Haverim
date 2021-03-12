@@ -57,7 +57,6 @@ const SearchPage = ()=>{
             
         }).catch(err => {
             window.localStorage.setItem('logged',false)
-            console.log('err in useEffect')
         })
     },[])
 

@@ -3,7 +3,6 @@ const express = require('express'),
     router = express.Router();
 
 router
-    .get('/checkAuth',authController.protect,authController.check_auth)
     .post('/login',authController.login)
     .post('/signup',authController.register)
     .post('/forgotPassword',authController.forgot_password)

@@ -1,33 +1,13 @@
-import axios from 'axios'
-
 const initialState = {
-    userName: null,
-    token: null,
     logged: false,
     recommendations: null,
+    isForm: false
 }
-
-
-// const checkAuth = async () =>{
-//     axios.post("http://localhost:8001/auth/",{token})
-//     .then(res =>initialState.logged = true)
-//     .catch(err=>initialState.logged = false)
-// }
 
 
 
 const rootReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case "SETUSER":
-            return {
-                ...state,
-                userName: payload
-            }
-        case "SETTOKEN":
-            return {
-                ...state,
-                token: payload
-            }
         case "SETLOGGED":
             return {
                 ...state,
@@ -37,6 +17,11 @@ const rootReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 recommendations: payload
+            }
+        case "TOGGLEFORM":
+            return{
+                ...state,
+                isForm: !state.isForm
             }
         default:
             return state
