@@ -8,7 +8,8 @@ import {Form} from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
 import {MOVIE_API_KEY} from '../utils/config.json'  
 
-const MoviePage = () => {
+const MoviePage = (props) => {
+    const movieId = props.match.params.id;
     const [movie,setMovie] = useState('');
     const [genres,setGenres] = useState('');
     const [poster,setPoster] = useState('');
@@ -17,7 +18,7 @@ const MoviePage = () => {
 
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/movie/414771?api_key=${MOVIE_API_KEY}&language=he`)
+        axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
         .then((res)=>{
             setMovie(res.data)
             getGeneres(res.data)
@@ -84,7 +85,7 @@ const MoviePage = () => {
                         המצלות
                     </div>
                     <div className = "max-h-52 overflow-y-auto">
-                    <Recommendations movieId = "414771"/>
+                    <Recommendations movieId = {movieId}/>
                     </div>
 
                         <button className = "self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
@@ -99,7 +100,7 @@ const MoviePage = () => {
             </div>
             {isForm?
                 <Form 
-                    rId = {'414771'}
+                    rId = {movieId}
                     name = {movie.title}
                     type = 'סרט'
                     userName = {window.localStorage.getItem('userName')}

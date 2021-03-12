@@ -37,7 +37,7 @@ const Pages = () => {
                     <Route exact path="/404" component={PageNotFound} />
                     <Route exact path="/signUp" component={RegistrationPage} />
                     <Route exact path="/place" component={PlacePage} />
-                    <Route exact path="/movie" component={MoviePage} />
+                    <Route exact path="/movie/:id" component={MoviePage} />
                     <Route exact path="/profile" component={UserPage} />
                     <Redirect to="/404" />
                 </Switch>

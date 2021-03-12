@@ -12,7 +12,7 @@ export function Form(props){
         console.log(props.name)
         console.log(props.type)
         console.log(props.userName)
-        
+        console.log(rate)
         console.log(comment);
         dispatch({type:"TOGGLEFORM"});
     }
@@ -28,7 +28,7 @@ export function Form(props){
                         {props.name}
                     </div>
 
-                    {/* <div className = "flex flex-row-reverse w-full text-xl text-right mt-3 h-7 self-start grid">
+                    <div className = "flex flex-row-reverse w-full text-xl text-right mt-3 h-7 self-start grid">
                         <lab className = "self-right justify-end">
                             
                             <select className = "mr-2 w-16 text-black text-center"
@@ -39,14 +39,14 @@ export function Form(props){
                                 <option value = "2">2</option>
                                 <option value = "3">3</option>
                                 <option value = "4">4</option>
-              0                  <option value = "5">5</option>
+                                <option value = "5">5</option>
                             </select>
                             בחר דירוג
                         </lab>
 
-                    </div> */}
+                    </div>
             
-                    <div className = "flex flex-row-reverse w-full text-white text-xl text-center mt-3 h-7 self-start">
+                    {/* <div className = "flex flex-row-reverse w-full text-white text-xl text-center mt-3 h-7 self-start">
                         <div className = "w-1/6 self-center text-black">
                             דירוג
                         </div>
@@ -76,7 +76,7 @@ export function Form(props){
                             </button>
                         </div>
                         
-                    </div>
+                    </div> */}
 
 
 
