@@ -6,6 +6,7 @@ import { Recommendations } from './movieRecommendation'
 import { Navbar } from '../navbar/navbar'
 import {Form} from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
+import {MOVIE_API_KEY} from '../utils/config.json'  
 
 const MoviePage = () => {
     const [movie,setMovie] = useState('');
@@ -16,7 +17,7 @@ const MoviePage = () => {
 
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/movie/414771?api_key=${movieApiKey}&language=he`)
+        axios.get(`https://api.themoviedb.org/3/movie/414771?api_key=${MOVIE_API_KEY}&language=he`)
         .then((res)=>{
             setMovie(res.data)
             getGeneres(res.data)
