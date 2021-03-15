@@ -8,7 +8,7 @@ const PageNotFound = () => {
     return (
         <div>
             <h1>404 NOT FOUND!</h1>
-            <i  onClick={() => {history.goBack()}}>
+            <i  onClick={() => history.push('') }>
             Click here to return to the previous page
             </i>
         </div>

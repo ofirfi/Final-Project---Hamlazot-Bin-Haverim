@@ -1,6 +1,7 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from "react";
 import axios from 'axios'
+import searchRecommendations from '../utils/recommendationSearch'
 
 export function Recommendations(props){
     const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
@@ -26,45 +27,15 @@ export function Recommendations(props){
     },[])
 
 
-
     const getRecommendations = (friendsList)=>{
         setMovieRecommendations("")
-        for(let i = 0;i<friendsList.length;i++)
-            checkAndFillRecommendation(friendsList[i]);
-    }
-
-    
-    const checkAndFillRecommendation = (friend) =>{
-        let bot = 0;
-        let top = recommendations.length-1;
-        let mid;
-        
-        while(top > bot+1){
-            mid = Math.floor((top+bot)/2);
-
-            if(recommendations[mid].rId === props.movieId){
-
-                if(recommendations[mid].userName === friend.userName){
-                    createRecommendation(recommendations[mid]);
-                    return;
-                }
-                else if (recommendations[mid].userName < friend.userName)
-                    bot = mid;    
-                else
-                    top = mid;
-            }
-            else if (recommendations[mid].rId < props.movieId)
-                bot = mid;
-            else
-                top = mid;
+        for(let i = 0;i<friendsList.length;i++){
+            let index = searchRecommendations(props.movieId,friendsList[i])
+            if (index !== -1)
+                createRecommendation(recommendations[index]);
         }
-
-        if(recommendations[bot].rId === props.movieId && recommendations[bot].userName === friend.userName)
-            createRecommendation(recommendations[bot]);
-        if(recommendations[top].rId === props.movieId && recommendations[top].userName === friend.userName)
-            createRecommendation(recommendations[top]);
-
     }
+
 
 
     const createRecommendation = (rec) =>{

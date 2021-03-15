@@ -7,6 +7,7 @@ import { Navbar } from '../navbar/navbar'
 import {Form} from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
 import {MOVIE_API_KEY} from '../utils/config.json'  
+import { useHistory } from 'react-router-dom'
 
 const MoviePage = (props) => {
     const movieId = props.match.params.id;
@@ -15,15 +16,21 @@ const MoviePage = (props) => {
     const [poster,setPoster] = useState('');
     const isForm = useSelector(state => state.isForm);
     const dispatch = useDispatch();
+    const history = useHistory();
 
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
-        .then((res)=>{
-            setMovie(res.data)
-            getGeneres(res.data)
-            setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`)
-        }).catch(err => console.log(err))
+        if (movieId > 60 && movieId < 806126)    
+            axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
+            .then((res)=>{
+                setMovie(res.data)
+                getGeneres(res.data)
+                setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`)
+            }).catch(() => {
+                history.push('/404');
+            })
+        else
+            history.push('/404');
     },[])
 
 
