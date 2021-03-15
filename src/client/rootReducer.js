@@ -1,7 +1,9 @@
 const initialState = {
     logged: false,
     recommendations: null,
-    isForm: false
+    isForm: false,
+    rating: null,
+    raters: null,
 }
 
 
@@ -18,8 +20,18 @@ const rootReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 recommendations: payload
             }
+        case "SETRATING":
+            return {
+                ...state,
+                rating: payload
+            }
+        case "SETRATERS":
+            return {
+                ...state,
+                raters: payload
+            }
         case "TOGGLEFORM":
-            return{
+            return {
                 ...state,
                 isForm: !state.isForm
             }
