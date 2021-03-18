@@ -1,59 +1,46 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from "react";
-import axios from 'axios'
-import { searchRecommendation, makeRating } from '../utils/recommendationMethods'
+import { searchRecommendation, makeRating ,makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { useDispatch } from 'react-redux'
 
 export function Recommendations(props) {
-    const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
     const [movieRecommendations, setMovieRecommendations] = useState('');
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        const userName = window.localStorage.getItem('userName')
-        const token = window.localStorage.getItem('token')
-        const headers = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
+    useEffect(async () => {
+        setMovieRecommendations("")
+        let closeness = props.closeness;
+        if(!closeness)
+            closeness = 1;
 
-        axios.post('http://localhost:8001/users', {
-            userName,
-            self: true
-        }, headers)
-            .then(res => getRecommendations(res.data.data.friends))
-            .catch(err => {
+        await makeRecommendationsInfo(props.movieId,1)
+        .then(res =>{
+            dispatch({ type: "SETRATING", payload: res.rate });
+            dispatch({ type: "SETRATERS", payload: res.raters });
+            
+            if(res.myRecommendation)
+                createRecommendation(res.myRecommendation,true);
 
-            })
+            let friendsRecommendations = res.friendsRecommendations;
+            for (let i = 0; i < friendsRecommendations.length; i++)
+                createRecommendation(friendsRecommendations[i],true);
 
+            let strangersRecommendations = res.strangersRecommendations;
+            console.log(strangersRecommendations);
+            for (let j = 0; j < strangersRecommendations.length; j++)
+                createRecommendation(strangersRecommendations[j],false);
+            
+        })
     }, [])
 
 
-    const getRecommendations = (friendsList) => {
-        setMovieRecommendations("")
-        let recs = []
-        let pos = 0
-        for (let i = 0; i < friendsList.length; i++) {
-            let index = searchRecommendation(props.movieId, friendsList[i])
-            if (index !== -1) {
-                recs[pos++] = { rate: recommendations[index].rate, reliability: friendsList[i].reliability }
-                createRecommendation(recommendations[index]);
-            }
-        }
-        let results = makeRating(recs, 1);
-        dispatch({ type: "SETRATING", payload: results.rate })
-        dispatch({ type: "SETRATERS", payload: results.raters })
-    }
-
-
-
-    const createRecommendation = (rec) => {
+    const createRecommendation = (rec,isFriend) => {
         let newRec =
             <div class="flex flex-col mb-5 box-border border-2 bg-red-400 rounded-xl text-xs sm:text-sm ms:text-base">
                 <div class="flex flex-row-reverse">
                     <div class="w-1/6">ממליץ</div>
-                    <div class="w-5/6">{rec.userName}</div>
+                    <div class="w-3/6">{rec.userName}</div>
+                    <div class="w-2/6 text-2xl">{isFriend? '😎' :null}</div>
                 </div>
                 <div class="flex flex-row-reverse">
                     <div class="w-1/6">דירוג</div>

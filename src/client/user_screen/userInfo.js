@@ -68,7 +68,6 @@ export function Friends (props) {
 
 export function Recommendations(props){
     const userName = props.userName
-    // const recommandations = useSelector(state=>state.recommendations)
     const recommendations = JSON.parse(window.localStorage.getItem('recommendations'))
     const [myRecommandations,setMyRecommandations] = useState('')
 

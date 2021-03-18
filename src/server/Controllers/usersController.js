@@ -8,7 +8,7 @@ const User = require('../models/User_model'),
 
 const get_Friends_list = async (friendsList,personal_profile) => {
     let friends = []
-    for (i = 0; i < friendsList.length; i++) {
+    for (let i = 0; i < friendsList.length; i++) {
         const user = await User.findById(friendsList[i].userRef);
         let userName = user.userName;
         if(personal_profile){
@@ -21,14 +21,33 @@ const get_Friends_list = async (friendsList,personal_profile) => {
     return friends
 };
 
+const get_Recommendations_list = async (recommendations_list) =>{
+    let recommendations = [];
 
-const make_Data = (user,friends,personal_profile) =>{
+    for (let i = 0; i < recommendations_list.length; i++){
+        const recommendation = await Recommendation.findById(recommendations_list[i]);
+        recommendations.push({
+            rId: recommendation.rId,
+            name: recommendation.name,
+            type: recommendation.type,
+            comment: recommendation.comment,
+            date: recommendation.date,
+            rate: recommendation.rate
+        })
+    }
+
+    return recommendations;
+};
+
+const make_Data = (user,friends,recommendations,personal_profile) =>{
     let data = {
         userName: user.userName,
         firstName: user.first_name,
         lastName: user.last_name,
         friends_length: friends.length,
-        friends
+        friends,
+        recommendations_length: recommendations.length,
+        recommendations,
     };
     if(personal_profile)
         data.email = user.email;
@@ -53,8 +72,10 @@ module.exports = {
             return next(new AppError('User was not found', 404));
 
         const friends = await get_Friends_list(user.friendsList.sort(),req.body.self);
-            
-        const data =  make_Data(user,friends,req.body.self);
+
+        const recommendations = await get_Recommendations_list(user.recommendationsList);
+        
+        const data =  make_Data(user,friends,recommendations,req.body.self);
         
         send_Data(res,data,200);
     }),

@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true,'למשתמש חייב להיות שם משתמש'],
     unique: true,
-    minlength:5,
+    minlength:3,
     trim:true,
   },
   email: {

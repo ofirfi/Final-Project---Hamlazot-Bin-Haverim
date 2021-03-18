@@ -72,7 +72,7 @@ const MoviePage = (props) => {
                     </div>
                     <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
                         <div className="">
-                            כמות מדרגים: {raters}
+                            חברים שדרגו: {raters}
                         </div>
                         <div className="text-red-700 font-black">
                             דירוג: 5 / {rating}
