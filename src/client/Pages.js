@@ -1,3 +1,4 @@
+import React, { Component }  from 'react';
 import LoginPage from './login_screen/login'
 import RegistrationPage from './registration_screen/registration'
 import PlacePage from './place_screen/place'
