@@ -66,7 +66,7 @@ const LoginPage = () => {
 
 
   return (
-    <div className="flex flex-col bg-fixed  h-full  sm:h-full w-full"
+    <div className="flex flex-col bg-fixed w-full"
       style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
     >
       <header className="flex flex-col h-1/6 sm:h-2/6 w-full justify-center">
@@ -116,7 +116,7 @@ const LoginPage = () => {
           <div>
             <button className="border-1 sm:border-4 rounded-full mt-3 sm:py:3 sm:px-6 focus:ring-4 focus:ring-white focus:ring-opacity-50 bg-indigo-500 border-none text-white"
               onClick={signup}
-              >
+            >
               הרשם
             </button>
           </div>

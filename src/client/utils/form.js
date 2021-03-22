@@ -7,15 +7,14 @@ export function Form(props) {
     const [rate, setRate] = useState('1');
     const [comment, setComment] = useState('');
     const dispatch = useDispatch();
+    const headers = {
+        headers: {
+            authorization: `Bearer ${window.localStorage.getItem('token')}`
+        }
+    }
 
 
     const addRecommendation = () => {
-        const headers = {
-            headers: {
-                authorization: `Bearer ${window.localStorage.getItem('token')}`
-            }
-        }
-
         axios.post("http://localhost:8001/recommendations",
             {
                 rId: props.rId,
@@ -28,13 +27,21 @@ export function Form(props) {
             headers
         )
             .then(res => {
-                console.log(res);
+                const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
+                recommendations[recommendations.length] = {
+                    rId: props.rId,
+                    name: props.name,
+                    type: props.type,
+                    userName: props.userName,
+                    comment,
+                    rate,
+                    date: Date.now()
+                }
+                window.localStorage.setItem('recommendations', JSON.stringify(recommendations));
             })
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(err => console.log(err))
 
-        dispatch({ type: "TOGGLEFORM" });
+        window.location.reload();
     }
 
 
@@ -73,7 +80,7 @@ export function Form(props) {
                     <textarea className="self-center placeholder-gray-300 text-right rounded w-full h-20 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-70 resize-none"
                         placeholder="תגובה"
                         value={comment}
-                        onChange={(event) => setComment(event.target.value)}                        
+                        onChange={(event) => setComment(event.target.value)}
                     />
                 </div>
 

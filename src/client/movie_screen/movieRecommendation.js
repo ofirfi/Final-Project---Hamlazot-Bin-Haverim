@@ -1,19 +1,16 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from "react";
-import { searchRecommendation, makeRating ,makeRecommendationsInfo } from '../utils/recommendationMethods'
+import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { useDispatch } from 'react-redux'
 
 export function Recommendations(props) {
     const [movieRecommendations, setMovieRecommendations] = useState('');
     const dispatch = useDispatch();
 
-    useEffect(async () => {
+    useEffect(() => {
         setMovieRecommendations("")
-        let closeness = props.closeness;
-        if(!closeness)
-            closeness = 1;
 
-        await makeRecommendationsInfo(props.movieId,1)
+        makeRecommendationsInfo(props.movieId,props.closeness)
         .then(res =>{
             dispatch({ type: "SETRATING", payload: res.rate });
             dispatch({ type: "SETRATERS", payload: res.raters });
@@ -26,7 +23,7 @@ export function Recommendations(props) {
                 createRecommendation(friendsRecommendations[i],true);
 
             let strangersRecommendations = res.strangersRecommendations;
-            console.log(strangersRecommendations);
+            
             for (let j = 0; j < strangersRecommendations.length; j++)
                 createRecommendation(strangersRecommendations[j],false);
             

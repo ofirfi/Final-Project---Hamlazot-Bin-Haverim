@@ -10,7 +10,8 @@ const headers = {
 }
 
 
-export async function makeRecommendationsInfo(rId, closeness = 2) {
+
+export async function makeRecommendationsInfo(rId, closeness = 1) {
 
     let results = await axios.post('http://localhost:8001/users', {
         userName,
@@ -23,7 +24,248 @@ export async function makeRecommendationsInfo(rId, closeness = 2) {
 }
 
 
-export function searchRecommendation(rId, friend) {
+/**
+ * A function that creates recommendations lists, the rating and the number of friends rated.
+ */
+const makeInfo = async (userInfo, rId, closeness = 1) => {
+
+    let myRec = getMyRecommendation(rId, userInfo);
+
+    let { friendsRecs, ratingList, randomRecIndex } = await getFriendsRecommendations(rId, userInfo.friends, closeness);
+
+
+    let results = calculateRating(ratingList);
+    let isRated = true;
+    if (results.raters === 0)
+        isRated = false;
+
+
+    let strangersResults = await getStangersRecommendations(rId, friendsRecs, randomRecIndex, isRated);
+    let strangersRec = strangersResults.recs
+    if (!isRated) {
+        results.rate = strangersResults.rate;
+        results.raters = strangersResults.raters;
+    }
+
+
+    return {
+        myRecommendation: myRec,
+        friendsRecommendations: friendsRecs,
+        strangersRecommendations: strangersRec,
+        rate: results.rate,
+        raters: results.raters
+    };
+}
+
+
+/**
+ * A function that gets the user's recommendations.
+ * The function returns the recommendation if found, else undefined.
+*/
+function getMyRecommendation(rId, userInfo) {
+    let myRec;
+    for (let i = 0; i < userInfo.recommendations.length; i++)
+        if (userInfo.recommendations[i].rId === rId) {
+            myRec = userInfo.recommendations[i];
+            myRec.userName = userName;
+            break;
+        }
+    return myRec;
+}
+
+
+/**
+ * A function that makes the user's friends recommendations and rating.
+ * The function returns an object that contains array of friends recommendations, a rating array and a random index of a recommendation.
+ */
+async function getFriendsRecommendations(rId, friends, closeness) {
+    let results = getRank1Friends(rId, friends);
+    let friendsRecs = results.friendsRecs;
+    let ratingList = results.ratingList;
+    let randomRecIndex = results.randomRecIndex;
+
+    if (closeness === 2) {
+        let res = await getRank2Friends(rId, friends, friendsRecs, ratingList);
+        friendsRecs = res.friendsRecs;
+        ratingList = res.ratingList;
+        if (!randomRecIndex)
+            randomRecIndex = res.randomRecIndex;
+    }
+
+    return { friendsRecs, ratingList, randomRecIndex };
+}
+
+
+/**
+ * A function that makes recommendations of the user's close friends list (Rank 1).
+ * The function returns an array of Rank 1 friends' recommendations and an array of ratings.
+ */
+function getRank1Friends(rId, friends) {
+    let friendsRecs = [];
+    let ratingList = [];
+    let nextPos = 0;
+    let randomRecIndex;
+
+    for (let i = 0; i < friends.length; i++) {                  //Getting Friends recommendations     
+        let index = searchRecommendation(rId, friends[i]);
+        if (index !== -1) {                                     // If there is a recommendation from that user
+            friendsRecs[nextPos] = recommendations[index];
+            ratingList[nextPos++] = {                           //fill the array with an object for rating (for rating calculation)
+                rate: recommendations[index].rate,
+                reliability: friends[i].reliability,
+                weight: 1
+            }
+        }
+        randomRecIndex = index;
+    }
+    return { friendsRecs, ratingList, randomRecIndex };
+}
+
+
+/**
+ * A function that updates friends' recommendations and ratings by adding user's 'Rank 2' friends.
+ * The function returns an array of recommendations,an array of ratings and a random index of a recommendation.
+ */
+async function getRank2Friends(rId, friends, friendsRecs, ratingList) {
+    let nextPos = friendsRecs.length;
+    let randomRecIndex;
+    for (let i = 0; i < friends.length; i++) {                  //for each Rank 1 friend
+
+        let res = await axios.post('http://localhost:8001/users', {
+            userName: friends[i].userName,
+            self: true
+        }, headers)
+            .then(res => res.data.data)
+            .catch(err => console.log(err))
+
+
+        for (let j = 0; j < res.friends.length; j++) {
+            if (res.friends[j].userName === userName || isUsed(res.friends[j].userName, friendsRecs, []))
+                continue;
+            let index = searchRecommendation(rId, res.friends[j]);
+            if (index === -1)
+                continue;
+
+            friendsRecs[nextPos] = recommendations[index];
+            let weight = getWeight(friends[i]);
+
+            ratingList[nextPos++] = {
+                rate: recommendations[index].rate,
+                reliability: res.friends[j].reliability,
+                weight
+            }
+            randomRecIndex = index;
+        }
+    }
+    return { friendsRecs, ratingList, randomRecIndex };
+}
+
+
+/**
+ * A function that searchs for the rest of the recommendations.
+ * If there's a rating from close friends the function returns an array of recommendations.
+ * Otherwise it calculates the rating based by all of the recommendations and
+ * returns an array of recommendations and the average rate of them.
+ */
+const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
+    let index = getStartingPosition(rId, randomIndex, isRated);
+    let strangers = [];
+    let nextPos = 0;
+    let ratingList = [];
+
+
+    if (index < 0)     //If there are no recommendations for the rId
+        return {
+            rate: 0,
+            raters: 0,
+            recs: strangers
+        };
+
+
+    while (index < recommendations.length && recommendations[index].rId === rId) {
+        if (recommendations[index].userName === userName || isUsed(recommendations[index].userName, recs, strangers)) {
+            index++;
+            continue;
+        }
+
+        strangers[nextPos] = recommendations[index];
+
+        if (!isRated)                           //If there isn't a rating from friends' recommendations.
+            ratingList[nextPos] = {
+                rate: recommendations[index].rate,
+                reliability: 'מעט',
+                weight: 1
+            }
+
+        nextPos++;
+        index++;
+    }
+
+    if (isRated)
+        return { recs: strangers };
+
+    let results = calculateRating(ratingList);
+
+    return {
+        rate: results.rate,
+        raters: results.raters,
+        recs: strangers
+    };
+
+}
+
+
+/**
+ * A function that Finds the first index of the recommendation.
+ * If there are recommendations, the function returns the first index,
+ * else returns -1.
+ */
+const getStartingPosition = (rId, index, isRated) => {
+    if (isRated) {
+        while (index >= 0 && recommendations[index].rId === rId)
+            index--;
+        return index + 1;
+    }
+    for (index = 0; index < recommendations.length && recommendations[index].rId !== rId; index++);
+
+    if (index === recommendations.length)
+        return -1;
+    return index;
+}
+
+
+/**
+ * A function that checks if the user's recommenndation was already added.
+ * The function returns true if there's a recommendation, else returns false.
+ */
+const isUsed = (user, friendsRecs, stangersRecs) => {
+    for (let i = 0; i < friendsRecs.length; i++)
+        if (user === friendsRecs[i].userName)
+            return true;
+    for (let i = 0; i < stangersRecs.length; i++)
+        if (user === stangersRecs[i].userName)
+            return true;
+    return false;
+}
+
+
+/**
+ * The function returns the weight of Rank 2 friend based by Rank 1 friend for the rating calculation.
+ */
+const getWeight = (friend) => {
+    if (friend.reliability === "הרבה")
+        return 0.75;
+    if (friend.reliability === "בינוני")
+        return 0.5;
+    return 0.25;
+}
+
+/**
+ * The function searchs for a recommendation by using binary search tree.
+ * The function returns its index if there's a recommendation,
+ * else it returns -1.
+ */
+function searchRecommendation(rId, friend) {
     const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
 
     let bot = 0;
@@ -55,205 +297,11 @@ export function searchRecommendation(rId, friend) {
     return -1;
 }
 
-export function makeRating(recommendations, closeness) {
-    if (recommendations.length === 0)
-        return { rate: 0, raters: 0 };
-    let rate = 0;
-    let count = 0;
-    for (let i = 0; i < recommendations.length; i++) {
-        if (recommendations[i].reliability === "הרבה") {
-            rate += recommendations[i].rate * 3;
-            count += 3;
-        }
-        else if (recommendations[i].reliability === "בינוני") {
-            rate += recommendations[i].rate * 2;
-            count += 2
-        }
-        else {
-            rate += recommendations[i].rate;
-            count += 1;
-        }
-    }
-    if (closeness === 1)
-        return { rate: rate / count, raters: recommendations.length };
-}
 
-
-const makeInfo = async (userInfo, rId, closeness) => {
-    const friends = userInfo.friends
-    let friendsRecs = [];
-    let nextPos = 0;
-    let ratingList = []
-    let randomRecommendIndex = 0;
-
-
-    let myRec;
-    for (let i = 0 ; i < userInfo.recommendations.length;i++)   //Getting user's recommendation
-        if (userInfo.recommendations[i].rId === rId){
-            myRec = userInfo.recommendations[i];
-            myRec.userName = userName;
-            break; 
-        }
-
-    for (let i = 0; i < friends.length; i++) {                  //Getting Friends recommendations     
-        let index = searchRecommendation(rId, friends[i]);
-        if (index !== -1) {                                     // If there is a recommendation from that user
-            friendsRecs[nextPos] = recommendations[index];
-            ratingList[nextPos++] = {                           //fill the array with an object for rating (for rating calculation)
-                rate: recommendations[index].rate,
-                reliability: friends[i].reliability,
-                weight: 1
-            }
-            randomRecommendIndex = index;
-        }
-    }
-
-    
-    //closeness = 2 -> recommendations include friends of friends to the rating calculate
-    if (closeness === 2) {
-        for (let i = 0; i < friends.length; i++) {                  //for each friend
-
-            let res = await axios.post('http://localhost:8001/users', {
-                userName: friends[i].userName,
-                self: true
-            }, headers)
-                .then(res => res.data.data)        //1.1 for each friend add users from their friendsList
-                .catch(err => console.log(err))
-
-            for (let j = 0; j < res.friends.length; j++) {
-                if (res.friends[j].userName === userName || isUsed(res.friends[j].userName, friendsRecs,[]))         //1.2 Check if the user was not already counted or the logged-in user.
-                    continue;
-                let index = searchRecommendation(rId, res.friends[j]);
-                if (index === -1)
-                    continue;
-
-                friendsRecs[nextPos] = recommendations[index];          //4. Add to recs for 'friends recommendations list1 [recs]
-                let weight = getWeight(friends[i]);
-
-                ratingList[nextPos++] = {                  //fill array with an object for rating
-                    rate: recommendations[index].rate,
-                    reliability: res.friends[j].reliability,
-                    weight
-                }
-            }
-        }
-    }
-
-    let results = calculateRating(ratingList);
-    let isRated = true;
-    if(results.raters === 0)
-        isRated = false;
-
-
-    let strangersResults = await getStangersRecommendations(rId,friendsRecs,randomRecommendIndex,isRated);
-    if(!isRated){
-        results.rate = strangersResults.rate;
-        results.raters = strangersResults.raters;
-    }
-    
-    let strangersRec = strangersResults.recs
-    
-    
-
-    //6.1 Find starting index of the Rid (recPos)
-    //6.2 Go through the recommendations untill recommendations[recPos]!==rId and < recommendations.length 
-    //6.3 Add rest of the recommendations to a different recommendations list (strangers)
-    //7. if 0 raters -> calculate all DB recommendations normally (average).
-
-    //8. if no recommendations in the DB -> get rate from the API
-    //9. if no rating from API -> return 0,0
-    
-
-    return { 
-        myRecommendation: myRec,
-        friendsRecommendations: friendsRecs,
-        strangersRecommendations: strangersRec , 
-        rate: results.rate,
-        raters: results.raters 
-    };
-}
-
-
-const getWeight = (friend) => {
-    if (friend.reliability === "הרבה")
-        return 0.75;
-    if (friend.reliability === "בינוני")
-        return 0.5;
-    return 0.25;
-}
-
-
-const isUsed = (user, friendsRecs,stangersRecs) => {
-    for (let i = 0; i < friendsRecs.length; i++)
-        if (user === friendsRecs[i].userName)
-            return true;
-    for (let i =0; i< stangersRecs.length;i++)
-        if(user === stangersRecs[i].userName)
-            return true;
-    return false;
-}
-
-
-const getStartingPosition = (rId,index,isRated) =>{
-    if(isRated){
-        while(index >= 0 && recommendations[index].rId === rId)
-            index--;
-        return index+1;
-    }
-    for(index = 0; index < recommendations.length && recommendations[index].rId !== rId ; index++);
-    
-    if(index === recommendations.length)
-        return -1;
-    return index;
-}
-
-
-const getStangersRecommendations = (rId,recs,startingIndex,isRated) =>{
-    let index = getStartingPosition(rId,startingIndex,isRated);
-    let strangers = [];
-    let nextPos = 0;
-    let ratingList = [];
-
-    
-    if(index<0)     //If there are no recommendations for the rId
-        return {        
-            rate: 0,
-            raters: 0,
-            recs: strangers
-        };
-
-
-    while(index<recommendations.length && recommendations[index].rId === rId){ 
-        if(recommendations[index].userName === userName || isUsed(recommendations[index].userName,recs,strangers)){
-            index++;
-            continue;
-        }
-        strangers[nextPos] = recommendations[index];
-
-        if(!isRated)
-            ratingList[nextPos] = {                  //fill array with an object for rating
-                rate: recommendations[index].rate,
-                reliability: 'מעט',
-                weight: 1
-            }
-
-        nextPos++;
-        index++;
-    }
-    if(isRated)
-        return {recs:strangers};
-    
-    let results = calculateRating(ratingList);
-    
-    return { 
-        rate: results.rate,
-        raters: results.raters,
-        recs: strangers
-    };
-    
-}
-
-
+/**
+ * The function calculates rating.
+ * The function returns the final rating and the number of friends that rated.
+ */
 const calculateRating = (ratingList) => {
     if (ratingList.length === 0)
         return { rate: 0, raters: 0 };
@@ -277,3 +325,4 @@ const calculateRating = (ratingList) => {
 
     return { rate: (ratesSum / total_raters_value).toFixed(1), raters: ratingList.length };
 }
+
