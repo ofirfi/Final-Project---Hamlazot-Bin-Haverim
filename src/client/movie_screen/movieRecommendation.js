@@ -7,10 +7,13 @@ export function Recommendations(props) {
     const [movieRecommendations, setMovieRecommendations] = useState('');
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    useEffect(async () => {
         setMovieRecommendations("")
+        let closeness = props.closeness;
+        if(!closeness)
+            closeness = 2;
 
-        makeRecommendationsInfo(props.movieId,props.closeness)
+        await makeRecommendationsInfo(props.movieId,closeness)
         .then(res =>{
             dispatch({ type: "SETRATING", payload: res.rate });
             dispatch({ type: "SETRATERS", payload: res.raters });
@@ -23,7 +26,6 @@ export function Recommendations(props) {
                 createRecommendation(friendsRecommendations[i],true);
 
             let strangersRecommendations = res.strangersRecommendations;
-            
             for (let j = 0; j < strangersRecommendations.length; j++)
                 createRecommendation(strangersRecommendations[j],false);
             
@@ -62,14 +64,6 @@ export function Recommendations(props) {
             {movieRecommendations}
         </div>
     )
-
-
-
-
-
-
-
-
 
 
 }

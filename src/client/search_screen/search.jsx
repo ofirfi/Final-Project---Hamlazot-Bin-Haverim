@@ -1,50 +1,26 @@
-import React, { useEffect } from "react";
-import Gallery from 'react-grid-gallery';
+import '../utils/style.css'
+import BackGround from '../images/background.jpg'
+import { Navbar } from '../navbar/navbar'
+import { Recommended, SearchResults } from './searchResults'
+import React, { useEffect, useState } from 'react'
 import './search.scss';
-import { FaTheaterMasks } from 'react-icons/fa';
-import { GiPopcorn, GiWhiteBook, GiExitDoor } from 'react-icons/gi'
-import { SiCoffeescript } from 'react-icons/si'
-import { IoRestaurant } from 'react-icons/io5'
-import { FcSettings } from 'react-icons/fc'
-import { useHistory } from 'react-router-dom'
 import axios from "axios";
-
 import { useDispatch, useSelector } from 'react-redux'
-import { Recommendations } from "../movie_screen/movieRecommendation";
-
-const IMAGES =
-[{
-        src: "https://media-cdn.tripadvisor.com/media/photo-s/11/51/dd/e3/large-delicious-dishes.jpg",
-        thumbnail: "https://media-cdn.tripadvisor.com/media/photo-s/11/51/dd/e3/large-delicious-dishes.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{value: "לנדוור", title: "לנדוור"}],
-        caption: "לנדוור סינמה סיטי, ירושלים",
-},  
-{
-        src: "https://www.gansipur.co.il/warehouse/dynamic/64199.jpg",
-        thumbnail: "https://www.gansipur.co.il/warehouse/dynamic/64199.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{value: "קפה גן סיפור", title: "קפה גן סיפור"}],
-        caption: "קפה גן סיפור, ירושלים"
-},
-{
-        src: "https://www.my-events.co.il/wp-content/uploads/2017/07/rimonbistro-halavi-a2.jpg",
-        thumbnail: "https://www.my-events.co.il/wp-content/uploads/2017/07/rimonbistro-halavi-a2.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{value: "קפה רימון", title: "קפה רימון"}],
-        caption: "קפה רימון, ירושלים"
-}]
 
 
 
-const SearchPage = ()=>{
+
+const SearchPage = (props)=>{
     const token = window.localStorage.getItem('token')
-    const userName = window.localStorage.getItem('userName')
     const dispatch = useDispatch();
-    const history = useHistory();
+    const [isSearch,setIsSearch] = useState(false);
+    const [input,setInput] = useState('');
+    const [searchType,setSearchType] = useState('all')
+
+    const headers = {
+        headers: {
+            Authorization: "Bearer " +token
+    }}
 
     useEffect(()=>{
         axios.get("http://localhost:8001/recommendations",{
@@ -61,29 +37,20 @@ const SearchPage = ()=>{
     },[])
 
 
-
-    const log_out = ( )=> {
-        alert('להתראות '+userName+' מקווים לראותך שוב!')
-        window.localStorage.setItem('logged', false)
-        history.push('/login');
-    }
-    const go_profile = () => {
-        history.push('/profile')
-    }
     const searcher = () => {
-        axios({
-            method : 'get',
-            url : `https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAwDMLyr-bnACemh9KSmaW74rB5GLGFun0&input=צדקיהו`
-        })
-        .then(res => {
+        const toSearch = 'צדקיהו'
+        axios.get(`http://localhost:8001/place/search/${toSearch}`,headers)
+        .then(res=>{
             console.log(res)
         })
-        .catch(err => {
+        .catch(err=>{
             console.log(err)
         })
     }
-    
 
+    const test = () => {    // CHECK IF INPUT IS RIGHT/MISSING
+        setIsSearch(true);
+    }
 
     const searchBooks = () => {
         axios({
@@ -99,28 +66,35 @@ const SearchPage = ()=>{
     }
 
     return(
-        <div className="page">
-            <header className="navbar">
-                <button onClick = {go_profile} style={{ position: "relative", top: "10%", left: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer" }}><FcSettings style={{ fontSize:36 }}/></button>
-                <button onClick = {log_out} style={{ position: "relative", top: "10%", right: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer", color: "rgb(53, 111, 123)" }}><GiExitDoor style={{fontSize:36}}/></button>
-                <div style={{ position:"relative", top:"45%"}}>
-                    <input id="search-box" type="text" placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"/>
-                </div>
-            </header>
-            <section className="section">
-                <button onClick = {()=> history.push('/movie')} className="btn"><IoRestaurant style={{fontSize:36}}/><p/>מסעדה</button>
-                <button onClick = {()=> history.push('/place')} className="btn"><SiCoffeescript style={{fontSize:36}}/><p/>בית קפה</button>
-                <button onClick = {searcher} className="btn"><FaTheaterMasks style={{fontSize:36}}/><p/>הצגה</button>
-                <button className="btn"><GiPopcorn style={{fontSize:36}}/><p/>סרט</button>
-                <button onClick = {searchBooks} className="btn"><GiWhiteBook style={{fontSize:36}}/><p/>ספר</button>
 
-                <div style={{ position: "absolute", right: "30%" }}>
-                    <h1 style={{ color:"rgb(53, 111, 123)"}}>מומלצים</h1>
-                    <Gallery images={IMAGES} />
+        <div className="flex flex-col bg-fixed items-center"
+            style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%'}}
+        >
+            <Navbar/>
+
+            <div className="flex flex-col bg-fixed items-center">
+                <div className="flex flex-row-reverse bg-fixed items-center mt-6">
+                    <input className="flex justify-self text-right w-96 h-12 rounded-full pr-2" 
+                        type="text"
+                        placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"
+                        value = {input}
+                        onChange = {event => setInput(event.target.value)}
+                    />
+                    <button className="flex flex-row-reverse text-lg mx-4 bg-green-600 w-16 h-12 rounded-full hover:bg-green-700" 
+                        onClick={test}
+                        >
+                        חפש
+                    </button>
                 </div>
-            </section>
+
+                {isSearch?
+                    <SearchResults searchRes = {input} type={searchType}/>:
+                    <Recommended/>
+                }
+
+            </div>
         </div>
-      );
+    );
 }
 
 

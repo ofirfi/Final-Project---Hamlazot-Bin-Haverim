@@ -15,7 +15,6 @@ const MoviePage = (props) => {
     const [movie, setMovie] = useState('');
     const [genres, setGenres] = useState('');
     const [poster, setPoster] = useState('');
-    const [closeness, setCloseness] = useState(1);
     const isForm = useSelector(state => state.isForm);
     const dispatch = useDispatch();
     const history = useHistory();
@@ -23,7 +22,7 @@ const MoviePage = (props) => {
     const raters = useSelector(state => state.raters);
 
     useEffect(() => {
-        if (movieId > 60 && movieId < 806126)
+        if (movieId > 60 && movieId < 806126) 
             axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
                 .then((res) => {
                     setMovie(res.data)
@@ -104,7 +103,7 @@ const MoviePage = (props) => {
                         המצלות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations movieId={movieId} closeness={closeness} />
+                        <Recommendations movieId={movieId} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
