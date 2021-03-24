@@ -1,11 +1,13 @@
 import './style.css'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 
-export function Form(props) {
-    const [rate, setRate] = useState('1');
-    const [comment, setComment] = useState('');
+export function Form() {
+    const recommendationInfo = useSelector(state => state.recommendationInfo);
+    const [rate, setRate] = useState(recommendationInfo.rate);
+    const [comment, setComment] = useState(recommendationInfo.comment);
+    const userName = window.localStorage.getItem('userName');
     const dispatch = useDispatch();
     const headers = {
         headers: {
@@ -17,10 +19,10 @@ export function Form(props) {
     const addRecommendation = () => {
         axios.post("http://localhost:8001/recommendations",
             {
-                rId: props.rId,
-                name: props.name,
-                type: props.type,
-                userName: props.userName,
+                rId: recommendationInfo.rId,
+                name: recommendationInfo.name,
+                type: recommendationInfo.type,
+                userName,
                 comment,
                 rate,
             },
@@ -29,19 +31,18 @@ export function Form(props) {
             .then(res => {
                 const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
                 recommendations[recommendations.length] = {
-                    rId: props.rId,
-                    name: props.name,
-                    type: props.type,
-                    userName: props.userName,
+                    rId: recommendationInfo.rId,
+                    name: recommendationInfo.name,
+                    type: recommendationInfo.type,
+                    userName,
                     comment,
                     rate,
                     date: Date.now()
                 }
                 window.localStorage.setItem('recommendations', JSON.stringify(recommendations));
+                window.location.reload();
             })
             .catch(err => console.log(err))
-
-        window.location.reload();
     }
 
 
@@ -54,7 +55,7 @@ export function Form(props) {
                     הוסף המלצה
                     </div>
                 <div className="text-4xl text-center grid place-content-center break-normal h-24 w-full ">
-                    {props.name}
+                    {recommendationInfo.name}
                 </div>
 
                 <div className="flex flex-row-reverse w-full text-xl text-right mt-3 h-7 self-start grid">

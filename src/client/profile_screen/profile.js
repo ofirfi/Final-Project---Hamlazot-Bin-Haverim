@@ -1,19 +1,21 @@
 import '../utils/style.css'
-import React, { useEffect, useState } from "react";
-import { Navbar } from '../navbar/navbar'
+import React, { useEffect, useState } from "react"
+import { useSelector } from 'react-redux'
+import { Form } from '../utils/form'
 import BackGround from '../images/background.jpg'
 import default_user from '../images/default_user.png'
+import { Navbar } from '../navbar/navbar'
 import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
-import { Friends, Recommendations, ChangePassword} from './userInfo'
+import { Friends, Recommendations, ChangePassword } from './userInfo'
 import axios from 'axios'
 
 const ProfilePage = () => {
     const userName = window.localStorage.getItem('userName')
     const token = window.localStorage.getItem('token')
-
+    const isForm = useSelector(state => state.isForm);
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
-    const [display, setDisplay] = useState(<ChangePassword/>)
+    const [display, setDisplay] = useState(<ChangePassword />)
     const [myRecommendations, setMyRecommendations] = useState('')
     const [myFriends, setMyFriends] = useState('')
     const headers = {
@@ -68,7 +70,7 @@ const ProfilePage = () => {
                     </div>
 
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setDisplay(<Friends myFriends = {myFriends} />)}
+                        onClick={() => setDisplay(<Friends myFriends={myFriends} />)}
                     >
                         <div className="w-5/6">
                             רשימת חברים
@@ -77,7 +79,7 @@ const ProfilePage = () => {
                     </button>
 
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setDisplay(<Recommendations myRecommendations = {myRecommendations}/>)}
+                        onClick={() => setDisplay(<Recommendations myRecommendations={myRecommendations} />)}
                     >
                         <div className="w-5/6">
                             ההמלצות שלי
@@ -86,7 +88,7 @@ const ProfilePage = () => {
                     </button>
 
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center mt-2 mb-8 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setDisplay(<ChangePassword/>)}
+                        onClick={() => setDisplay(<ChangePassword />)}
                     >
                         <div className="w-5/6">
                             החלף סיסמא
@@ -95,11 +97,16 @@ const ProfilePage = () => {
                     </button>
                 </div>
 
-                <div className = "w-3/5 flex bg-green-800 mr-8">
+                <div className="w-3/5 flex bg-green-800 mr-8">
                     {display}
                 </div>
-                
+
             </div>
+
+            {isForm ?
+                <Form />
+                : null
+            }
 
         </div>
     );

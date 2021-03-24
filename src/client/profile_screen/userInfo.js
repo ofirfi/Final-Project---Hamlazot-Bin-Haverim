@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
 import '../utils/style.css'
+import React, { useEffect, useState } from "react"
+import { useDispatch } from 'react-redux'
 import axios from 'axios'
-
 
 const userName = window.localStorage.getItem('userName');
 const token = window.localStorage.getItem('token');
+
+
 const headers = {
     headers: {
         Authorization: `Bearer ${token}`
@@ -14,7 +16,7 @@ const headers = {
 
 export function Friends(props) {
     const [myFriends, setmyFriends] = useState('')
- 
+
 
     useEffect(() => {
         fillFriendsList(props.myFriends);
@@ -24,62 +26,62 @@ export function Friends(props) {
     const fillFriendsList = friendsList => {
         setmyFriends('')
         let toInsert = friendsList.map(friend => (
-                <tr>
-                    <td className = "w-1/6 border">
-                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                            onClick={()=>setFriendsReliability(friend.userName,'מעט')}
-                        >
-                            מעט
+            <tr>
+                <td className="w-1/6 border">
+                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => setFriendsReliability(friend.userName, 'מעט')}
+                    >
+                        מעט
                         </button>
-                    </td>
-                    <td className = "w-1/6 border">
-                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                            onClick={()=>setFriendsReliability(friend.userName,'בינוני')}
-                        >
-                            בינוני
+                </td>
+                <td className="w-1/6 border">
+                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => setFriendsReliability(friend.userName, 'בינוני')}
+                    >
+                        בינוני
                         </button>
-                    </td>
-                    <td className = "w-1/6 border">
-                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                            onClick={()=>setFriendsReliability(friend.userName,'הרבה')}
-                        >
-                            הרבה
+                </td>
+                <td className="w-1/6 border">
+                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => setFriendsReliability(friend.userName, 'הרבה')}
+                    >
+                        הרבה
                         </button>
-                    </td>
-                    <td className = "w-1/6 border">
-                        {friend.reliability}
-                    </td>
-                    <td className = "w-1/6 border">
-                        {friend.userName}
-                    </td>
-                    <td className = "w-1/6 border">
-                        {friend.userName}
-                    </td>
-                </tr>
-            )
+                </td>
+                <td className="w-1/6 border">
+                    {friend.reliability}
+                </td>
+                <td className="w-1/6 border">
+                    {friend.userName}
+                </td>
+                <td className="w-1/6 border">
+                    {friend.userName}
+                </td>
+            </tr>
+        )
         )
         setmyFriends(toInsert)
     }
 
 
-    const setFriendsReliability = (friend,reliability) =>{
-        axios.put("http://localhost:8001/users/friends",{
+    const setFriendsReliability = (friend, reliability) => {
+        axios.put("http://localhost:8001/users/friends", {
             userName,
             friend,
             reliability
-        },headers)
-        .then(res=>{
-            window.location.reload();
-        })
-        .catch(err =>{
-            console.log(err);
-        })
+        }, headers)
+            .then(res => {
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
-    
+
 
     return (
         <div className="flex flex-col w-full text-white">
-            <div className = "self-center text-center text-2xl underline font-bold my-5">
+            <div className="self-center text-center text-2xl underline font-bold my-5">
                 החברים שלי
             </div>
             <div className="h-96 overflow-y-auto">
@@ -99,7 +101,7 @@ export function Friends(props) {
                     </tbody>
                 </table>
             </div>
-            <div className = "text-sm font-bold text-center py-2">
+            <div className="text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
             </div>
         </div>
@@ -109,7 +111,7 @@ export function Friends(props) {
 
 export function Recommendations(props) {
     const [myRecommandations, setMyRecommandations] = useState('');
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         getRecommendations(props.myRecommendations);
@@ -138,7 +140,7 @@ export function Recommendations(props) {
                 </td>
                 <td className="w-1/12 h-24 border-l border">
                     <button className="w-4/5 h-2/5 bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => editRecommendation(recommend.rId)}
+                        onClick={() => editRecommendation(recommend)}
                     >
                         ערוך
                     </button>
@@ -164,9 +166,18 @@ export function Recommendations(props) {
     }
 
 
-    const editRecommendation = () => {
-        alert('edit was clicked');
-        console.log('צריך לראות איך לממש עדכון בשרת + עדכון מקומי');
+    const editRecommendation = (recommend) => {
+        dispatch({
+            type: "SETFORMINFO",
+            payload: {
+                rId: recommend.rId,
+                name: recommend.name,
+                rate: recommend.rate,
+                comment: recommend.comment,
+                type: recommend.type,
+            }
+        })
+        dispatch({ type: "TOGGLEFORM" });
     }
 
 

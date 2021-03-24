@@ -4,6 +4,11 @@ const initialState = {
     isForm: false,
     rating: null,
     raters: null,
+    recommendationInfo: {
+        rate: 1,
+        comment: "",
+        id: ""
+    }
 }
 
 
@@ -34,6 +39,11 @@ const rootReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 isForm: !state.isForm
+            }
+        case "SETFORMINFO":
+            return {
+                ...state,
+                recommendationInfo: payload
             }
         default:
             return state

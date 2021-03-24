@@ -48,8 +48,21 @@ const MoviePage = (props) => {
     }
 
 
+    const createRecommendation = () =>{
+        dispatch({
+            type: "SETFORMINFO",
+            payload: {
+                rId: movieId,
+                name: movie.title,
+                rate: 1,
+                comment: "",
+                type: "סרט",
+            }
+        })
+        dispatch({ type: "TOGGLEFORM" })
+    }
 
-
+    
     return (
         <div className="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
@@ -109,7 +122,7 @@ const MoviePage = (props) => {
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
-                        onClick={() => dispatch({ type: "TOGGLEFORM" })}
+                        onClick={() => createRecommendation()}
                     >
                         הוסף המלצה
                         </button>
@@ -120,10 +133,10 @@ const MoviePage = (props) => {
             </div>
             {isForm ?
                 <Form
-                    rId={movieId}
-                    name={movie.title}
+
+
                     type='סרט'
-                    userName={window.localStorage.getItem('userName')}
+                    comment = ""
                 />
                 :
                 null}
