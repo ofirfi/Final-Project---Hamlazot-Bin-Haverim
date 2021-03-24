@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     required: [true,'למשתמש חייב להיות שם משתמש'],
     unique: true,
     minlength:3,
+    maxlength:16,
     trim:true,
   },
   email: {

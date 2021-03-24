@@ -1,9 +1,9 @@
-import React, { Component }  from 'react';
+import React from 'react';
 import LoginPage from './login_screen/login'
 import RegistrationPage from './registration_screen/registration'
 import PlacePage from './place_screen/place'
 import MoviePage from './movie_screen/movie'
-import UserPage from './user_screen/user'
+import UserPage from './profile_screen/profile'
 import SearchPage from './search_screen/search'
 import PageNotFound from './pageNotFound/pageNotFound'
 import { useEffect } from 'react'

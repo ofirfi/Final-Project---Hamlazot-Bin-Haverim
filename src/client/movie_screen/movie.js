@@ -20,14 +20,16 @@ const MoviePage = (props) => {
     const history = useHistory();
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
+    const [voteAverage,setvoteAverage] = useState('');
 
-    useEffect(() => {
+    useEffect(async () => {
         if (movieId > 60 && movieId < 806126) 
-            axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
+            await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
                 .then((res) => {
-                    setMovie(res.data)
-                    getGeneres(res.data)
-                    setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`)
+                    setMovie(res.data);
+                    getGeneres(res.data);
+                    setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`);
+                    setvoteAverage((res.data.vote_average /2).toFixed(1));
                 })
                 .catch(() => {
                     history.push('/404');
@@ -75,7 +77,7 @@ const MoviePage = (props) => {
                             חברים שדרגו: {raters}
                         </div>
                         <div className="text-red-700 font-black">
-                            דירוג: 5 / {rating}
+                            דירוג: 5 / {rating!==0? rating : voteAverage}
                         </div>
                     </div>
                 </div>
@@ -100,10 +102,10 @@ const MoviePage = (props) => {
 
                 <div className="flex flex-col h-40 sm:h-1/6 text-right mt-5 mx-2"> {/* Recommendations */}
                     <div className="underline mb-2">
-                        המצלות
+                        המלצות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations movieId={movieId} />
+                        <Recommendations movieId={movieId} apiAverage = {voteAverage} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
