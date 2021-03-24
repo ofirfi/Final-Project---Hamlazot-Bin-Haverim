@@ -1,23 +1,19 @@
+import '../utils/style.css'
 import React, { useEffect, useState } from "react";
-import './user.scss';
-import vr46 from './vr46.jpg'
-import { GiExitDoor } from 'react-icons/gi'
-import { FcSettings } from 'react-icons/fc'
+import { Navbar } from '../navbar/navbar'
+import BackGround from '../images/background.jpg'
+import default_user from '../images/default_user.png'
 import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
-import { useHistory } from 'react-router-dom'
-import { Friends, Recommendations, ChangePassword } from './userInfo'
+import { Friends, Recommendations, ChangePassword} from './userInfo'
 import axios from 'axios'
 
-
-
 const ProfilePage = () => {
-    const history = useHistory();
     const userName = window.localStorage.getItem('userName')
     const token = window.localStorage.getItem('token')
 
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
-    const [display, setDisplay] = useState('')
+    const [display, setDisplay] = useState(<ChangePassword/>)
     const headers = {
         headers: {
             Authorization: "Bearer " + token
@@ -27,81 +23,78 @@ const ProfilePage = () => {
 
 
     useEffect(() => {
-        getInfo()
-    }, [])
-
-
-    const getInfo = () => {
         axios.post("http://localhost:8001/users", {
             userName,
             self: true
         }, headers
         ).then(res => {
-
             setFullName(res.data.data.firstName + " " + res.data.data.lastName)
             setEmail(res.data.data.email)
         }).catch(err => {
             console.log(err)
         })
-    }
-
-
-
-
-
-    const log_out = () => {
-        alert('להתראות ' + userName + ' מקווים לראותך שוב!')
-        window.localStorage.setItem('logged', false)
-        history.push('/login')
-    }
-
-    const go_profile = () => {
-        // history.push('/profile')
-    }
-
+    }, [])
 
 
     return (
-        <div className="page">
+        <div className="flex flex-col bg-fixed items-center"
+            style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
+        >
 
-            <header className="nav">
-                <button onClick={go_profile} style={{ position: "relative", top: "20%", left: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer" }}><FcSettings style={{ fontSize: 36 }} /></button>
-                <button onClick={log_out} style={{ position: "relative", top: "20%", right: "40%", backgroundColor: "transparent", border: "none", cursor: "pointer", color: "rgb(53, 111, 123)" }}><GiExitDoor style={{ fontSize: 36 }} /></button>
-                <div style={{ position: "relative", top: "-30%" }}>
-                    <input id="mini-search-box" type="text" placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים" />
-                </div>
-            </header>
+            <Navbar />
 
-            <div className="body">
+            <div className="w-full my-16 flex flex-row-reverse">
 
-                <div className="userDetails">
-                    <img className="avatar" src={vr46} ></img>
-                    <h3 style={{ position: "relative", top: "3%", margin: "5%", color: "whitesmoke" }}> {fullName} </h3>
-                    <h4 className="h4"> {email} </h4>
-                    <h4 className="h4">  </h4>
-                    <button className="button"
+                <div className="w-1/4 flex flex-col justify-self-end items-center bg-green-800 mr-16">
+
+                    <img className="h-1 w-1 sm:h-28 sm:w-28 rounded-full mt-2 sm:mt-8 invisible sm:visible"
+                        src={default_user}
+                    />
+
+                    <div className="mt-5 h-7 text-white text-2xl">
+                        {userName}
+                    </div>
+
+                    <div className="mt-2 h-7 text-white text-lg">
+                        {fullName}
+                    </div>
+
+                    <div className="my-2 h-7 text-white text-lg">
+                        {email}
+                    </div>
+
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setDisplay(<Friends userName={userName} token={token} />)}
                     >
-                        רשימת חברים
-                        <FaUserFriends style={{ float: "left" }} />
+                        <div className="w-5/6">
+                            רשימת חברים
+                        </div>
+                        <FaUserFriends className="w-1/6 ml-2" />
                     </button>
 
-                    <button className="button"
-                        onClick={() => setDisplay(<Recommendations userName={userName} />)}
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => setDisplay(<Recommendations/>)}
                     >
-                        ההמלצות שלי
-                            <FaPenFancy style={{ float: "left" }} />
+                        <div className="w-5/6">
+                            ההמלצות שלי
+                        </div>
+                        <FaPenFancy className="w-1/6 ml-2" />
                     </button>
 
-                    <button className="button"
-                        onClick={() => setDisplay(<ChangePassword userName={userName} token={token} />)}
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center mt-2 mb-8 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => setDisplay(<ChangePassword/>)}
                     >
-                        החלף סיסמא
-                            <FaLock style={{ float: "left" }} />
+                        <div className="w-5/6">
+                            החלף סיסמא
+                        </div>
+                        <FaLock className="w-1/6 ml-2" />
                     </button>
                 </div>
 
-                {display}
+                <div className = "w-3/5 flex bg-green-800 mr-8">
+                    {display}
+                </div>
+                
             </div>
 
         </div>

@@ -79,6 +79,7 @@ export function Form(props) {
                 <div className="w-5/6 h-28 self-center text-xl flex flex-col grid">
                     <textarea className="self-center placeholder-gray-300 text-right rounded w-full h-20 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-70 resize-none"
                         placeholder="תגובה"
+                        maxlength = '300'
                         value={comment}
                         onChange={(event) => setComment(event.target.value)}
                     />

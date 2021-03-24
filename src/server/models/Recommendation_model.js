@@ -24,7 +24,7 @@ const RecommendationSchema = new mongoose.Schema({
   },
   comment:{
     type: String,
-    maxlength: [100,"התגובה ארוכה מדי (עד 100 תווים)"],
+    maxlength: [300,"התגובה ארוכה מדי (עד 300 תווים)"],
     trim:true,
     default : ""
   },

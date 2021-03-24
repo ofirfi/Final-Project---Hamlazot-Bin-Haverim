@@ -4,10 +4,10 @@ const Recommendation = require('../models/Recommendation_model'),
     AppError = require('../utils/appError');
 
 const recommendation_update = async req => {
-    const { rId, userName, type, comment, rate } = req.body;
+    const { rId, userName, comment, rate } = req.body;
     let user = await User.findOne({ userName });
     let recommend = await Recommendation.findOneAndUpdate(
-        { rId, userName: user, type },
+        { rId, userName: user },
         { comment, rate, date: Date.now() },
         { new: true, runValidators: true }
     );
@@ -88,12 +88,12 @@ module.exports = {
 
 
     delete_recommendation: catchAsync(async (req, res, next) => {
-        const { rId, userName, type } = req.body;
+        const { rId, userName } = req.body;
         let user = await User.findOne({ userName });
         if (!user)
             return next(new AppError('User was not found', 404));
 
-        const recommend = await Recommendation.findOneAndDelete({ rId, userName: user, type });
+        const recommend = await Recommendation.findOneAndDelete({ rId, userName: user });
         if (!recommend)
             return next(new AppError('Recommendation was not found', 404));
 
