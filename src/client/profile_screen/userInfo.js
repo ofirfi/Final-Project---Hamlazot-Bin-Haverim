@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import '../utils/style.css'
 import axios from 'axios'
+
 
 const userName = window.localStorage.getItem('userName');
 const token = window.localStorage.getItem('token');
@@ -10,115 +12,86 @@ const headers = {
 }
 
 
-function OldFriends() {
-    const [myFriends, setmyFriends] = useState('')
-
-    useEffect(() => {
-        axios.post("http://localhost:8001/users", {
-            userName,
-            self: true
-        }, headers
-        ).then(res => {
-            const friendsList = res.data.data.friends
-            fillFriendsList(friendsList)
-        }).catch(err => {
-            console.log(err)
-        })
-    }, [])
-
-
-    const fillFriendsList = friendsList => {
-        setmyFriends('')
-        let toInsert = friendsList.map(friend => {
-            return (
-                <tr>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}>{friend.userName}</td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}>{friend.reliability}</td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">מעט</button></td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">בינוני</button></td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">הרבה</button></td>
-                </tr>
-            )
-        })
-        setmyFriends(toInsert)
-    }
-
-
-    return (
-        <div className="box">
-            <div style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> החברים שלי </div>
-            <div className="list">
-                <table>
-                    <thead>
-                        <tr>
-                            <th className="w-1/6">שם משתמש</th>
-                            <th className="w-1/6">דירוג נוכחי</th>
-                            <th className="w-1/6"></th>
-                            <th className="w-1/6">דירוג</th>
-                            <th className="w-1/6"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {myFriends}
-                    </tbody>
-                </table>
-            </div>
-            <div style={{ position: "relative", fontSize: "10px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון - 1 סומך מעט, 5- סומך מאוד </div>
-        </div>
-    )
-}
-
-
-
-
-
-export function Friends() {
+export function Friends(props) {
     const [myFriends, setmyFriends] = useState('')
  
 
     useEffect(() => {
-        axios.post("http://localhost:8001/users", {
-            userName,
-            self: true
-        }, headers
-        ).then(res => {
-            const friendsList = res.data.data.friends
-            fillFriendsList(friendsList)
-        }).catch(err => {
-            console.log(err)
-        })
+        fillFriendsList(props.myFriends);
     }, [])
 
 
     const fillFriendsList = friendsList => {
         setmyFriends('')
-        let toInsert = friendsList.map(friend => {
-            return (
+        let toInsert = friendsList.map(friend => (
                 <tr>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}>{friend.userName}</td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}>{friend.reliability}</td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">מעט</button></td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">בינוני</button></td>
-                    <td style={{ "borderWidth": "30px", 'borderColor': "transparent", 'borderStyle': 'solid' }}><button className="listButton">הרבה</button></td>
+                    <td className = "w-1/6 border">
+                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                            onClick={()=>setFriendsReliability(friend.userName,'מעט')}
+                        >
+                            מעט
+                        </button>
+                    </td>
+                    <td className = "w-1/6 border">
+                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                            onClick={()=>setFriendsReliability(friend.userName,'בינוני')}
+                        >
+                            בינוני
+                        </button>
+                    </td>
+                    <td className = "w-1/6 border">
+                        <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                            onClick={()=>setFriendsReliability(friend.userName,'הרבה')}
+                        >
+                            הרבה
+                        </button>
+                    </td>
+                    <td className = "w-1/6 border">
+                        {friend.reliability}
+                    </td>
+                    <td className = "w-1/6 border">
+                        {friend.userName}
+                    </td>
+                    <td className = "w-1/6 border">
+                        {friend.userName}
+                    </td>
                 </tr>
             )
-        })
+        )
         setmyFriends(toInsert)
     }
 
 
+    const setFriendsReliability = (friend,reliability) =>{
+        axios.put("http://localhost:8001/users/friends",{
+            userName,
+            friend,
+            reliability
+        },headers)
+        .then(res=>{
+            window.location.reload();
+        })
+        .catch(err =>{
+            console.log(err);
+        })
+    }
+    
+
     return (
-        <div className="box">
-            <div style={{ position: "relative", top: "2%", fontSize: "20px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> החברים שלי </div>
-            <div className="list">
-                <table>
+        <div className="flex flex-col w-full text-white">
+            <div className = "self-center text-center text-2xl underline font-bold my-5">
+                החברים שלי
+            </div>
+            <div className="h-96 overflow-y-auto">
+                <table className="w-full table-fixed self-end text-center border-separate border-2">
                     <thead>
                         <tr>
-                            <th className="w-1/6">שם משתמש</th>
-                            <th className="w-1/6">דירוג נוכחי</th>
-                            <th className="w-1/6"></th>
-                            <th className="w-1/6">דירוג</th>
-                            <th className="w-1/6"></th>
+                            <th className="w-1/12"></th>
+                            <th className="w-1/12">שינוי דירוג</th>
+                            <th className="w-1/12"></th>
+                            <th className="w-1/12 border">דירוג נוכחי</th>
+                            <th className="w-3/12 border">שם מלא</th>
+                            <th className="w-3/12 border">שם משתמש</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -126,40 +99,45 @@ export function Friends() {
                     </tbody>
                 </table>
             </div>
-            <div style={{ position: "relative", fontSize: "10px", fontWeight: "bold", color: "whitesmoke", height: "0%" }}> תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון - 1 סומך מעט, 5- סומך מאוד </div>
+            <div className = "text-sm font-bold text-center py-2">
+                תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
+            </div>
         </div>
     )
 }
 
 
-
-
-
-
-
-
-
-
-export function Recommendations() {
+export function Recommendations(props) {
     const [myRecommandations, setMyRecommandations] = useState('');
 
+
     useEffect(() => {
-        getRecommendations();
+        getRecommendations(props.myRecommendations);
     }, [])
+
+
+    const getRecommendations = (myRecommendations) => {
+        if (!myRecommendations)
+            return;
+
+        setMyRecommandations('');
+        const myRecs = myRecommendations.map(recommend => createRecommendation(recommend))
+        setMyRecommandations(myRecs)
+    }
 
 
     const createRecommendation = (recommend) => {
         return (
             <tr className="overflow-y-auto">
-                <td className="w-1/12 h-24 ">
-                    <button className="w-full h-1/2 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                <td className="w-1/12 h-24 border-l border">
+                    <button className="w-4/5 h-2/5 bg-red-700 hover:bg-red-900 focus:outline-none"
                         onClick={() => deleteRecommendation(recommend.rId)}
                     >
                         מחק
                     </button>
                 </td>
-                <td className="w-1/12 h-24">
-                    <button className="w-full h-1/2 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                <td className="w-1/12 h-24 border-l border">
+                    <button className="w-4/5 h-2/5 bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => editRecommendation(recommend.rId)}
                     >
                         ערוך
@@ -185,24 +163,12 @@ export function Recommendations() {
         )
     }
 
-    const getRecommendations = () => {
-        const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
-        if (!recommendations)
-            return;
-        setMyRecommandations('');
-        const myRecs = recommendations.map(recommend => {
-            if (recommend.userName === userName)
-                return createRecommendation(recommend);
-            else
-                return "";
-        })
-        setMyRecommandations(myRecs)
-    }
 
     const editRecommendation = () => {
         alert('edit was clicked');
         console.log('צריך לראות איך לממש עדכון בשרת + עדכון מקומי');
     }
+
 
     const deleteRecommendation = (rId) => {
         alert('delete was clicked');
@@ -217,16 +183,14 @@ export function Recommendations() {
     }
 
 
-
-
-
     return (
         <div className="flex flex-col w-full text-white">
             <div className="self-center text-center text-2xl underline font-bold my-5">
                 ההמלצות שלי
             </div>
+
             <div className="h-96 overflow-y-auto">
-                <table className="table-fixed self-end bg-red-600 text-center border-separate border">
+                <table className="table-fixed self-end text-center border-separate">
                     <thead>
                         <tr>
                             <td className="w-1/12"></td>
@@ -243,7 +207,6 @@ export function Recommendations() {
                 </table>
             </div>
 
-
             <div className="text-sm font-bold text-center py-2">
                 תוכל לערוך ולדרג מחדש את ההמלצות שלך
             </div>
@@ -251,8 +214,6 @@ export function Recommendations() {
     )
 
 }
-
-
 
 
 export function ChangePassword() {

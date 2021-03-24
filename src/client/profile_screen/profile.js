@@ -14,6 +14,8 @@ const ProfilePage = () => {
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [display, setDisplay] = useState(<ChangePassword/>)
+    const [myRecommendations, setMyRecommendations] = useState('')
+    const [myFriends, setMyFriends] = useState('')
     const headers = {
         headers: {
             Authorization: "Bearer " + token
@@ -28,6 +30,8 @@ const ProfilePage = () => {
             self: true
         }, headers
         ).then(res => {
+            setMyRecommendations(res.data.data.recommendations);
+            setMyFriends(res.data.data.friends)
             setFullName(res.data.data.firstName + " " + res.data.data.lastName)
             setEmail(res.data.data.email)
         }).catch(err => {
@@ -64,7 +68,7 @@ const ProfilePage = () => {
                     </div>
 
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setDisplay(<Friends userName={userName} token={token} />)}
+                        onClick={() => setDisplay(<Friends myFriends = {myFriends} />)}
                     >
                         <div className="w-5/6">
                             רשימת חברים
@@ -73,7 +77,7 @@ const ProfilePage = () => {
                     </button>
 
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setDisplay(<Recommendations/>)}
+                        onClick={() => setDisplay(<Recommendations myRecommendations = {myRecommendations}/>)}
                     >
                         <div className="w-5/6">
                             ההמלצות שלי
