@@ -131,17 +131,7 @@ const MoviePage = (props) => {
                 </div>
 
             </div>
-            {isForm ?
-                <Form
-
-
-                    type='סרט'
-                    comment = ""
-                />
-                :
-                null}
-
-
+            {isForm ? <Form/> : null}
         </div>
     )
 

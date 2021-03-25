@@ -2,6 +2,7 @@ const initialState = {
     logged: false,
     recommendations: null,
     isForm: false,
+    isFriendSearch: false,
     rating: null,
     raters: null,
     recommendationInfo: {
@@ -39,6 +40,11 @@ const rootReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 isForm: !state.isForm
+            }
+        case "TOGGLEFRIENDSEARCH":
+            return {
+                ...state,
+                isFriendSearch: !state.isFriendSearch
             }
         case "SETFORMINFO":
             return {

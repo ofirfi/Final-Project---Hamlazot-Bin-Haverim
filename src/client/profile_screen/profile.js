@@ -7,12 +7,15 @@ import default_user from '../images/default_user.png'
 import { Navbar } from '../navbar/navbar'
 import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
 import { Friends, Recommendations, ChangePassword } from './userInfo'
+import { Searcher } from './searchFriends'
+
 import axios from 'axios'
 
 const ProfilePage = () => {
     const userName = window.localStorage.getItem('userName')
     const token = window.localStorage.getItem('token')
     const isForm = useSelector(state => state.isForm);
+    const isFriendSearch = useSelector(state => state.isFriendSearch);
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [display, setDisplay] = useState(<ChangePassword />)
@@ -103,11 +106,8 @@ const ProfilePage = () => {
 
             </div>
 
-            {isForm ?
-                <Form />
-                : null
-            }
-
+            {isForm ? <Form /> : null}
+            { isFriendSearch ? <Searcher/> : null }
         </div>
     );
 }

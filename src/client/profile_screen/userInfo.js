@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
+
 const userName = window.localStorage.getItem('userName');
 const token = window.localStorage.getItem('token');
 
@@ -16,7 +17,7 @@ const headers = {
 
 export function Friends(props) {
     const [myFriends, setmyFriends] = useState('')
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fillFriendsList(props.myFriends);
@@ -103,7 +104,7 @@ export function Friends(props) {
 
 
     const searchFriend = () =>{
-
+        dispatch({type:"TOGGLEFRIENDSEARCH"})
     }
 
     return (
@@ -131,7 +132,7 @@ export function Friends(props) {
             </div>
             <div className="flex flex-col self-center w-1/6 h-10">
             <button className="w-3/4 h-full self-center bg-blue-500 rounded-full"
-                onClick={()=>searchFriend()}
+                onClick={()=> dispatch({type:"TOGGLEFRIENDSEARCH"})}
             >
                 חפש חבר
             </button>
@@ -139,6 +140,7 @@ export function Friends(props) {
             <div className="text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
             </div>
+            
         </div>
     )
 }
