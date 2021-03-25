@@ -28,31 +28,38 @@ export function Friends(props) {
         let toInsert = friendsList.map(friend => (
             <tr>
                 <td className="w-1/6 border">
+                    <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
+                        onClick={() => deleteFriend(friend.userName)}
+                    >
+                        מחק
+                    </button>
+                </td>
+                <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setFriendsReliability(friend.userName, 'מעט')}
                     >
                         מעט
-                        </button>
+                    </button>
                 </td>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setFriendsReliability(friend.userName, 'בינוני')}
                     >
                         בינוני
-                        </button>
+                    </button>
                 </td>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setFriendsReliability(friend.userName, 'הרבה')}
                     >
                         הרבה
-                        </button>
+                    </button>
                 </td>
                 <td className="w-1/6 border">
                     {friend.reliability}
                 </td>
                 <td className="w-1/6 border">
-                    {friend.userName}
+                    {friend.fullName}
                 </td>
                 <td className="w-1/6 border">
                     {friend.userName}
@@ -79,6 +86,26 @@ export function Friends(props) {
     }
 
 
+    const deleteFriend = friend => {
+        alert('delete was clicked');
+        console.log('צריך לראות איך לממש עדכון מקומי');
+        // axios.delete("http://localhost:8001/users/friends",
+        //     { 
+        //         headers: { Authorization: `Bearer ${token}` },
+        //         data: { userName, friend }
+        //     })
+        //     .then(res => { 
+        //         alert('was deleted...');
+        //     })
+        //     .catch(err => {})
+
+    }
+
+
+    const searchFriend = () =>{
+
+    }
+
     return (
         <div className="flex flex-col w-full text-white">
             <div className="self-center text-center text-2xl underline font-bold my-5">
@@ -88,18 +115,26 @@ export function Friends(props) {
                 <table className="w-full table-fixed self-end text-center border-separate border-2">
                     <thead>
                         <tr>
+                            <th className ="w-1/12 border-r">מחיקה</th>
                             <th className="w-1/12"></th>
                             <th className="w-1/12">שינוי דירוג</th>
                             <th className="w-1/12"></th>
-                            <th className="w-1/12 border">דירוג נוכחי</th>
-                            <th className="w-3/12 border">שם מלא</th>
-                            <th className="w-3/12 border">שם משתמש</th>
+                            <th className="w-1/12 border-l">דירוג נוכחי</th>
+                            <th className="w-3/12 border-l">שם מלא</th>
+                            <th className="w-3/12 border-l">שם משתמש</th>
                         </tr>
                     </thead>
                     <tbody>
                         {myFriends}
                     </tbody>
                 </table>
+            </div>
+            <div className="flex flex-col self-center w-1/6 h-10">
+            <button className="w-3/4 h-full self-center bg-blue-500 rounded-full"
+                onClick={()=>searchFriend()}
+            >
+                חפש חבר
+            </button>
             </div>
             <div className="text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
@@ -118,7 +153,7 @@ export function Recommendations(props) {
     }, [])
 
 
-    const getRecommendations = (myRecommendations) => {
+    const getRecommendations = myRecommendations => {
         if (!myRecommendations)
             return;
 
@@ -128,7 +163,7 @@ export function Recommendations(props) {
     }
 
 
-    const createRecommendation = (recommend) => {
+    const createRecommendation = recommend => {
         return (
             <tr className="overflow-y-auto">
                 <td className="w-1/12 h-24 border-l border">
@@ -166,7 +201,7 @@ export function Recommendations(props) {
     }
 
 
-    const editRecommendation = (recommend) => {
+    const editRecommendation = recommend => {
         dispatch({
             type: "SETFORMINFO",
             payload: {
@@ -181,9 +216,9 @@ export function Recommendations(props) {
     }
 
 
-    const deleteRecommendation = (rId) => {
+    const deleteRecommendation = rId => {
         alert('delete was clicked');
-        console.log('צריך לראות איך לממש מחיקה בשרת + עדכון מקומי');
+        console.log('צריך לראות איך לממש עדכון מקומי');
 
         // axios.delete("http://localhost:8001/recommendations",
         //     {

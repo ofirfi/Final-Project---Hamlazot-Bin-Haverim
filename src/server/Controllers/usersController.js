@@ -10,11 +10,14 @@ const get_Friends_list = async (friendsList,personal_profile) => {
     let friends = []
     for (let i = 0; i < friendsList.length; i++) {
         const user = await User.findById(friendsList[i].userRef);
-        let userName = user.userName;
-        if(personal_profile){
-            let reliability = friendsList[i].reliability;
-            friends.push({ userName, reliability });
-        } else
+
+        if(personal_profile)
+            friends.push({ 
+                userName: user.userName,
+                reliability: friendsList[i].reliability,
+                fullName: `${user.first_name} ${user.last_name}`
+            });
+        else
             friends.push({ userName});
     }
     friends.sort((friend1,friend2) => friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0)
