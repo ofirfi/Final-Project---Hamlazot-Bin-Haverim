@@ -11,7 +11,7 @@ export function Recommendations(props) {
         setMovieRecommendations("")
         let closeness = props.closeness;
         if(!closeness)
-            closeness = 2;
+            closeness = 1;
 
         await makeRecommendationsInfo(props.movieId,closeness)
         .then(res =>{

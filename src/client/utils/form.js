@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 
-export function Form() {
+export function Form(props) {
     const recommendationInfo = useSelector(state => state.recommendationInfo);
     const [rate, setRate] = useState(recommendationInfo.rate);
     const [comment, setComment] = useState(recommendationInfo.comment);
@@ -97,7 +97,7 @@ export function Form() {
                     <button className="w-1/4 h-full bg-blue-400 rounded-full hover:bg-blue-700 focus:outline-none"
                         onClick={addRecommendation}
                     >
-                        הוסף
+                        {props.btnLabel}
                         </button>
                 </div>
 

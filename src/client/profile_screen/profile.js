@@ -106,7 +106,7 @@ const ProfilePage = () => {
 
             </div>
 
-            {isForm ? <Form /> : null}
+            {isForm ? <Form btnLabel = "ערוך"/> : null}
             { isFriendSearch ? <Searcher/> : null }
         </div>
     );

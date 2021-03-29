@@ -103,10 +103,6 @@ export function Friends(props) {
     }
 
 
-    const searchFriend = () =>{
-        dispatch({type:"TOGGLEFRIENDSEARCH"})
-    }
-
     return (
         <div className="flex flex-col w-full text-white">
             <div className="self-center text-center text-2xl underline font-bold my-5">

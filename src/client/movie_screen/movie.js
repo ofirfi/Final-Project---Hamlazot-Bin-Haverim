@@ -118,7 +118,7 @@ const MoviePage = (props) => {
                         המלצות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations movieId={movieId} apiAverage = {voteAverage} />
+                        <Recommendations movieId={movieId} closeness = {1} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
@@ -131,7 +131,7 @@ const MoviePage = (props) => {
                 </div>
 
             </div>
-            {isForm ? <Form/> : null}
+            {isForm ? <Form btnLabel = "הוסף"/> : null}
         </div>
     )
 
