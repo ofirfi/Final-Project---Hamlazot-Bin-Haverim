@@ -28,7 +28,6 @@ export function Recommendations(props) {
             let strangersRecommendations = res.strangersRecommendations;
             for (let j = 0; j < strangersRecommendations.length; j++)
                 createRecommendation(strangersRecommendations[j],false);
-            
         })
     }, [])
 

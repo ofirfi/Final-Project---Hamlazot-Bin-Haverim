@@ -3,17 +3,20 @@ import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
 
+
 export function Searcher() {
     const dispatch = useDispatch();
     const [results, setResults] = useState('');
     const [input, setInput] = useState('');
-    let [rating,setRating] = useState('');
+    // const [reliabilities,setReliabilities] = useState([]);
+    let reliabilities = [];
+
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
         }
     }
-    const head = <div className="flex flex-row-reverse font-bold  my-2">
+    const head = <div className="flex flex-row-reverse font-bold h-10 my-2">
         <div className="w-1/6 pr-10">#</div>
         <div className="w-1/6 underline">משתמש</div>
         <div className="w-1/6 underline">פרטי</div>
@@ -31,30 +34,33 @@ export function Searcher() {
             return;
         }
         setResults('');
+        reliabilities = [];
         axios.post(`http://localhost:8001/users/friends/search/${input}`, {}, headers)
             .then(res => {
                 if (res.data.data.data.length === 0) {
                     setResults(<div className="">לא נמצאו תוצאות</div>);
                     return;
-                }
-                fillResults(res.data.data.data)
+                }   
+                fillResults(res.data.data.data);
             })
             .catch(err => { })
     }
 
 
-    const fillResults = (users) => {
+    const fillResults = users => {
         setResults(old => [...old, head])
+
         
-        setRating(old => [...old,[]]);
-        for (let i = 0; i < users.length; i++)
+        for (let i = 0; i < users.length; i++){
+            reliabilities.push('מעט');
             fillUser(users[i], i);
+        }
     }
 
+    
     const fillUser = (user, i) => {
-        setRating(old => [...old,1]);
         let insertion =
-            <div className="flex flex-row-reverse h-10 my-2 hover:bg-green-700">
+            <div className="flex flex-row-reverse h-10 text-sm  hover:bg-green-700">
                 <div className="w-1/6 pr-10 grid items-center">{i + 1}</div>
                 <div className="w-1/6 grid items-center">{user.userName}</div>
                 <div className="w-1/6 grid items-center">{user.first_name}</div>
@@ -63,32 +69,56 @@ export function Searcher() {
                 <div className="w-1/6 grid items-center">
 
                     <lab className="self-right justify-end">
-
-                        <select className="mr-2 w-16 text-black text-center"
-                            value={rating[i]}
-                            onChange={event => rating[i] = event.target.value}
+                        <select className=" w-18 text-black text-center"
+                            value={reliabilities[i]}
+                            // onChange={event => reliabilities[i] = event.target.value}
+                            onChange={event => changeSelect(event.target.value,i)}
                         >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                         בחר דירוג
+                            <option value="מעט"> מעט </option>
+                            <option value="בינוני">בינוני</option>
+                            <option value="הרבה">הרבה</option>
+                        </select>       
                     </lab>
 
 
                 </div>
                 <div className="w-1/6 grid justify-items-end  items-center flex flex-col">
                     <button className="w-1/3 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => { }}
+                        onClick={() => addFriend(user.userName,i)}
                     >
                         הוסף
                     </button>
                 </div>
             </div>
-        setResults(old => [...old, insertion])
+        setResults(old => [...old, insertion]);
     }
+
+
+    const changeSelect = (value,i) =>{
+        // let r = [...reliabilities];
+        // r[i] = value;
+        // setReliabilities(r);
+        reliabilities[i] = value;
+    }
+
+    const addFriend = (friend,i) =>{
+        console.log(reliabilities[i]);
+        axios.post(`http://localhost:8001/users/friends/`,{
+            userName: window.localStorage.getItem('userName'),
+            friend,
+            reliability:reliabilities[i]
+        },headers)
+        .then(res =>{
+            alert(`${friend} התווסף לרשימת החברים שלך`);
+            //disable clicking
+        })
+        .catch(err =>{
+            alert(`לא ניתן להוסיף את ${friend}, ייתכן שנמצא כבר ברשימת החברים שלך`)
+        })
+
+    }
+
+
 
     return (
         <div className="grid flex fixed w-full h-full block  bg-gray-400 bg-opacity-80 ">
@@ -123,7 +153,7 @@ export function Searcher() {
 
                 <div className="flex justify-around w-full h-1/6 text-white">
                     <button className="w-1/12 h-2/3 bg-blue-500 rounded-full self-center hover:bg-blue-700 focus:outline-none"
-                        onClick={() => dispatch({ type: "TOGGLEFRIENDSEARCH" })}
+                        onClick={() => window.location.reload()}
                     >
                         סגור
                     </button>

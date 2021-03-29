@@ -44,9 +44,8 @@ const makeInfo = async (userInfo, rId, closeness = 1) => {
     let strangersRec = strangersResults.recs
     if (!isRated) {
         results.rate = strangersResults.rate;
-        results.raters = strangersResults.raters;
+        results.raters = 0;
     }
-
 
     return {
         myRecommendation: myRec,
@@ -115,8 +114,8 @@ function getRank1Friends(rId, friends) {
                 reliability: friends[i].reliability,
                 weight: 1
             }
+            randomRecIndex = index;
         }
-        randomRecIndex = index;
     }
     return { friendsRecs, ratingList, randomRecIndex };
 }
@@ -200,7 +199,7 @@ const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
         nextPos++;
         index++;
     }
-
+    console.log(index,recommendations[index].rId, rId);
     if (isRated)
         return { recs: strangers };
 
@@ -221,6 +220,7 @@ const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
  * else returns -1.
  */
 const getStartingPosition = (rId, index, isRated) => {
+    console.log(index);
     if (isRated) {
         while (index >= 0 && recommendations[index].rId === rId)
             index--;
