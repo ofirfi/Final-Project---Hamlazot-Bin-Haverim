@@ -18,7 +18,10 @@ const get_Friends_list = async (friendsList,personal_profile) => {
                 fullName: `${user.first_name} ${user.last_name}`
             });
         else
-            friends.push({ userName});
+            friends.push({ 
+                userName: user.userName,
+                fullName: `${user.first_name} ${user.last_name}`
+            });
     }
     friends.sort((friend1,friend2) => friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0)
     return friends
@@ -73,11 +76,11 @@ module.exports = {
         let user = await User.findOne({ userName: req.body.userName });
         if(!user)
             return next(new AppError('User was not found', 404));
-
+            
         const friends = await get_Friends_list(user.friendsList.sort(),req.body.self);
-
+    
         const recommendations = await get_Recommendations_list(user.recommendationsList);
-        
+
         const data =  make_Data(user,friends,recommendations,req.body.self);
         
         send_Data(res,data,200);

@@ -3,7 +3,8 @@ import LoginPage from './login_screen/login'
 import RegistrationPage from './registration_screen/registration'
 import PlacePage from './place_screen/place'
 import MoviePage from './movie_screen/movie'
-import UserPage from './profile_screen/profile'
+import ProfilePage from './profile_screen/profile'
+import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
 import PageNotFound from './pageNotFound/pageNotFound'
 import { useEffect } from 'react'
@@ -39,7 +40,8 @@ const Pages = () => {
                     <Route exact path="/signUp" component={RegistrationPage} />
                     <Route exact path="/place" component={PlacePage} />
                     <Route exact path="/movie/:id" component={MoviePage} />
-                    <Route exact path="/profile" component={UserPage} />
+                    <Route exact path="/profile" component={ProfilePage} />
+                    <Route exact path="/user/:userName" component={UserPage} />
                     <Redirect to="/404" />
                 </Switch>
             ) : (

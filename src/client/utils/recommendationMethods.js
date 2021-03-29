@@ -18,7 +18,7 @@ export async function makeRecommendationsInfo(rId, closeness = 1) {
         self: true
     }, headers)
         .then(async res => makeInfo(res.data.data, rId, closeness))
-        .catch(err => console.log(err))
+        .catch(err => {})
 
     return results;
 }
@@ -33,14 +33,14 @@ const makeInfo = async (userInfo, rId, closeness = 1) => {
 
     let { friendsRecs, ratingList, randomRecIndex } = await getFriendsRecommendations(rId, userInfo.friends, closeness);
 
-
     let results = calculateRating(ratingList);
+
     let isRated = true;
     if (results.raters === 0)
         isRated = false;
 
-
     let strangersResults = await getStangersRecommendations(rId, friendsRecs, randomRecIndex, isRated);
+
     let strangersRec = strangersResults.recs
     if (!isRated) {
         results.rate = strangersResults.rate;
@@ -82,7 +82,7 @@ async function getFriendsRecommendations(rId, friends, closeness) {
     let friendsRecs = results.friendsRecs;
     let ratingList = results.ratingList;
     let randomRecIndex = results.randomRecIndex;
-
+    
     if (closeness === 2) {
         let res = await getRank2Friends(rId, friends, friendsRecs, ratingList);
         friendsRecs = res.friendsRecs;
@@ -135,7 +135,7 @@ async function getRank2Friends(rId, friends, friendsRecs, ratingList) {
             self: true
         }, headers)
             .then(res => res.data.data)
-            .catch(err => console.log(err))
+            .catch(err => {})
 
 
         for (let j = 0; j < res.friends.length; j++) {
@@ -199,15 +199,15 @@ const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
         nextPos++;
         index++;
     }
-    console.log(index,recommendations[index].rId, rId);
+
     if (isRated)
         return { recs: strangers };
 
-    let results = calculateRating(ratingList);
+    let results2 = calculateRating(ratingList);
 
     return {
-        rate: results.rate,
-        raters: results.raters,
+        rate: results2.rate,
+        raters: results2.raters,
         recs: strangers
     };
 
@@ -220,7 +220,7 @@ const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
  * else returns -1.
  */
 const getStartingPosition = (rId, index, isRated) => {
-    console.log(index);
+
     if (isRated) {
         while (index >= 0 && recommendations[index].rId === rId)
             index--;
