@@ -17,8 +17,8 @@ const headers = {
 
 export function Friends(props) {
     const [myFriends, setmyFriends] = useState('')
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
     useEffect(() => {
         fillFriendsList(props.myFriends);
     }, [])
@@ -26,7 +26,8 @@ export function Friends(props) {
 
     const fillFriendsList = friendsList => {
         setmyFriends('')
-        let toInsert = friendsList.map(friend => (
+
+        let toInsert = friendsList.map((friend, index) =>
             <tr>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
@@ -37,26 +38,26 @@ export function Friends(props) {
                 </td>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'מעט')}
+                        onClick={() => setFriendsReliability(friend.userName, 'מעט', index)}
                     >
                         מעט
                     </button>
                 </td>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'בינוני')}
+                        onClick={() => setFriendsReliability(friend.userName, 'בינוני', index)}
                     >
                         בינוני
                     </button>
                 </td>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'הרבה')}
+                        onClick={() => setFriendsReliability(friend.userName, 'הרבה', index)}
                     >
                         הרבה
                     </button>
                 </td>
-                <td className="w-1/6 border">
+                <td id={index} className="w-1/6 border">
                     {friend.reliability}
                 </td>
                 <td className="w-1/6 border">
@@ -67,20 +68,19 @@ export function Friends(props) {
                 </td>
             </tr>
         )
-        )
         setmyFriends(toInsert)
+
+
     }
 
 
-    const setFriendsReliability = (friend, reliability) => {
+    const setFriendsReliability = (friend, reliability, i) => {
         axios.put("http://localhost:8001/users/friends", {
             userName,
             friend,
             reliability
         }, headers)
-            .then(res => {
-                window.location.reload();
-            })
+            .then(res => document.getElementById(i).innerHTML = reliability)
             .catch(err => {
                 console.log(err);
             })
@@ -112,7 +112,7 @@ export function Friends(props) {
                 <table className="w-full table-fixed self-end text-center border-separate border-2">
                     <thead>
                         <tr>
-                            <th className ="w-1/12 border-r">מחיקה</th>
+                            <th className="w-1/12 border-r">מחיקה</th>
                             <th className="w-1/12"></th>
                             <th className="w-1/12">שינוי דירוג</th>
                             <th className="w-1/12"></th>
@@ -127,16 +127,16 @@ export function Friends(props) {
                 </table>
             </div>
             <div className="flex flex-col self-center w-1/6 h-10">
-            <button className="w-3/4 h-full self-center bg-blue-500 rounded-full"
-                onClick={()=> dispatch({type:"TOGGLEFRIENDSEARCH"})}
-            >
-                חפש חבר
+                <button className="w-3/4 h-full self-center bg-blue-500 rounded-full"
+                    onClick={() => dispatch({ type: "TOGGLEFRIENDSEARCH" })}
+                >
+                    חפש חבר
             </button>
             </div>
             <div className="text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
             </div>
-            
+
         </div>
     )
 }
@@ -353,3 +353,4 @@ export function ChangePassword() {
         </div>
     )
 }
+

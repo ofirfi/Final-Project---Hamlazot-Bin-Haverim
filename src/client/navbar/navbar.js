@@ -45,7 +45,7 @@ export function Navbar(props) {
 
 
 return (
-    <div className="flex items-start h-36 sm:h-72 w-full"
+    <div className="flex items-start h-28 sm:h-28 lg:h-52 w-full"
         style={{ backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
     >
         <div className="invisible sm:visible w-full flex justify-end self-start space-x-2 mt-8 mr-5 ">
