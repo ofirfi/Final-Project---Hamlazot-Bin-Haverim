@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
-
+let rels = [];
 
 export function Searcher() {
     const dispatch = useDispatch();
@@ -50,8 +50,11 @@ export function Searcher() {
     const fillResults = users => {
         setResults(old => [...old, head])
 
+        rels = [];      
+        for (let i = 0; i < users.length; i++)  
+            rels[i] = "מעט";
         
-        for (let i = 0; i < users.length; i++){
+            for (let i = 0; i < users.length; i++){
             reliabilities.push('מעט');
             fillUser(users[i], i);
         }
@@ -62,15 +65,15 @@ export function Searcher() {
         let insertion =
             <div className="flex flex-row-reverse h-10 text-sm  hover:bg-green-700">
                 <div className="w-1/6 pr-10 grid items-center">{i + 1}</div>
-                <div className="w-1/6 grid items-center">{user.userName}</div>
+                <div id = {i+i}className="w-1/6 grid items-center">{user.userName}</div>
                 <div className="w-1/6 grid items-center">{user.first_name}</div>
                 <div className="w-1/6 grid items-center">{user.last_name}</div>
 
                 <div className="w-1/6 grid items-center">
 
                     <lab className="self-right justify-end">
-                        <select className=" w-18 text-black text-center"
-                            value={reliabilities[i]}
+                        <select id = {i} className=" w-18 text-black text-center"
+                            value={rels[i]}
                             // onChange={event => reliabilities[i] = event.target.value}
                             onChange={event => changeSelect(event.target.value,i)}
                         >
@@ -97,16 +100,19 @@ export function Searcher() {
     const changeSelect = (value,i) =>{
         // let r = [...reliabilities];
         // r[i] = value;
-        // setReliabilities(r);
-        reliabilities[i] = value;
+        // setReliabilities(r);)
+        // document.getElementById(i).value = value;
+        rels[i] = value
+        // console.log(document.getElementById(i))
+        // reliabilities[i] = value;
     }
 
     const addFriend = (friend,i) =>{
-        console.log(reliabilities[i]);
+        // console.log(reliabilities[i]);
         axios.post(`http://localhost:8001/users/friends/`,{
             userName: window.localStorage.getItem('userName'),
             friend,
-            reliability:reliabilities[i]
+            reliability:rels[i]
         },headers)
         .then(res =>{
             alert(`${friend} התווסף לרשימת החברים שלך`);
@@ -115,6 +121,7 @@ export function Searcher() {
         .catch(err =>{
             alert(`לא ניתן להוסיף את ${friend}, ייתכן שנמצא כבר ברשימת החברים שלך`)
         })
+        console.log(rels);
 
     }
 
@@ -145,7 +152,7 @@ export function Searcher() {
 
                 </div>
 
-                <div className="flex flex-col w-full text-xl text-right mt-3 h-96 self-start grid overflow-y-auto border">
+                <div className="flex flex-col w-full text-xl text-right mt-3 h-96 self-start  overflow-y-auto border">
                     {results}
                 </div>
 

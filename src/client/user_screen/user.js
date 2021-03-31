@@ -64,7 +64,7 @@ const UserPage = (props) =>{
                         >
                             {showFriends? 'הסתר רשימת חברים': 'הצג רשימת חברים'}</button>
                     </div>
-                    <div>
+                    <div className = "w-full">
                         {showFriends?<Friends myFriends={myFriends} />:null}
                     </div>
                    
@@ -78,7 +78,7 @@ const UserPage = (props) =>{
                         >
                             {showRecommendations? 'הסתר רשימת המלצות': 'הצג רשימת המלצות'}</button>
                     </div>
-                    <div>
+                    <div className = "w-full">
                         {showRecommendations?<Recommendations myRecommendations={myRecommendations} />:null}
                     </div>
                 </div>
