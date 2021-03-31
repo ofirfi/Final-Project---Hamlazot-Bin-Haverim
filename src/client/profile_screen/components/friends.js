@@ -1,13 +1,14 @@
-import {useState,useEffect} from 'react'
-import {useDispatch} from 'react-redux'
+import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
 
 
-export function Friends(props) {
-    const [myFriends, setmyFriends] = useState('')
+export function Friends() {
+    const dispatch = useDispatch();
     const userName = window.localStorage.getItem('userName');
     const token = window.localStorage.getItem('token')
+    const [myFriends, setmyFriends] = useState('')
     const headers = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -15,20 +16,23 @@ export function Friends(props) {
     }
 
 
-    const dispatch = useDispatch();
     useEffect(() => {
-        fillFriendsList(props.myFriends);
+        axios.post("http://localhost:8001/users", {
+            userName,
+            self: true
+        }, headers)
+            .then(res => fillFriendsList(res.data.data.friends))
+            .catch(err => console.log(err))
     }, [])
 
 
     const fillFriendsList = friendsList => {
         setmyFriends('')
-
         let toInsert = friendsList.map((friend, index) =>
-            <tr id = {`a${index}`}>
+            <tr id={`a${index}`}>
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
-                        onClick={() => deleteFriend(friend.userName,index)}
+                        onClick={() => deleteFriend(friend.userName, index)}
                     >
                         מחק
                     </button>
@@ -66,35 +70,30 @@ export function Friends(props) {
             </tr>
         )
         setmyFriends(toInsert)
-
-
     }
 
 
     const setFriendsReliability = (friend, reliability, i) => {
-        console.log(myFriends)
         axios.put("http://localhost:8001/users/friends", {
             userName,
             friend,
             reliability
         }, headers)
             .then(res => document.getElementById(i).innerHTML = reliability)
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(err => console.log(err))
     }
 
 
-    const deleteFriend = (friend,index) => {
+    const deleteFriend = (friend, index) => {
         axios.delete("http://localhost:8001/users/friends",
-            { 
+            {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { userName, friend }
             })
-            .then(res => { 
+            .then(res => {
                 document.getElementById(`a${index}`).remove();
             })
-            .catch(err => {})
+            .catch(err => { })
     }
 
 

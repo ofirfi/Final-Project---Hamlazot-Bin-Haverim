@@ -3,10 +3,10 @@ import { useState } from 'react'
 import axios from 'axios'
 
 export function ChangePassword() {
+    const userName = window.localStorage.getItem('userName');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const userName = window.localStorage.getItem('userName');
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
