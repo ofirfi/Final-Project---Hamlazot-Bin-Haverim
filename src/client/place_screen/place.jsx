@@ -1,6 +1,5 @@
 import '../utils/style.css'
 import React from "react";
-import './place.scss';
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
 import { FcSettings } from 'react-icons/fc'
