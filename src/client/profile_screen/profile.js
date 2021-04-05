@@ -48,33 +48,35 @@ const ProfilePage = () => {
 
 
     return (
-        <div className="flex flex-col bg-fixed items-center"
+        <div className="flex flex-col bg-fixed items-center min-h-full"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
         >
 
             <Navbar />
 
-            <div className="w-full my-16 flex flex-row-reverse">
+            <div className="w-full my-5 md:my-16 flex flex-col md:flex-row-reverse">
 
-                <div className="w-1/4 flex flex-col justify-self-end items-center bg-green-800 mr-16">
+                <div className="w-full md:w-1/4 flex flex-row-reverse md:flex-col justify-self-start md:justify-self-end items-center bg-green-800 md:mr-16">
 
-                    <img className="h-1 w-1 sm:h-28 sm:w-28 rounded-full mt-2 sm:mt-8 invisible sm:visible"
+                    <img className="h-0 w-0 sm:h-28 sm:w-28 rounded-full  md:mt-8 invisible sm:visible"
                         src={default_user}
                     />
 
-                    <div className="mt-5 h-7 text-white text-2xl">
-                        {userName}
-                    </div>
+                    <div className="w-full text-center">
+                        <div className="mt-5 h-7 text-white text-xl md:text-2xl">
+                            {userName}
+                        </div>
 
-                    <div className="mt-2 h-7 text-white text-lg">
-                        {fullName}
-                    </div>
+                        <div className="mt-2 h-7 text-white text-md md:text-lg">
+                            {fullName}
+                        </div>
 
-                    <div className="my-2 h-7 text-white text-lg">
-                        {email}
+                        <div className="my-2 h-7 text-white text-md md:text-lg">
+                            {email}
+                        </div>
                     </div>
-
-                    <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+               
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 rounded-full text-xs md:text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setDisplay(<Friends myFriends={myFriends} />)}
                     >
                         <div className="w-5/6">
@@ -83,7 +85,7 @@ const ProfilePage = () => {
                         <FaUserFriends className="w-1/6 ml-2" />
                     </button>
 
-                    <button className="w-2/3 h-10 flex flex-row-reverse items-center my-2 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 rounded-full text-xs md:text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setDisplay(<Recommendations myRecommendations={myRecommendations} />)}
                     >
                         <div className="w-5/6">
@@ -92,7 +94,7 @@ const ProfilePage = () => {
                         <FaPenFancy className="w-1/6 ml-2" />
                     </button>
 
-                    <button className="w-2/3 h-10 flex flex-row-reverse items-center mt-2 mb-8 rounded-full text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                    <button className="w-2/3 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 md:mt-2 md:mb-8 rounded-full text-xs md:text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setDisplay(<ChangePassword />)}
                     >
                         <div className="w-5/6">
@@ -102,14 +104,14 @@ const ProfilePage = () => {
                     </button>
                 </div>
 
-                <div className="w-3/5 flex bg-green-800 mr-8">
+                <div className="my-5 md:my-0 w-2/3 self-center md:w-3/5 lg:w-3/5 xl:w-1/2 flex bg-green-800 mr-0 md:mr-8">
                     {display}
                 </div>
 
             </div>
 
-            {isForm ? <Form btnLabel = "ערוך"/> : null}
-            { isFriendSearch ? <Searcher/> : null }
+            {isForm ? <Form btnLabel="ערוך" /> : null}
+            { isFriendSearch ? <Searcher /> : null}
         </div>
     );
 }

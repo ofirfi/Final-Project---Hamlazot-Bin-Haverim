@@ -2,6 +2,7 @@ import '../../utils/style.css'
 import { useState } from 'react'
 import axios from 'axios'
 
+
 export function ChangePassword() {
     const userName = window.localStorage.getItem('userName');
     const [currentPassword, setCurrentPassword] = useState('');
@@ -12,6 +13,7 @@ export function ChangePassword() {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
         }
     }
+
 
     const validationCheck = () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
@@ -29,11 +31,13 @@ export function ChangePassword() {
         return true;
     }
 
+
     const clearFields = () => {
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
     }
+
 
     const changePassword = () => {
         if (!validationCheck())
@@ -65,9 +69,9 @@ export function ChangePassword() {
                 החלף סיסמא
             </div>
 
-            <div className="flex flex-col w-1/4 mt-10 self-center items-center text-lg">
+            <div className="flex flex-col w-1/2 sm:w-2/5 mt-2 md:mt-10 self-center items-center text-sm md:text-md">
 
-                <input className="w-5/6 h-8 my-6 rounded-xl text-center focus:outline-none"
+                <input className="w-5/6 h-8 my-3 md:my-6 rounded-xl text-center focus:outline-none"
                     placeholder="סיסמא נוכחית"
                     type="password"
                     onChange={event => setCurrentPassword(event.target.value)}
@@ -75,7 +79,7 @@ export function ChangePassword() {
                     required
                 />
 
-                <input className="w-5/6 h-8 my-6 rounded-xl text-center focus:outline-none"
+                <input className="w-5/6 h-8 my-3 md:my-6 rounded-xl text-center focus:outline-none"
                     placeholder="סיסמא חדשה"
                     type="password"
                     onChange={event => setNewPassword(event.target.value)}
@@ -83,7 +87,7 @@ export function ChangePassword() {
                     required
                 />
 
-                <input className="w-5/6 h-8 my-6 rounded-xl text-center focus:outline-none"
+                <input className="w-5/6 h-8 my-3 md:my-6 rounded-xl text-center focus:outline-none"
                     placeholder="אימות סיסמא חדשה"
                     type="password"
                     onChange={event => setConfirmPassword(event.target.value)}
@@ -91,7 +95,7 @@ export function ChangePassword() {
                     required
                 />
 
-                <button className="w-24 h-10 my-8 bg-blue-500 rounded-full text-md text-white focus:outline-none"
+                <button className="w-24 h-10 my-4 md:my-8 bg-blue-500 rounded-full text-md text-white hover:bg-blue-700 focus:outline-none"
                     onClick={changePassword}
                 >
                     אישור
