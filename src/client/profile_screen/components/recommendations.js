@@ -36,33 +36,33 @@ export function Recommendations() {
 
 
     const createRecommendation = recommend => (
-        <tr id={recommend.rId} className="overflow-y-auto">
-            <td className="w-1/12 h-24 border-l border">
-                <button className="w-4/5 h-2/5 bg-red-700 hover:bg-red-900 focus:outline-none"
+        <tr id={recommend.rId} className="overflow-y-auto text-xs sm:text-sm md:text-base">
+            <td className="w-1/12 h-16 md:h-24 border-l border">
+                <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
                     onClick={() => deleteRecommendation(recommend.rId)}
                 >
                     מחק
                     </button>
             </td>
-            <td className="w-1/12 h-24 border-l border">
-                <button className="w-4/5 h-2/5 bg-blue-500 hover:bg-blue-700 focus:outline-none"
+            <td className="w-1/12 h-16 md:h-24 border-l border">
+                <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => editRecommendation(recommend)}
                 >
                     ערוך
                     </button>
             </td>
-            <td className="w-4/12 h-24 border">
+            <td className="w-4/12 h-16 md:h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
                     {recommend.comment}
                 </div>
             </td>
-            <td className="w-1/12 h-24 border">
+            <td className="w-1/12 h-16 md:h-24 border">
                 {recommend.date.substring(0, 10)}
             </td>
-            <td className="w-1/12 h-24 border">
+            <td className="w-1/12 h-16 md:h-24 border">
                 {recommend.rate}
             </td>
-            <td className="w-4/12 h-24 border">
+            <td className="w-4/12 h-16 md:h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
                     {recommend.name}
                 </div>
@@ -99,17 +99,16 @@ export function Recommendations() {
             .catch(err => console.log(err))
 
 
-
     return (
         <div className="flex flex-col w-full text-white">
             <div className="self-center text-center text-2xl underline font-bold my-5">
                 ההמלצות שלי
             </div>
 
-            <div className="h-96 overflow-y-auto">
+            <div className="h-72 md:h-96 overflow-y-auto">
                 <table className="table-fixed w-full self-end text-center border-separate">
                     <thead>
-                        <tr>
+                        <tr className="text-sm sm:text-base">
                             <td className="w-1/12"></td>
                             <td className="w-1/12"></td>
                             <td className="w-3/12 border">הערה</td>

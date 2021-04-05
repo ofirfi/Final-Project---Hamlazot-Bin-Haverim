@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
 
-
 export function Friends() {
     const dispatch = useDispatch();
     const userName = window.localStorage.getItem('userName');
@@ -29,7 +28,7 @@ export function Friends() {
     const fillFriendsList = friendsList => {
         setmyFriends('')
         let toInsert = friendsList.map((friend, index) =>
-            <tr id={`a${index}`}>
+            <tr id={`a${index}`} className="text-xs md:text-sm lg:text-base">
                 <td className="w-1/6 border">
                     <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
                         onClick={() => deleteFriend(friend.userName, index)}
@@ -102,10 +101,10 @@ export function Friends() {
             <div className="self-center text-center text-2xl underline font-bold my-5">
                 החברים שלי
             </div>
-            <div className="h-96 overflow-y-auto">
+            <div className="h-56 md:h-96 overflow-y-auto">
                 <table className="w-full table-fixed self-end text-center border-separate border-2">
                     <thead>
-                        <tr>
+                        <tr className="text-xs md:text-sm lg:text-base">
                             <th className="w-1/12 border-r">מחיקה</th>
                             <th className="w-1/12"></th>
                             <th className="w-1/12">שינוי דירוג</th>
@@ -120,14 +119,14 @@ export function Friends() {
                     </tbody>
                 </table>
             </div>
-            <div className="flex flex-col self-center w-1/6 h-10">
-                <button className="w-3/4 h-full self-center bg-blue-500 rounded-full"
+            <div className="flex flex-col self-center w-24 h-10">
+                <button className="w-full h-full self-center rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => dispatch({ type: "TOGGLEFRIENDSEARCH" })}
                 >
                     חפש חבר
             </button>
             </div>
-            <div className="text-sm font-bold text-center py-2">
+            <div className="text-xs md:text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון
             </div>
 

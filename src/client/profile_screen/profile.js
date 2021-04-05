@@ -104,7 +104,7 @@ const ProfilePage = () => {
                     </button>
                 </div>
 
-                <div className="my-5 md:my-0 w-2/3 self-center md:w-3/5 lg:w-3/5 xl:w-1/2 flex bg-green-800 mr-0 md:mr-8">
+                <div className="my-5 md:my-0 w-full sm:w-3/4 self-center md:w-3/5 lg:w-3/5 xl:w-1/2 flex bg-green-800 mr-0 md:mr-8">
                     {display}
                 </div>
 

@@ -95,7 +95,7 @@ export function ChangePassword() {
                     required
                 />
 
-                <button className="w-24 h-10 my-4 md:my-8 bg-blue-500 rounded-full text-md text-white hover:bg-blue-700 focus:outline-none"
+                <button className="w-24 h-10 my-4 md:my-8 bg-blue-500 rounded-full text-md text-white hover:bg- focus:outline-none"
                     onClick={changePassword}
                 >
                     אישור
