@@ -1,21 +1,19 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
-let rels = [];
 
 export function Searcher() {
-    const dispatch = useDispatch();
     const [results, setResults] = useState('');
     const [input, setInput] = useState('');
-    // const [reliabilities,setReliabilities] = useState([]);
-    let reliabilities = [];
+    const [rels, setRels] = useState([]);
+    let reliabilities;
 
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
         }
     }
+
     const head = <div className="flex flex-row-reverse font-bold h-10 my-2">
         <div className="w-1/6 pr-10">#</div>
         <div className="w-1/6 underline">משתמש</div>
@@ -26,21 +24,21 @@ export function Searcher() {
     </div>
 
 
-
-
     const search = () => {
         if (!input) {
             alert("אנא הזן שם משתמש לחיפוש");
             return;
         }
         setResults('');
+        setRels([]);
         reliabilities = [];
+
         axios.post(`http://localhost:8001/users/friends/search/${input}`, {}, headers)
             .then(res => {
                 if (res.data.data.data.length === 0) {
                     setResults(<div className="">לא נמצאו תוצאות</div>);
                     return;
-                }   
+                }
                 fillResults(res.data.data.data);
             })
             .catch(err => { })
@@ -49,45 +47,45 @@ export function Searcher() {
 
     const fillResults = users => {
         setResults(old => [...old, head])
+        reliabilities = [];
+        setRels([]);
 
-        rels = [];      
-        for (let i = 0; i < users.length; i++)  
-            rels[i] = "מעט";
-        
-            for (let i = 0; i < users.length; i++){
+        for (let i = 0; i < users.length; i++)
+            setRels(old => [...old, 'מעט'])
+
+        for (let i = 0; i < users.length; i++) {
             reliabilities.push('מעט');
             fillUser(users[i], i);
         }
     }
 
-    
+
     const fillUser = (user, i) => {
         let insertion =
             <div className="flex flex-row-reverse h-10 text-sm  hover:bg-green-700">
                 <div className="w-1/6 pr-10 grid items-center">{i + 1}</div>
-                <div id = {i+i}className="w-1/6 grid items-center">{user.userName}</div>
+                <div className="w-1/6 grid items-center">{user.userName}</div>
                 <div className="w-1/6 grid items-center">{user.first_name}</div>
                 <div className="w-1/6 grid items-center">{user.last_name}</div>
 
                 <div className="w-1/6 grid items-center">
 
                     <lab className="self-right justify-end">
-                        <select id = {i} className=" w-18 text-black text-center"
+                        <select id={i} className=" w-18 text-black text-center"
                             value={rels[i]}
-                            // onChange={event => reliabilities[i] = event.target.value}
-                            onChange={event => changeSelect(event.target.value,i)}
+                            onChange={event => reliabilities[i] = event.target.value}
                         >
                             <option value="מעט"> מעט </option>
                             <option value="בינוני">בינוני</option>
                             <option value="הרבה">הרבה</option>
-                        </select>       
+                        </select>
                     </lab>
 
 
                 </div>
                 <div className="w-1/6 grid justify-items-end  items-center flex flex-col">
-                    <button className="w-1/3 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => addFriend(user.userName,i)}
+                    <button id={user.userName} className="w-1/3 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => addFriend(user.userName, i)}
                     >
                         הוסף
                     </button>
@@ -97,32 +95,20 @@ export function Searcher() {
     }
 
 
-    const changeSelect = (value,i) =>{
-        // let r = [...reliabilities];
-        // r[i] = value;
-        // setReliabilities(r);)
-        // document.getElementById(i).value = value;
-        rels[i] = value
-        // console.log(document.getElementById(i))
-        // reliabilities[i] = value;
-    }
 
-    const addFriend = (friend,i) =>{
-        // console.log(reliabilities[i]);
-        axios.post(`http://localhost:8001/users/friends/`,{
+    const addFriend = (friend, i) => {
+        axios.post(`http://localhost:8001/users/friends/`, {
             userName: window.localStorage.getItem('userName'),
             friend,
-            reliability:rels[i]
-        },headers)
-        .then(res =>{
-            alert(`${friend} התווסף לרשימת החברים שלך`);
-            //disable clicking
-        })
-        .catch(err =>{
-            alert(`לא ניתן להוסיף את ${friend}, ייתכן שנמצא כבר ברשימת החברים שלך`)
-        })
-        console.log(rels);
-
+            reliability: reliabilities[i]
+        }, headers)
+            .then(res => {
+                alert(`${friend} התווסף לרשימת החברים שלך`);
+                document.getElementById(friend).remove();
+            })
+            .catch(err => {
+                alert(`לא ניתן להוסיף את ${friend}, ייתכן שנמצא כבר ברשימת החברים שלך`)
+            })
     }
 
 
