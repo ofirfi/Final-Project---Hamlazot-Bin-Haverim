@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 
 export function Friends() {
     const dispatch = useDispatch();
     const userName = window.localStorage.getItem('userName');
-    const token = window.localStorage.getItem('token')
-    const [myFriends, setmyFriends] = useState('')
+    const token = window.localStorage.getItem('token');
+    const [myFriends, setmyFriends] = useState('');
+    const history = useHistory();
     const headers = {
         headers: {
             Authorization: `Bearer ${token}`
         }
-    }
+    };
 
 
     useEffect(() => {
@@ -27,49 +29,56 @@ export function Friends() {
 
     const fillFriendsList = friendsList => {
         setmyFriends('')
-        let toInsert = friendsList.map((friend, index) =>
-            <tr id={`a${index}`} className="text-xs md:text-sm lg:text-base">
-                <td className="w-1/6 border">
-                    <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
-                        onClick={() => deleteFriend(friend.userName, index)}
-                    >
-                        מחק
-                    </button>
-                </td>
-                <td className="w-1/6 border">
-                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'מעט', index)}
-                    >
-                        מעט
-                    </button>
-                </td>
-                <td className="w-1/6 border">
-                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'בינוני', index)}
-                    >
-                        בינוני
-                    </button>
-                </td>
-                <td className="w-1/6 border">
-                    <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => setFriendsReliability(friend.userName, 'הרבה', index)}
-                    >
-                        הרבה
-                    </button>
-                </td>
-                <td id={index} className="w-1/6 border">
-                    {friend.reliability}
-                </td>
-                <td className="w-1/6 border">
-                    {friend.fullName}
-                </td>
-                <td className="w-1/6 border">
-                    {friend.userName}
-                </td>
-            </tr>
-        )
+        let toInsert = friendsList.map((friend, index) => makeFriendsRow(friend, index))
         setmyFriends(toInsert)
     }
+
+
+    const makeFriendsRow = (friend, index) => (
+        <tr id={`a${index}`} className="text-xs md:text-sm lg:text-base">
+            <td className="w-1/6 border">
+                <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
+                    onClick={() => deleteFriend(friend.userName, index)}
+                >
+                    מחק
+            </button>
+            </td>
+            <td className="w-1/6 border">
+                <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                    onClick={() => setFriendsReliability(friend.userName, 'מעט', index)}
+                >
+                    מעט
+            </button>
+            </td>
+            <td className="w-1/6 border">
+                <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                    onClick={() => setFriendsReliability(friend.userName, 'בינוני', index)}
+                >
+                    בינוני
+            </button>
+            </td>
+            <td className="w-1/6 border">
+                <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                    onClick={() => setFriendsReliability(friend.userName, 'הרבה', index)}
+                >
+                    הרבה
+            </button>
+            </td>
+            <td id={index} className="w-1/6 border">
+                {friend.reliability}
+            </td>
+            <td className="w-1/6 border">
+                {friend.fullName}
+            </td>
+            <td className="w-1/6 border">
+                <button className="underline hover:text-gray-400 focus:outline-none"
+                    onClick={() => goFriendsProfile(friend.userName)}
+                >
+                    {friend.userName}
+                </button>
+            </td>
+        </tr>
+    )
 
 
     const setFriendsReliability = (friend, reliability, i) => {
@@ -95,6 +104,8 @@ export function Friends() {
             .catch(err => { })
     }
 
+
+    const goFriendsProfile = friend => history.push(`/user/${friend}`)
 
     return (
         <div className="flex flex-col w-full text-white">
