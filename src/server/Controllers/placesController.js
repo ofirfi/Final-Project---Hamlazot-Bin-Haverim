@@ -6,7 +6,7 @@ const catchAsync = require('../utils/catchAsync'),
 module.exports = {
 
     search_places: catchAsync(async (req, res, next) => {
-        https.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=${config.PLACE_API_KEY}&input=${req.params.toSearch}`,
+        https.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=${config.PLACE_API_KEY}&input=${req.params.toSearch}&language=iw`,
             (resp) => {
                 let data = '';
                 // A chunk of data has been received.

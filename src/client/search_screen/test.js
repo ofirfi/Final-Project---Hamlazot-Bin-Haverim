@@ -21,8 +21,41 @@ export function Test(input, type, page, closeness = 1) {
 }
 
 
-const placeSearch = (input) => {
+const placeSearch = async (input, page, closeness) => {
+    let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
+        .then(res => {
+            console.log(res)
+            if (res.data.results.length === 0)
+                return noResults();
+            return getPlaceRates(res.data.results, closeness);
+        })
+        .catch(err => console.log(err))
+    return res;
+}
 
+const getPlaceRates = async (places, closeness) => {
+    let ratedPlaces = [];
+    for (let i = 0; i < places.length; i++) {
+        let res = await makeRecommendationsInfo((places[i].place_id).toString(), closeness);
+        // let types = await getPlaceTypes(places[i].place_id);
+        
+        let importance = getImportance(res.rate, res.raters);
+        let rate = res.rate;
+        if (rate === 0)
+            rate = (places[i].rating).toFixed(1);
+
+        ratedPlaces[i] = {
+            rId: places[i].place_id,
+            name: places[i].name,
+            isOpenNow: places[i].opening_hours[0],
+            rate,
+            raters: res.raters,
+            importance,
+            // image: places[i].photos
+        }
+    }
+    ratedPlaces.sort(recommendationsSort)
+    return makeMoviesDiv(ratedPlaces);
 }
 
 
@@ -48,7 +81,7 @@ const getMoviesRates = async (movies, closeness) => {
     for (let i = 0; i < movies.length; i++) {
         let res = await makeRecommendationsInfo((movies[i].id).toString(), closeness);
         let genres = await getMovieGeneres(movies[i].id);
-
+        
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
         if (rate === 0)
@@ -64,7 +97,6 @@ const getMoviesRates = async (movies, closeness) => {
             image: movies[i].poster_path
         }
     }
-    // ratedMovies = recommendationsSort(ratedMovies);
     ratedMovies.sort(recommendationsSort)
     return makeMoviesDiv(ratedMovies);
 }
@@ -108,7 +140,7 @@ const MakeMovieDiv = (movie) => {
 
 
 
-const bookSearch = (input) => {
+const bookSearch = (input, page, closeness) => {
 
 }
 
@@ -136,11 +168,10 @@ const noResults = () => {
     </div>
 }
 
-
 const recommendationsSort = (rec1, rec2) => {
-    if (rec1.importance < rec2.importance) return 1;
-    if (rec2.importance > rec2.importance) return -1;
-    if (rec1.rate > rec2.rate) return 1;
-    if (rec2.rate < rec2.rate) return -1;
+    if (rec1.importance > rec2.importance) return 1;
+    if (rec2.importance < rec2.importance) return -1;
+    if (rec1.rate < rec2.rate) return 1;
+    if (rec1.rate > rec2.rate) return -1;
     return 0;
 }
