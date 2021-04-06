@@ -1,136 +1,177 @@
-import React, {useState} from "react"
-import './registration.scss'
+import '../utils/style.css'
+import { useState } from "react"
 import axios from 'axios'
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import Header from '../images/logo.jpg'
+import BackGround from '../images/background.jpg'
 
 
-const RegistrationPage = ()=>{
-  const [email,setEmail] = useState('');
-  const [userName,setUserName] = useState('');
-  const [password,setPassword] = useState('');
-  const [confirmPassword,setConfirmPassword] = useState('');
-  const [firstName,setFirstName] = useState('');
-  const [surname,setSurname] = useState('');
+const RegistrationPage = () => {
+  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [surname, setSurname] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
 
 
-  const fieldCheck = () =>{
-    if (!firstName ||!surname || !userName || !email || !password || !confirmPassword){
+  const fieldsCheck = () => {
+    if (!firstName || !surname || !userName || !email || !password || !confirmPassword) {
       alert('אנא מלא את כל השדות');
       return false;
     }
-    if(password.length < 8){
+    if (password.length < 8) {
       alert('הסיסמא צריכה להיות בין 8 ל-16 תווים');
       return false;
     }
-    if (password !== confirmPassword){
+    if (password !== confirmPassword) {
       alert('הסיסמאות אינן תואמות');
       return false;
     }
-    if (userName.length < 5){
+    if (userName.length < 5) {
       alert('שם משתמש חייב להיות לפחות באורך 5 תווים');
       return false;
     }
-    if (firstName.length < 2|| surname.length < 2){
+    if (firstName.length < 2 || surname.length < 2) {
       alert('שם פרטי ומשפחה חייבים להיות לפחות באורך 2 תווים');
       return false;
     }
     return true;
   }
 
-  const signup = () =>{
-    if (!fieldCheck())
+
+  const signup = () => {
+    if (!fieldsCheck())
       return;
 
-    axios.post("http://localhost:8001/auth/signup",{
+    let data = {
       email,
       userName,
       password,
       confirm_password: confirmPassword,
-      first_name:firstName,
-      last_name:surname
-    })
-    .then((res)=>{
-      window.localStorage.setItem('token', res.data.token);
-      window.localStorage.setItem('userName', userName);
-      dispatch({ type: "SETLOGGED", payload: true });
-      alert(userName + " ברוך הבא, שמחים שהצטרפת!");
-      history.push('');
-    })
-    .catch((err)=>{
-      if (err.response.data.message.startsWith("Duplicated"))
-        alert(`${err.response.data.message.substring(17,err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
-      else{
-        console.log(err.response.data.message);
-        alert('ארע שגיאה, אנא נסה נסית');
-      }  
-    })
+      first_name: firstName,
+      last_name: surname
+    }
+
+    axios.post("http://localhost:8001/auth/signup", data)
+      .then(res => signUpSuccess(res))
+      .catch(err => signUpFailure(err))
   }
 
-  
 
-  return(
-    <div className="page">
-        <header className="navbarr">
+  const signUpSuccess = (res) => {
+    window.localStorage.setItem('token', res.data.token);
+    window.localStorage.setItem('userName', userName);
+    dispatch({ type: "SETLOGGED", payload: true });
+    alert(userName + " ברוך הבא, שמחים שהצטרפת!");
+    history.push('');
+  }
 
-        </header>
-        <div className="boxr">  
-            <section className="sectionr">
-                <h2 id = "h2r"> הרשמה </h2>   
-                <input className="inputr"
-                  placeholder="שם פרטי"
-                  value = {firstName}
-                  onChange = {(event)=>setFirstName(event.target.value)}
-                  required
-                  />
-                <input className="inputr"
-                  placeholder="שם משפחה"
-                  value = {surname}
-                  onChange = {(event)=>setSurname(event.target.value)}
-                  required
-                  />
-                <input className="inputr"
-                  placeholder="שם משתמש"
-                  value = {userName}
-                  onChange = {(event)=>setUserName(event.target.value)}
-                  required
-                  />       
-                <input className="inputr"
-                  placeholder='דוא"ל'
-                  value = {email}
-                  onChange = {(event)=>setEmail(event.target.value)}
-                  required
-                  />
-                <input className="inputr"
-                  placeholder="סיסמא"
-                  type="password"
-                  value = {password}
-                  onChange = {(event)=>setPassword(event.target.value)}
-                  required
-                  />
-                <input className="inputr"
-                  placeholder="אימות סיסמא"
-                  type="password"
-                  value = {confirmPassword}
-                  onChange = {(event)=>setConfirmPassword(event.target.value)}
-                  required
-                  />
-                <button className="btnr"
-                  onClick = {signup}
-                  >
-                  הרשם
-                  </button>
-                <button className="btnr"
-                  id="loginbtnr"
-                  onClick = {()=>history.goBack()}
-                  >
-                    התחבר
-                  </button>
-                
-            </section>
+
+  const signUpFailure = (err) => {
+    if (err.response.data.message.startsWith("Duplicated"))
+      alert(`${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
+    else
+      alert('ארע שגיאה, אנא נסה נסית');
+  }
+
+
+  return (
+    <div className="flex flex-col bg-fixed w-full min-h-full"
+      style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
+    >
+
+      <header className="flex flex-col sm:w-full h-0 sm:h-1/6 invisible sm:visible">
+        <img src={Header} alt="" className="" />
+      </header>
+
+
+      <div className="flex flex-col self-center w-72 my-6 sm:my-28 bg-red-400 rounded-md shadow-xl text-center items-center">
+
+        <div className="w-full h-10 my-2 text-xl font-black underline">
+          הרשמה
         </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder="שם פרטי"
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder="שם משפחה"
+            value={surname}
+            onChange={(event) => setSurname(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder="שם משתמש"
+            value={userName}
+            maxlength="16"
+            onChange={(event) => setUserName(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder='דוא"ל'
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder="סיסמא"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
+            placeholder="אימות סיסמא"
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="h-12 w-full mt-4">
+          <button className="w-1/2 h-3/4 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+            onClick={signup}
+          >
+            הרשם
+                    </button>
+        </div>
+
+        <div className="h-12 w-full my-2">
+          <button className="w-1/2 h-3/4 sm:py:3 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+            onClick={() => history.goBack()}
+          >
+            התחבר
+                    </button>
+        </div>
+
+      </div>
+
+
+
     </div>
   );
 
