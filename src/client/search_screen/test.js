@@ -2,7 +2,7 @@ import '../utils/style.css'
 import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.json'
 import axios from 'axios'
 import { makeRecommendationsInfo } from '../utils/recommendationMethods'
-
+import { BsPersonCheckFill } from 'react-icons/bs'
 
 
 const headers = {
@@ -41,6 +41,9 @@ const getPlaceRates = async (places, closeness) => {
         
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
         if (rate === 0)
             rate = (places[i].rating).toFixed(1);
 
@@ -50,14 +53,39 @@ const getPlaceRates = async (places, closeness) => {
             isOpenNow: places[i].opening_hours[0],
             rate,
             raters: res.raters,
+            isOurRate,
             importance,
             // image: places[i].photos
         }
     }
     ratedPlaces.sort(recommendationsSort)
-    return makeMoviesDiv(ratedPlaces);
+    return makePlacesDiv(ratedPlaces);
 }
 
+const makePlacesDiv = (places) => places.map(place => MakePlaceDiv(place))
+
+const MakePlaceDiv = (place) => {
+    let friendIcon;
+    if(place.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
+    return <div className="flex flex-col items-center border-2 my-5 bg-green-200">
+        {/* <div>
+            <img src={`https://image.tmdb.org/t/p/w500${place.image}`}
+                style={{ height: 100, weight: 100 }}
+            />
+        </div> */}
+        <div>{friendIcon}</div>
+        <div>{place.name}</div>
+        <div>{place.isOpenNow}</div>
+        <div>דירוג: {place.rate}</div>
+        <div>חברים שדירגו: {place.raters}</div>
+        <div >
+            <button onClick={() => { }}>
+                מעבר לדף
+            </button>
+        </div>
+    </div>
+}
 
 
 
@@ -75,7 +103,6 @@ const movieSearch = async (input, page, closeness) => {
     return res;
 }
 
-
 const getMoviesRates = async (movies, closeness) => {
     let ratedMovies = [];
     for (let i = 0; i < movies.length; i++) {
@@ -84,6 +111,9 @@ const getMoviesRates = async (movies, closeness) => {
         
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
         if (rate === 0)
             rate = (movies[i].vote_average / 2).toFixed(1);
 
@@ -93,6 +123,7 @@ const getMoviesRates = async (movies, closeness) => {
             genres,
             rate,
             raters: res.raters,
+            isOurRate,
             importance,
             image: movies[i].poster_path
         }
@@ -115,20 +146,21 @@ const getMovieGeneres = async (movieId) => {
 
 const makeMoviesDiv = (movies) => movies.map(movie => MakeMovieDiv(movie))
 
-
 const MakeMovieDiv = (movie) => {
-
+    let friendIcon;
+    if(movie.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
     return <div className="flex flex-col items-center border-2 my-5 bg-green-200">
         <div>
             <img src={`https://image.tmdb.org/t/p/w500${movie.image}`}
                 style={{ height: 100, weight: 100 }}
             />
         </div>
-        <div>כוכב אם יש דרוג</div>
+        <div>{friendIcon}</div>
         <div>{movie.name}</div>
         <div>{movie.genres}</div>
-        <div>{movie.rate}</div>
-        <div>{movie.raters}</div>
+        <div>דירוג: {movie.rate}</div>
+        <div>חברים שדירגו: {movie.raters}</div>
         <div >
             <button onClick={() => { }}>
                 מעבר לדף
@@ -141,12 +173,72 @@ const MakeMovieDiv = (movie) => {
 
 
 const bookSearch = (input, page, closeness) => {
-
+    let res = axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&key=${BOOKS_API_KEY}&language=iw`)
+        .then(res => {
+            console.log(res)
+            if (res.data.items.length === 0)
+                return noResults();
+            return getBooksRates(res.data.items, closeness);
+        })
+        .catch(err => console.log(err))
+    return res;
 }
 
+const getBooksRates = async (books, closeness) => {
+    let ratedBooks = [];
+    for (let i = 0; i < books.length; i++) {
+        let res = await makeRecommendationsInfo((books[i].id).toString(), closeness);
+        // let genres = await getMovieGeneres(movies[i].id);
+        
+        let importance = getImportance(res.rate, res.raters);
+        let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
+        if (rate === 0)
+            rate = (books[i].vote_average / 2).toFixed(1);
 
+        ratedBooks[i] = {
+            rId: books[i].id,
+            name: books[i].volumeInfo.title,
+            author: books[i].volumeInfo.authors,
+            genres: books[i].volumeInfo.categories,
+            rate,
+            raters: res.raters,
+            isOurRate,
+            importance,
+            image: books[i].volumeInfo.imageLinks.thumbnail
+        }
+    }
+    ratedBooks.sort(recommendationsSort)
+    return makeBooksDiv(ratedBooks);
+}
 
+const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
 
+const MakeBookDiv = (book) => {
+    let friendIcon;
+    if(book.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
+    return <div className="flex flex-col items-center border-2 my-5 bg-green-200">
+        <div>
+            <img src={`${book.image}`}
+                style={{ height: 100, weight: 100 }}
+            />
+        </div>
+        <div>{friendIcon}</div>
+        <div>{book.name}</div>
+        <div>{book.author}</div>
+        <div>{book.genres}</div>
+        <div>דירוג: {book.rate}</div>
+        <div>חברים שדירגו: {book.raters}</div>
+        <div >
+            <button onClick={() => { }}>
+                מעבר לדף
+            </button>
+        </div>
+    </div>
+}
 
 
 
