@@ -20,23 +20,8 @@ module.exports = {
 
     search_places: catchAsync(async (req, res, next) => {
         https.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=${config.PLACE_API_KEY}&input=${req.params.toSearch}&language=iw`,
-            (resp) => {
-                let data = '';
-                // A chunk of data has been received.
-                resp.on('data', (chunk) => {
-                    data += chunk;
-                });
-
-                // The whole response has been received.
-                resp.on('end', () => {
-                    res.status(200).json(JSON.parse(data));
-                });
-
-            })
-            .on("error", (err) => {
-                console.error(err);
-                res.status(500).json({ err })
-            });
+        (resp) => googleResponse(res, resp))
+        .on("error", (err) => googleError(res, err))
 
     }),
 
