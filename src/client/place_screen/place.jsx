@@ -2,16 +2,13 @@ import '../utils/style.css'
 import { useEffect, useState } from "react"
 import { Navbar } from '../navbar/navbar'
 import BackGround from '../images/background.jpg'
-import { AiTwotoneStar } from "react-icons/ai"
-import { RecommendationsList } from './recommendations'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form } from '../utils/form'
-const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
+import { Recommendations } from '../recommendations_component/recommendation'
+import { useHistory } from 'react-router-dom'
 
-const IMAGES = {
-    stars: 5
-}
+const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 
 const recommandations = [["עידן", 4, "קפה מעולה מנות גדולות ומפנקות, מסעדה ברמה! קפה מעולה מנות גדולות ומפנקות, מסעדה ברמה! קפה מעולה מנות גדולות ומפנקות, מסעדה ברמה! קפה מעולה מנות גדולות ומפנקות, מסעדה ברמה!", "27/06/2020"],
@@ -24,21 +21,15 @@ const recommandations = [["עידן", 4, "קפה מעולה מנות גדולו�
 ["פיטליטי", 3, "אירוח ברמה, באנו כמה חברים ונהננו מאוד :)", "01/01/2020"]]
 
 
-function starNumber(stars) {
-    if (stars === 1)
-        return (<div className="flex flex-row jusitfy-center"><AiTwotoneStar /></div>)
-    else if (stars === 2)
-        return (<div className="flex flex-row content-center"> <AiTwotoneStar /><AiTwotoneStar /></div>)
-    else if (stars === 3)
-        return (<div className="flex flex-row jusitfy-center"> <AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /></div>)
-    else if (stars === 4)
-        return (<div className="flex flex-row jusitfy-center"><AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /></div>)
-    else if (stars === 5)
-        return (<div className="flex flex-row content-center"><AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /><AiTwotoneStar /></div>)
-}
-
 
 const PlacePage = (props) => {
+    const placeId = props.match.params.id;
+    const [voteAverage,setvoteAverage] = useState('');
+    const rating = useSelector(state => state.rating);
+    const raters = useSelector(state => state.raters);
+    const isForm = useSelector(state => state.isForm);
+    const dispatch = useDispatch();
+    const history = useHistory();
     const [placeInfo, setPlaceInfo] = useState({
         name: "",
         openingHours: [[], [], [], [], [], [], []],
@@ -47,46 +38,39 @@ const PlacePage = (props) => {
         isOpened: "",
         photo: ""
     });
-
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
         }
     }
-    const isForm = useSelector(state => state.isForm);
-    const dispatch = useDispatch();
-    const placeId = "ChIJP8f5Ac4pAxURQKlXZot6V0c" //props.placeId
-    const zidkiaho = 'ChIJS1oDEh4oAxURdy5Qkzxy2CE'
-    const rimon = "ChIJP8f5Ac4pAxURQKlXZot6V0c"
-    
+
+
+    // const zidkiaho = 'ChIJS1oDEh4oAxURdy5Qkzxy2CE'
+    // const rimon = "ChIJP8f5Ac4pAxURQKlXZot6V0c"
+
 
     useEffect(() => {
         axios.get(`http://localhost:8001/place/show/${placeId}`, headers)
             .then(res => fillPlaceInfo(res.data.result))
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                history.push('/404')
+            })
     }, [])
 
 
     const fillPlaceInfo = (place) => {
         let openingHours = place.opening_hours.weekday_text.map(day => day)
-        let openingHours2 = place.opening_hours.periods.map(day => getOpeningHours(day))
-
+        setvoteAverage((place.rating).toFixed(1));
         setPlaceInfo({
             name: place.name,
-            openingHours: openingHours2,
+            openingHours: openingHours,
             address: place.formatted_address,
             phoneNumber: place.formatted_phone_number,
             isOpened: place.opening_hours.opne_now,
-            photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
+            photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
         })
 
-    }
-
-
-    const getOpeningHours = (day) => {
-        let open = day.open.time[0] + day.open.time[1] + ":" + day.open.time[2] + day.open.time[3];
-        let close = day.close.time[0] + day.close.time[1] + ":" + day.close.time[2] + day.close.time[3];
-        return close + " - " + open;
     }
 
 
@@ -104,42 +88,63 @@ const PlacePage = (props) => {
         dispatch({ type: "TOGGLEFORM" })
     }
 
+
+
     return (
-        <div className="flex flex-col bg-fixed items-center"
+        <div className="flex flex-col bg-fixed"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
         >
+            <Navbar />
 
-            <Navbar/>
+            <div className="flex flex-col self-center my-10 w-2/5 bg-red-400 rounded-xl ">
 
-
-            <div className="flex flex-row my-10 w-3/5 bg-red-400 rounded-xl ">
-
-                <div className="w-1/2 h-full">
-                    <img src={placeInfo.photo} />
+                <div className="text-3xl sm:text-6xl self-center font-extrabolds mb-10">
+                    {placeInfo.name}
                 </div>
 
+                <div className="flex flex-row-reverse">
 
-                <div className="flex flex-col w-1/2 ">
-                    <div className=" self-center text-lg sm:text-3xl mt-2">{starNumber(IMAGES.stars)}</div>
-                    <div className="text-3xl sm:text-6xl self-center font-extrabolds">{placeInfo.name}</div>
-                    <div className="text-right text-xs sm:text-lg self-end mt-8">
-                        <div className="underline">
-                            שעות פתיחה
+                    <div className="flex w-1/2 h-full self-start">
+                        <img src={placeInfo.photo} />
+                    </div>
+
+                    <div className="flex flex-col w-1/2 text-right text-xs sm:text-lg">
+                        <div className="">
+                            <div className="underline">שעות פתיחה</div>
+                            <div className="border-2">
+                            <div>{placeInfo.openingHours[0]}</div>
+                            <div>{placeInfo.openingHours[1]}</div>
+                            <div>{placeInfo.openingHours[2]}</div>
+                            <div>{placeInfo.openingHours[3]}</div>
+                            <div>{placeInfo.openingHours[4]}</div>
+                            <div>{placeInfo.openingHours[5]}</div>
+                            <div>{placeInfo.openingHours[6]}</div>
+                            </div>
                         </div>
-                        <div>יום ראשון: {placeInfo.openingHours[0]}</div>
-                        <div>יום שני: {placeInfo.openingHours[1]}</div>
-                        <div>יום שלישי: {placeInfo.openingHours[2]}</div>
-                        <div>יום רביעי: {placeInfo.openingHours[3]}</div>
-                        <div>יום חמישי: {placeInfo.openingHours[4]}</div>
-                        <div>יום שישי: {placeInfo.openingHours[5]}</div>
-                        <div>יום שבת: {placeInfo.openingHours[6]}</div>
+                        <div className="text-xs sm:text-lg self-end">
+                            כתובת: {placeInfo.address}
+                        </div>
+                    </div>
 
+                </div>
+
+                <div className = "flex flex-row-reverse">
+                    <div className = "w-1/2 text-center border-2">
+                        דירוג: 5 / {rating!==0? rating : voteAverage}
                     </div>
-                    <div className="text-xs sm:text-lg self-end mt-6">כתובת: {placeInfo.address}</div>
-                    <div className="text-xl self-end font-bold underline">המלצות</div>
+                    <div className = "w-1/2 text-center border-2">
+                        חברים שדרגו: {raters}
+                    </div>
+                </div>
+
+                <div className="flex flex-col w-1/2 self-center">
+
+                    <div className="text-xl self-end md:self-center my-3 font-bold underline">המלצות</div>
+                    
                     <div className="h-96 mb-5 overflow-y-auto text-right">
-                        <RecommendationsList recommandations={recommandations} />
+                        <Recommendations rId={placeId} closeness = {props.closeness}></Recommendations>
                     </div>
+
                     <button className="self-center my-5 border-4 border-transparent text-sm sm:text-base text-white rounded-lg bg-blue-300 hover:bg-blue-500 focus:outline-none"
                         onClick={() => createRecommendation()}
                     >
@@ -150,7 +155,7 @@ const PlacePage = (props) => {
 
 
             </div>
-            {isForm ? <Form btnLabel = "הוסף"/> : null}
+            {isForm ? <Form btnLabel="הוסף" /> : null}
         </div>
     );
 

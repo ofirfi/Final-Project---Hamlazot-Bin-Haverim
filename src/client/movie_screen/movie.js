@@ -2,7 +2,7 @@ import '../utils/style.css'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import BackGround from '../images/background.jpg'
-import { Recommendations } from './movieRecommendation'
+import { Recommendations } from '../recommendations_component/recommendation'
 import { Navbar } from '../navbar/navbar'
 import { Form } from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
@@ -118,7 +118,7 @@ const MoviePage = (props) => {
                         המלצות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations movieId={movieId} closeness = {props.closeness} />
+                        <Recommendations rId={movieId} closeness = {props.closeness} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
