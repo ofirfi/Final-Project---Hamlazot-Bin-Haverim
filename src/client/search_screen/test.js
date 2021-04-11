@@ -3,7 +3,7 @@ import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.jso
 import axios from 'axios'
 import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { BsPersonCheckFill } from 'react-icons/bs'
-
+const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 const headers = {
     headers: {
@@ -21,10 +21,10 @@ export function Test(input, type, page, closeness = 1) {
 }
 
 
-const placeSearch = async (input, page, closeness) => {
+const placeSearch = async (input, page = 1, closeness) => {
     let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
         .then(res => {
-            console.log(res)
+            console.log(res);
             if (res.data.results.length === 0)
                 return noResults();
             return getPlaceRates(res.data.results, closeness);
@@ -34,11 +34,9 @@ const placeSearch = async (input, page, closeness) => {
 }
 
 const getPlaceRates = async (places, closeness) => {
-    let ratedPlaces = [];
+    let ratedPlaces = [];//console.log(places);
     for (let i = 0; i < places.length; i++) {
         let res = await makeRecommendationsInfo((places[i].place_id).toString(), closeness);
-        // let types = await getPlaceTypes(places[i].place_id);
-        
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
         let isOurRate = true;
@@ -46,16 +44,26 @@ const getPlaceRates = async (places, closeness) => {
             isOurRate = false;
         if (rate === 0)
             rate = (places[i].rating).toFixed(1);
+        let isOpenNow = `פתוח עכשיו`;
+        if (!places[i].opening_hours)
+            isOpenNow = ``;
+        else if (!places[i].opening_hours.open_now)
+            isOpenNow = `סגור כעת`;
+
+        let image = `אין תמונה זמינה`
+        if (places[i].photos)
+            image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${places[i].photos[0].photo_reference}&key=${PLACE_API_KEY}`;
 
         ratedPlaces[i] = {
             rId: places[i].place_id,
             name: places[i].name,
-            isOpenNow: places[i].opening_hours[0],
+            address: places[i].formatted_address,
+            isOpenNow,
             rate,
             raters: res.raters,
             isOurRate,
             importance,
-            // image: places[i].photos
+            image
         }
     }
     ratedPlaces.sort(recommendationsSort)
@@ -69,13 +77,14 @@ const MakePlaceDiv = (place) => {
     if(place.isOurRate == true)
         friendIcon = <BsPersonCheckFill/>;
     return <div className="flex flex-col items-center border-2 my-5 bg-green-200">
-        {/* <div>
-            <img src={`https://image.tmdb.org/t/p/w500${place.image}`}
+        <div>
+            <img src={place.image}
                 style={{ height: 100, weight: 100 }}
             />
-        </div> */}
+        </div>
         <div>{friendIcon}</div>
         <div>{place.name}</div>
+        <div>{place.address}</div>
         <div>{place.isOpenNow}</div>
         <div>דירוג: {place.rate}</div>
         <div>חברים שדירגו: {place.raters}</div>
@@ -196,18 +205,26 @@ const getBooksRates = async (books, closeness) => {
         if (importance === 3)
             isOurRate = false;
         if (rate === 0)
-            rate = (books[i].vote_average / 2).toFixed(1);
+            rate = `אין דירוג זמין`;
+
+        let author = ``;
+        if (books[i].volumeInfo.authors)
+            author = books[i].volumeInfo.authors[0];
+        
+        let image = `אין תמונה זמינה`;
+        if (books[i].volumeInfo.imageLinks)
+            image = books[i].volumeInfo.imageLinks.thumbnail;
 
         ratedBooks[i] = {
             rId: books[i].id,
             name: books[i].volumeInfo.title,
-            author: books[i].volumeInfo.authors,
-            genres: books[i].volumeInfo.categories,
+            author,
+            // genres: books[i].volumeInfo.categories,
             rate,
             raters: res.raters,
             isOurRate,
             importance,
-            image: books[i].volumeInfo.imageLinks.thumbnail
+            image
         }
     }
     ratedBooks.sort(recommendationsSort)
@@ -229,7 +246,7 @@ const MakeBookDiv = (book) => {
         <div>{friendIcon}</div>
         <div>{book.name}</div>
         <div>{book.author}</div>
-        <div>{book.genres}</div>
+        {/* <div>{book.genres}</div> */}
         <div>דירוג: {book.rate}</div>
         <div>חברים שדירגו: {book.raters}</div>
         <div >
