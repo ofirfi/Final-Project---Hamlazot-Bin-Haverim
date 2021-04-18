@@ -1,265 +1,310 @@
-import React, { useEffect, useState } from "react";
 import '../utils/style.css'
-import axios from 'axios'
-import Gallery from 'react-grid-gallery';
-import { GiPopcorn, GiWhiteBook, GiExitDoor } from 'react-icons/gi'
-import { SiCoffeescript } from 'react-icons/si'
-import { IoRestaurant } from 'react-icons/io5'
-import { useHistory } from 'react-router-dom'
 import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.json'
+import axios from 'axios'
+import { makeRecommendationsInfo } from '../utils/recommendationMethods'
+import { BsPersonCheckFill, BsArrowLeft } from 'react-icons/bs'
+const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
-
-const IMAGES =
-    [{
-        src: "https://media-cdn.tripadvisor.com/media/photo-s/11/51/dd/e3/large-delicious-dishes.jpg",
-        thumbnail: "https://media-cdn.tripadvisor.com/media/photo-s/11/51/dd/e3/large-delicious-dishes.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{ value: "לנדוור", title: "לנדוור" }],
-        caption: "לנדוור סינמה סיטי, ירושלים",
-    },
-    {
-        src: "https://www.gansipur.co.il/warehouse/dynamic/64199.jpg",
-        thumbnail: "https://www.gansipur.co.il/warehouse/dynamic/64199.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{ value: "קפה גן סיפור", title: "קפה גן סיפור" }],
-        caption: "קפה גן סיפור, ירושלים"
-    },
-    {
-        src: "https://www.my-events.co.il/wp-content/uploads/2017/07/rimonbistro-halavi-a2.jpg",
-        thumbnail: "https://www.my-events.co.il/wp-content/uploads/2017/07/rimonbistro-halavi-a2.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        tags: [{ value: "קפה רימון", title: "קפה רימון" }],
-        caption: "קפה רימון, ירושלים"
-    }]
-
-
-export function Recommended(props) {
-    const token = props.token
-    const history = useHistory();
-    // const userName = props.userName
-    // const [recForMe, setRecForMe] = useState('')
-    // const headers = { headers:{
-    //     Authorization: "Bearer "+ token
-    // }}
-
-    useEffect(() => {
-
-    }, [])
-
-
-    // const fillRec = recList => {
-    //     setRecForMe('')
-    //     let toInsert = recList.map(rec => {
-    //         return(
-    //             <div></div>
-    //         )
-    //     })
-    //     setRecForMe(toInsert)
-    // }
-
-    const headers = {
-        headers: {
-            Authorization: "Bearer " +token
-    }}
-
-    const resturantsSearch = () => {
-        history.push('/place');
+const headers = {
+    headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`
     }
+}
 
-    const coffeSearch = () => {
-        const toSearch = 'צדקיהו'
-        axios.get(`http://localhost:8001/place/search/${toSearch}`,headers)
-        .then(res=>{
-            console.log(res)
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-    }
+export function searchRes(input, type, page, closeness = 1) {
+    if (type === "place")
+        return placeSearch(input, page, closeness);
+    if (type === "movie")
+        return movieSearch(input, page, closeness);
+    return bookSearch(input, page, closeness);
 
-    const moviesSearch = () => {
-        history.push('/movie/414771');
-    }
+}
 
-    const booksSearch = () => {
-        axios({
-            method : 'get',
-            url : `https://www.googleapis.com/books/v1/volumes?q=מקום+טוב&key=AIzaSyCxqgytYz4Y_bRBMlJ1vms2aA5fU1Lm074`
-        })
+
+const placeSearch = async (input, page = 1, closeness) => {
+    let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
         .then(res => {
-            console.log(res)
+            console.log(res);
+            if (res.data.results.length === 0)
+                return noResults();
+            return getPlaceRates(res.data.results, closeness);
         })
-        .catch(err => {
-            console.log(err)
-        })
+        .catch(err => console.log(err))
+    return res;
+}
+
+const getPlaceRates = async (places, closeness) => {
+    let ratedPlaces = [];
+    for (let i = 0; i < places.length; i++) {
+        if (!isFood(places[i]))
+            continue;
+        let res = await makeRecommendationsInfo((places[i].place_id).toString(), closeness);
+        let importance = getImportance(res.rate, res.raters);
+        let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
+        if (rate === 0)
+            rate = (places[i].rating).toFixed(1);
+        let isOpenNow = `פתוח עכשיו`;
+        if (!places[i].opening_hours)
+            isOpenNow = ``;
+        else if (!places[i].opening_hours.open_now)
+            isOpenNow = `סגור כעת`;
+
+        let image = `אין תמונה זמינה`
+        if (places[i].photos)
+            image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${places[i].photos[0].photo_reference}&key=${PLACE_API_KEY}`;
+
+        ratedPlaces[i] = {
+            rId: places[i].place_id,
+            name: places[i].name,
+            address: places[i].formatted_address,
+            isOpenNow,
+            rate,
+            raters: res.raters,
+            isOurRate,
+            importance,
+            image
+        }
     }
+    ratedPlaces.sort(recommendationsSort)
+    return makePlacesDiv(ratedPlaces);
+}
 
-    return (
-        <div>
-            <div className="flex flex-row space-x-10 my-5 justify-center">
-                <button className="btn"
-                    onClick={resturantsSearch}
-                >
-                    <IoRestaurant style={{ fontSize: 36 }} />
-                    <p />מסעדה
-                </button>
+const isFood = (place) => {
+    for (let i=0; i<place.types.length; i++)
+        if (place.types[i] === "food")
+            return true;
+    return false;
+}
 
-                <button className="btn"
-                    onClick={ coffeSearch }
-                >
-                    <SiCoffeescript style={{ fontSize: 36 }} />
-                    <p />בית קפה
-                </button>
+const makePlacesDiv = (places) => places.map(place => MakePlaceDiv(place))
 
-                <button className="btn"
-                    onClick = { moviesSearch }
-                >
-                    <GiPopcorn style={{ fontSize: 36 }} />
-                    <p />סרט
-                </button>
-
-                <button className="btn"
-                    onClick = { booksSearch }
-                >
-                    <GiWhiteBook style={{ fontSize: 36 }} />
-                    <p />ספר
-                </button>
-
+const MakePlaceDiv = (place) => {
+    let friendIcon;
+    if(place.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
+    return(
+        <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200">
+            <div className="flex flex-col items-center m-2 w-1/3">
+                <img src={place.image}
+                    style={{ height: 112.5, weight: 150 }}
+                />
             </div>
-
-            <div className="flex flex-col bg-fixed items-center">
-                <h1 style={{ color: "rgb(53, 111, 123)" }}>מומלצים</h1>
-                {/* <Gallery images={fillRec} /> */}
+            <div className="flex flex-col items-center justify-self m-2 w-2/3">
+                <div>{friendIcon}</div>
+                <div className="font-extrabold text-lg">{place.name}</div>
+                <div>{place.address}</div>
+                <div>{place.isOpenNow}</div>
+                <div>דירוג: {place.rate}</div>
+                <div>חברים שדירגו: {place.raters}</div>
+                <div className="flex flex-row items-center">
+                    <BsArrowLeft/>
+                    <button className="m-1" onClick={() => { }}>
+                        מעבר לדף 
+                    </button>
+                </div>
             </div>
         </div>
     )
 }
 
 
-export function SearchResults(props) {
-    const userName = window.localStorage.getItem('userName')
-    const recommendations = JSON.parse(window.localStorage.getItem('recommendations'))
-    const [myRecommandations, setMyRecommandations] = useState('')
-    const [SearchResults,setSearchResults] = useState('');
-
-
-    useEffect(() => {
-        setMyRecommandations("")
-        console.log(props.userInput);
-        if(props.type === "1")
-            placeSearch(props.userInput);
-        else if(props.type === "2")
-            movieSearch(props.userInput);
-        else
-            bookSearch(props.userInput);
-    },[] )
 
 
 
-    const placeSearch = (input) =>{
-        console.log('places');
-    }
-    const movieSearch = (input) =>{
-        console.log('movies');
-    }
-    const bookSearch = (input) =>{
-        console.log('books');
-    }
 
+const movieSearch = async (input, page, closeness) => {
+    let res = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&language=he&query=${input}&page=${page}&include_adult=false`)
+        .then(res => {
+            if (res.data.results.length === 0)
+                return noResults();
+            return getMoviesRates(res.data.results, closeness);
+        })
+        .catch(err => console.log(err))
+    return res;
+}
 
+const getMoviesRates = async (movies, closeness) => {
+    let ratedMovies = [];
+    for (let i = 0; i < movies.length; i++) {
+        let res = await makeRecommendationsInfo((movies[i].id).toString(), closeness);
+        let genres = await getMovieGeneres(movies[i].id);
+        
+        let importance = getImportance(res.rate, res.raters);
+        let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
+        if (rate === 0)
+            rate = (movies[i].vote_average / 2).toFixed(1);
 
-    const createPlaceResult = (res) => {
-        const newRes = (
-            <div className="flex flex-col bg-green-400 m-4 p-2">
-                <div className="text-lg font-bold">
-                    {res.name}
-                </div>
-                <div className="text-base">
-                    דירוג: {res.rate}
-                </div>
-                <div className="text-base">
-                    {res.isOpen}
-                </div>
-            </div>
-        )
-        setMyRecommandations(oldResults => [...oldResults, newRes])
-    }
-
-
-
-    const search = () => {
-        console.log("hi")
-        if(props.type === "2")
-            searchMovie()
-        else if(props.type === "3")
-            searchBook()
-    }
-
-    const searchMovie = () => {    // CHECK IF INPUT IS RIGHT/MISSING
-        setSearchResults('')
-        console.log(props.userInput);
-        axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&language=he&query=${props.userInput}&page=${props.page}&include_adult=false`)
-            .then(res=> {
-                let movies = res.data.results
-                for(let i = 0; i<movies.length; i++) 
-                    filler(movies[i],"2");
-            })
-            .catch(err=> err)        
-    }
-
-    const searchBook = () => {    // CHECK IF INPUT IS RIGHT/MISSING
-        setSearchResults('')
-        axios.get(`https://www.googleapis.com/books/v1/volumes?q=${props.input}&key=${BOOKS_API_KEY}`)
-            .then(res=> {
-                let books = res.data.items
-                for(let i = 0; i<books.length; i++) 
-                    filler(books[i],"book");
-            })
-            .catch(err=> err)        
-    }
-
-    const filler = (item,type) =>{
-        console.log("hi2")
-        let res;
-        search();
-        if (props.type === "2") {
-            res = <div className="flex flex-col border-2 my-2 bg-blue-200">
-                <div>{item.title}</div>
-                <div>{item.release_date}</div>
-                <div>{item.vote_average}</div>
-            </div>
+        ratedMovies[i] = {
+            rId: movies[i].id,
+            name: movies[i].title,
+            genres,
+            rate,
+            raters: res.raters,
+            isOurRate,
+            importance,
+            image: movies[i].poster_path
         }
-        else if(type === "3"){
-            res = <div className="flex flex-col border-2 my-2 bg-blue-200">
-                <div>{item.volumeInfo.title}</div>
-                <div>{item.volumeInfo.categories[0]}</div>
-            </div>
-        }
-        else if(type === "1"){
-            res = <div className="flex flex-col border-2 my-2 bg-blue-200">
-                <div>{item.title}</div>
-                <div>{item.release_date}</div>
-            </div>
-        }
-        setSearchResults(old => [...old,res]);  
-        console.log(SearchResults) 
     }
+    ratedMovies.sort(recommendationsSort)
+    return makeMoviesDiv(ratedMovies);
+}
 
+const getMovieGeneres = async (movieId) => {
+    let gens = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
+        .then(res => {
+            let gens = ""
+            res.data.genres.map(genre => gens += genre.name + ", ")
+            return gens;
+        })
+    if (!gens)
+        return gens;
+    return gens.substring(0, gens.length - 2);
+}
 
+const makeMoviesDiv = (movies) => movies.map(movie => MakeMovieDiv(movie))
 
-
-
+const MakeMovieDiv = (movie) => {
+    let friendIcon;
+    if(movie.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
     return (
-        <div className="flex flex-col text-right mt-5 mx-2">
-            <div className="flex flex-row-reverse self-center text-lg">
-                תוצאות החיפוש שלך:
-                    </div>
-            <div className="flex flex-col w-96 bg-white">
-                {SearchResults}
+        <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200">
+            <div className="flex flex-col items-center m-2 w-1/3">
+                <img src={`https://image.tmdb.org/t/p/w500${movie.image}`}
+                    style={{ height: 150, weight: 112.5 }}
+                />
+            </div>
+            <div className="flex flex-col self-center items-center text-center m-2 w-2/3">
+                <div>{friendIcon}</div>
+                <div className="font-extrabold text-lg">{movie.name}</div>
+                <div>{movie.genres}</div>
+                <div>דירוג: {movie.rate}</div>
+                <div>חברים שדירגו: {movie.raters}</div>
+                <div className="flex flex-row items-center">
+                    <BsArrowLeft />
+                    <button className="m-1" onClick={() => { }}>
+                        מעבר לדף
+                </button>
+                </div>
             </div>
         </div>
     )
+}
+
+
+
+
+const bookSearch = (input, page, closeness) => {
+    let res = axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&key=${BOOKS_API_KEY}&language=iw`)
+        .then(res => {
+            console.log(res)
+            if (res.data.items.length === 0)
+                return noResults();
+            return getBooksRates(res.data.items, closeness);
+        })
+        .catch(err => console.log(err))
+    return res;
+}
+
+const getBooksRates = async (books, closeness) => {
+    let ratedBooks = [];
+    for (let i = 0; i < books.length; i++) {
+        let res = await makeRecommendationsInfo((books[i].id).toString(), closeness);
+        // let genres = await getMovieGeneres(movies[i].id);
+        
+        let importance = getImportance(res.rate, res.raters);
+        let rate = res.rate;
+        let isOurRate = true;
+        if (importance === 3)
+            isOurRate = false;
+        if (rate === 0)
+            rate = `אין דירוג זמין`;
+
+        let author = ``;
+        if (books[i].volumeInfo.authors)
+            author = books[i].volumeInfo.authors[0];
+        
+        let image = `אין תמונה זמינה`;
+        if (books[i].volumeInfo.imageLinks)
+            image = books[i].volumeInfo.imageLinks.thumbnail;
+
+        ratedBooks[i] = {
+            rId: books[i].id,
+            name: books[i].volumeInfo.title,
+            author,
+            // genres: books[i].volumeInfo.categories,
+            rate,
+            raters: res.raters,
+            isOurRate,
+            importance,
+            image
+        }
+    }
+    ratedBooks.sort(recommendationsSort)
+    return makeBooksDiv(ratedBooks);
+}
+
+const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
+
+const MakeBookDiv = (book) => {
+    let friendIcon;
+    if(book.isOurRate == true)
+        friendIcon = <BsPersonCheckFill/>;
+    return (
+    <div className="flex flex-row items-center text-right border-2 rounded w-96 my-5 p-3 bg-green-200">
+        <div className="flex flex-col items-center m-2 w-1/3">
+            <img src={`${book.image}`}
+                style={{ height: 150, weight: 112.5 }}
+            />
+        </div>
+        <div className="flex flex-col self-center items-center text-center m-3 w-2/3">
+            <div>{friendIcon}</div>
+            <div className="font-extrabold text-lg">{book.name}</div>
+            <div>{book.author}</div>
+            {/* <div>{book.genres}</div> */}
+            <div>דירוג: {book.rate}</div>
+            <div>חברים שדירגו: {book.raters}</div>
+            <div className="flex flex-row items-center text-right">
+                <BsArrowLeft/>
+                <button className="m-1" onClick={() => { }}>
+                    מעבר לדף 
+                </button>
+            </div>
+        </div>
+    </div>
+    )
+}
+
+
+
+
+
+
+
+const getImportance = (rate, raters) => {
+    if (raters > 0)
+        return 1;
+    if (rate > 0)
+        return 2;
+    return 3;
+}
+
+const noResults = () => {
+    return <div>
+        לא נמצאו תצאות
+    </div>
+}
+
+const recommendationsSort = (rec1, rec2) => {
+    if (rec1.importance > rec2.importance) return 1;
+    if (rec2.importance < rec2.importance) return -1;
+    if (rec1.rate < rec2.rate) return 1;
+    if (rec1.rate > rec2.rate) return -1;
+    return 0;
 }
