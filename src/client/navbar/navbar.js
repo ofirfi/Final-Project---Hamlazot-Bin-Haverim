@@ -1,14 +1,17 @@
 import '../utils/style.css'
 import Header from '../images/logo.jpg'
-import { GiExitDoor, GiMagnifyingGlass } from 'react-icons/gi'
-import { FcSettings, FcHome } from 'react-icons/fc'
-import { CgMenuBoxed } from 'react-icons/cg'
+import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import checkAuth from '../utils/auth'
 
-export function Navbar(props) {
+
+import Hamburger from 'hamburger-react'
+
+
+export function Navbar() {
     const userName = window.localStorage.getItem('userName')
+    const [isOpened, setIsOpened] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -35,60 +38,62 @@ export function Navbar(props) {
         return true
     }
 
-    const profilePage = () => !tokenIsValid() ? history.push('/login') : history.push('/profile')
 
-    const homePage = () => !tokenIsValid() ? history.push('/login') : history.push('')
-
-    const search = () => !tokenIsValid() ? history.push('/login') : alert('search is not ready yet')
-
-
+    const relog = () => {
+        alert('אנא התחבר מחדש')
+        history.push('/login')
+    }
 
 
-return (
-    <div className="flex items-start h-28 sm:h-28 lg:h-52 w-full"
-        style={{ backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
-    >
-        <div className="invisible sm:visible w-full flex justify-end self-start space-x-2 mt-8 mr-5 ">
-            <button className="text-blue-900"
-                onClick={search}
-            >
-                <GiMagnifyingGlass className="sm:text-2xl md:text-3xl lg:text-4xl" />
-            </button>
+    const profilePage = () => !tokenIsValid() ? relog() : history.push('/profile')
 
-            <input className="flex w-1/5 rounded-xl text-xs text-center self-center"
-                type="text"
-                placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"
-            />
-
-            <button
-                onClick={homePage}
-            >
-                <FcHome className="sm:text-2xl md:text-3xl lg:text-5xl" />
-            </button>
-
-            <button
-                onClick={profilePage}
-            >
-                <FcSettings className="sm:text-2xl md:text-3xl lg:text-5xl" />
-            </button>
-
-            <button className="text-white"
-                onClick={log_out}
-            >
-                <GiExitDoor className="sm:text-2xl md:text-3xl lg:text-5xl" />
-            </button>
-        </div>
-
-        <div className="visible sm:hidden flex justify-end self-start mt-8 mr-5">
-            <button className="text-3xl text-gray-100"
-                onClick={() => alert('not working')}
-            >
-                <CgMenuBoxed />
-            </button>
-        </div>
+    const homePage = () => !tokenIsValid() ? relog() : history.push('')
 
 
-    </div>
-)
+    return (
+        <div className="flex h-28 sm:h-28 lg:h-52 w-full grid"
+            style={{ backgroundImage: `url(${Header})`, backgroundSize: '100% 100%' }}
+        >
+
+            {isOpened ?
+                <div className="flex flex-col w-36 h-full lg:pt-5 self-start text-white text-sm md:text-md lg:text-lg justify-self-end items-center bg-gray-400">
+                    <Hamburger className="hover:text-red-400"
+                        easing="ease-in"
+                        toggled={isOpened}
+                        onToggle={() => setIsOpened(!isOpened)}
+                    />
+
+                    <button className="hover:text-gray-500 focus:outline-none"
+                        onClick={() => homePage()}
+                    >
+                        דף הבית
+                    </button>
+                    <button className="hover:text-gray-500 focus:outline-none"
+                        onClick={() => profilePage()}
+                    >
+                        פרופיל
+                    </button>
+                    <button className="hover:text-gray-500 focus:outline-none"
+                        onClick={() => log_out()}
+                    >
+                        יציאה
+                    </button>
+                </div>
+
+                :
+
+                <div className="flex flex-col w-36 h-full lg:pt-5 self-start text-white text-sm md:text-md lg:text-lg justify-self-end items-center">
+                    <Hamburger
+                        easing="ease-in"
+                        toggled={isOpened}
+                        onToggle={() => setIsOpened(!isOpened)}
+                    >
+                    </Hamburger>
+                </div>
+
+            }
+        </div >
+    )
 
 }
+
