@@ -4,9 +4,8 @@ import { Navbar } from '../navbar/navbar'
 import { Recommended } from './recommanded'
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
-// import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.json'
-// import { useDispatch, useSelector } from 'react-redux'
 import {searchRes} from './searchResults'
+import { useHistory } from 'react-router-dom'
 
 
 
@@ -16,7 +15,7 @@ const SearchPage = (props)=>{
     const [input,setInput] = useState('');
     const [searchType,setSearchType] = useState("place");
     const [page,setPage] = useState(1);
-    
+    const history = useHistory();
     const [searchResults,setSearchResults] = useState(null);
 
 
@@ -45,7 +44,7 @@ const SearchPage = (props)=>{
             alert('שדה החיפוש ריק');
             return;
         }
-        const res =  await searchRes(input,searchType,page);
+        const res =  await searchRes(input,searchType,page,history);
         setSearchResults(res);
         setIsSearch(true);
     }
@@ -86,7 +85,6 @@ const SearchPage = (props)=>{
                 </div>
 
                 {isSearch?
-                    // <SearchResults userInput = {input} type={searchType} page={page}/>:
                     <div>{searchResults}</div>:
                     <Recommended/>
                 }

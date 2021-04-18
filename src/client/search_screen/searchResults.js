@@ -11,29 +11,33 @@ const headers = {
     }
 }
 
-export function searchRes(input, type, page, closeness = 1) {
+
+
+
+
+export function searchRes(input, type, page, history, closeness = 1) {
     if (type === "place")
-        return placeSearch(input, page, closeness);
+        return placeSearch(input, page, closeness, history);
     if (type === "movie")
-        return movieSearch(input, page, closeness);
-    return bookSearch(input, page, closeness);
+        return movieSearch(input, page, closeness, history);
+    return bookSearch(input, page, closeness, history);
 
 }
 
 
-const placeSearch = async (input, page = 1, closeness) => {
+const placeSearch = async (input, page = 1, closeness, history) => {
     let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
         .then(res => {
             console.log(res);
             if (res.data.results.length === 0)
                 return noResults();
-            return getPlaceRates(res.data.results, closeness);
+            return getPlaceRates(res.data.results, closeness, history);
         })
         .catch(err => console.log(err))
     return res;
 }
 
-const getPlaceRates = async (places, closeness) => {
+const getPlaceRates = async (places, closeness, history) => {
     let ratedPlaces = [];
     for (let i = 0; i < places.length; i++) {
         if (!isFood(places[i]))
@@ -65,7 +69,8 @@ const getPlaceRates = async (places, closeness) => {
             raters: res.raters,
             isOurRate,
             importance,
-            image
+            image,
+            history
         }
     }
     ratedPlaces.sort(recommendationsSort)
@@ -83,6 +88,7 @@ const makePlacesDiv = (places) => places.map(place => MakePlaceDiv(place))
 
 const MakePlaceDiv = (place) => {
     let friendIcon;
+    let history = place.history;
     if(place.isOurRate == true)
         friendIcon = <BsPersonCheckFill/>;
     return(
@@ -101,7 +107,7 @@ const MakePlaceDiv = (place) => {
                 <div>חברים שדירגו: {place.raters}</div>
                 <div className="flex flex-row items-center">
                     <BsArrowLeft/>
-                    <button className="m-1" onClick={() => { }}>
+                    <button className="m-1" onClick={() => { history.push(`/place/${place.rId}`) }}>
                         מעבר לדף 
                     </button>
                 </div>
@@ -115,18 +121,18 @@ const MakePlaceDiv = (place) => {
 
 
 
-const movieSearch = async (input, page, closeness) => {
+const movieSearch = async (input, page, closeness, history) => {
     let res = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&language=he&query=${input}&page=${page}&include_adult=false`)
         .then(res => {
             if (res.data.results.length === 0)
                 return noResults();
-            return getMoviesRates(res.data.results, closeness);
+            return getMoviesRates(res.data.results, closeness, history);
         })
         .catch(err => console.log(err))
     return res;
 }
 
-const getMoviesRates = async (movies, closeness) => {
+const getMoviesRates = async (movies, closeness, history) => {
     let ratedMovies = [];
     for (let i = 0; i < movies.length; i++) {
         let res = await makeRecommendationsInfo((movies[i].id).toString(), closeness);
@@ -148,7 +154,8 @@ const getMoviesRates = async (movies, closeness) => {
             raters: res.raters,
             isOurRate,
             importance,
-            image: movies[i].poster_path
+            image: movies[i].poster_path,
+            history
         }
     }
     ratedMovies.sort(recommendationsSort)
@@ -171,6 +178,7 @@ const makeMoviesDiv = (movies) => movies.map(movie => MakeMovieDiv(movie))
 
 const MakeMovieDiv = (movie) => {
     let friendIcon;
+    let history = movie.history;
     if(movie.isOurRate == true)
         friendIcon = <BsPersonCheckFill/>;
     return (
@@ -188,7 +196,7 @@ const MakeMovieDiv = (movie) => {
                 <div>חברים שדירגו: {movie.raters}</div>
                 <div className="flex flex-row items-center">
                     <BsArrowLeft />
-                    <button className="m-1" onClick={() => { }}>
+                    <button className="m-1" onClick={() => { history.push(`/movie/${movie.rId}`) }}>
                         מעבר לדף
                 </button>
                 </div>
@@ -200,22 +208,22 @@ const MakeMovieDiv = (movie) => {
 
 
 
-const bookSearch = (input, page, closeness) => {
+const bookSearch = (input, page, closeness, history) => {
     let res = axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&key=${BOOKS_API_KEY}&language=iw`)
         .then(res => {
             console.log(res)
             if (res.data.items.length === 0)
                 return noResults();
-            return getBooksRates(res.data.items, closeness);
+            return getBooksRates(res.data.items, closeness, history);
         })
         .catch(err => console.log(err))
     return res;
 }
 
-const getBooksRates = async (books, closeness) => {
+const getBooksRates = async (books, closeness, history) => {
     let ratedBooks = [];
     for (let i = 0; i < books.length; i++) {
-        let res = await makeRecommendationsInfo((books[i].id).toString(), closeness);
+        let res = await makeRecommendationsInfo((books[i].id).toString(), closeness, history);
         // let genres = await getMovieGeneres(movies[i].id);
         
         let importance = getImportance(res.rate, res.raters);
@@ -243,7 +251,8 @@ const getBooksRates = async (books, closeness) => {
             raters: res.raters,
             isOurRate,
             importance,
-            image
+            image,
+            history
         }
     }
     ratedBooks.sort(recommendationsSort)
@@ -254,6 +263,7 @@ const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
 
 const MakeBookDiv = (book) => {
     let friendIcon;
+    let history = book.history;
     if(book.isOurRate == true)
         friendIcon = <BsPersonCheckFill/>;
     return (
@@ -272,7 +282,7 @@ const MakeBookDiv = (book) => {
             <div>חברים שדירגו: {book.raters}</div>
             <div className="flex flex-row items-center text-right">
                 <BsArrowLeft/>
-                <button className="m-1" onClick={() => { }}>
+                <button className="m-1" onClick={() => { history.push(`/book/${book.rId}`) }}>
                     מעבר לדף 
                 </button>
             </div>
