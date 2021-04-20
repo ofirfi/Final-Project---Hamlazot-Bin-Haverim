@@ -3,6 +3,7 @@ import LoginPage from './login_screen/login'
 import RegistrationPage from './registration_screen/registration'
 import PlacePage from './place_screen/place'
 import MoviePage from './movie_screen/movie'
+import BookPage from './book_screen/book'
 import ProfilePage from './profile_screen/profile'
 import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
@@ -40,6 +41,7 @@ const Pages = () => {
                     <Route exact path="/signUp" component={RegistrationPage} />
                     <Route exact path="/place/:id" component={PlacePage} />
                     <Route exact path="/movie/:id" component={MoviePage} />
+                    <Route exact path="/book/:id" component={BookPage} />
                     <Route exact path="/profile" component={ProfilePage} />
                     <Route exact path="/user/:userName" component={UserPage} />
                     <Redirect to="/404" />
