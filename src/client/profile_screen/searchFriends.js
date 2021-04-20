@@ -14,8 +14,8 @@ export function Searcher() {
         }
     }
 
-    const head = <div className="flex flex-row-reverse font-bold h-10 my-2">
-        <div className="w-1/6 pr-10">#</div>
+    const head = <div className="flex flex-row-reverse text-xs sm:text-sm text-center font-bold h-10 my-2">
+        <div className="w-1/6 ">#</div>
         <div className="w-1/6 underline">משתמש</div>
         <div className="w-1/6 underline">פרטי</div>
         <div className="w-1/6 underline">משפחה</div>
@@ -41,7 +41,7 @@ export function Searcher() {
                 }
                 fillResults(res.data.data.data);
             })
-            .catch(err => { })
+            .catch(err => console.log(err))
     }
 
 
@@ -62,8 +62,8 @@ export function Searcher() {
 
     const fillUser = (user, i) => {
         let insertion =
-            <div className="flex flex-row-reverse h-10 text-sm  hover:bg-green-700">
-                <div className="w-1/6 pr-10 grid items-center">{i + 1}</div>
+            <div className="flex flex-row-reverse h-10 py-2 text-xs sm:text-sm text-center hover:bg-green-700">
+                <div className="w-1/6 grid items-center">{i + 1}</div>
                 <div className="w-1/6 grid items-center">{user.userName}</div>
                 <div className="w-1/6 grid items-center">{user.first_name}</div>
                 <div className="w-1/6 grid items-center">{user.last_name}</div>
@@ -83,8 +83,8 @@ export function Searcher() {
 
 
                 </div>
-                <div className="w-1/6 grid justify-items-end  items-center flex flex-col">
-                    <button id={user.userName} className="w-1/3 rounded-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                <div className="w-1/6 flex flex-col items-center grid justify-items-center">
+                    <button id={user.userName} className="w-3/4 md:w-1/2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => addFriend(user.userName, i)}
                     >
                         הוסף
@@ -115,37 +115,36 @@ export function Searcher() {
 
     return (
         <div className="grid flex fixed w-full h-full block  bg-gray-400 bg-opacity-80 ">
-            <div className="flex flex-col w-3/5 md:w-4/5 h-3/4 bg-gray-600 text-white rounded-2xl self-center justify-self-center">
+            <div className="flex flex-col w-5/6 md:w-4/5 h-3/4 bg-gray-600 text-white rounded-2xl self-center justify-self-center">
                 <div className="text-4xl text-center grid place-content-center break-normal h-16 w-full ">
                     חיפוש חברים
                     </div>
                 <div className="flex flex-row h-1/6">
                     <div className="flex flex-col w-1/4 h-full grid">
-                        <button className="w-1/3 h-1/2 self-center justify-self-center rounded-full text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        <button className="w-2/3 md:w-1/3 h-1/2 self-center justify-self-center rounded-full text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                             onClick={search}
                         >
                             חפש
                         </button>
                     </div>
                     <div className="flex flex-col w-3/4 grid">
-                        <input className="w-3/4 h-1/2 rounded-xl justify-self-center self-center text-center text-black self-start focus:outline-none"
+                        <input className="w-5/6 md:w-3/4 h-1/2 rounded-xl justify-self-center self-center text-xs md:text-base text-center text-black self-start focus:outline-none"
                             type="text"
                             placeholder="חפש חברים על פי שם משתמש"
                             value={input}
                             onChange={event => setInput(event.target.value)}
                         />
                     </div>
-
                 </div>
 
-                <div className="flex flex-col w-full text-xl text-right mt-3 h-96 self-start  overflow-y-auto border">
+                <div className="flex flex-col w-full text-xl text-right mt-3 h-96 self-start overflow-y-auto border">
                     {results}
                 </div>
 
 
 
                 <div className="flex justify-around w-full h-1/6 text-white">
-                    <button className="w-1/12 h-2/3 bg-blue-500 rounded-full self-center hover:bg-blue-700 focus:outline-none"
+                    <button className="w-1/6 md:w-1/12 h-2/3 bg-blue-500 rounded-full self-center hover:bg-blue-700 focus:outline-none"
                         onClick={() => window.location.reload()}
                     >
                         סגור

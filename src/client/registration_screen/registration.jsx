@@ -74,6 +74,8 @@ const RegistrationPage = () => {
   const signUpFailure = (err) => {
     if (err.response.data.message.startsWith("Duplicated"))
       alert(`${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
+    else if(err.response.data.message === "Invalid input data. Please enter a valid E-mail!")
+      alert('המייל אינו בפורמט מתאים')
     else
       alert('ארע שגיאה, אנא נסה נסית');
   }
