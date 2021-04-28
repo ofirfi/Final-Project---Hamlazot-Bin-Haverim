@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import {searchRes} from './searchResults'
 import { useHistory } from 'react-router-dom'
-
+import {AiOutlineLoading3Quarters} from 'react-icons/ai'
 
 
 const SearchPage = (props)=>{
@@ -17,7 +17,7 @@ const SearchPage = (props)=>{
     const [page,setPage] = useState(1);
     const history = useHistory();
     const [searchResults,setSearchResults] = useState(null);
-
+    const [isSearching,setIsSearching] = useState(false);
 
     const headers = {
         headers: {
@@ -44,9 +44,11 @@ const SearchPage = (props)=>{
             alert('שדה החיפוש ריק');
             return;
         }
+        setIsSearching(true);
         const res =  await searchRes(input,searchType,page,history);
         setSearchResults(res);
         setIsSearch(true);
+        setIsSearching(false);
     }
 
 
@@ -77,10 +79,15 @@ const SearchPage = (props)=>{
                         </select>       
                     </lab>
 
-                    <button className="flex flex-row-reverse items-center grid text-lg bg-green-600 w-16 h-12 rounded-full hover:bg-green-700" 
+                    <button className="flex flex-row-reverse items-center grid text-lg bg-green-600 w-16 h-12 rounded-full hover:bg-green-700"
+                        disabled={isSearching} 
                         onClick={search}
                         >
-                        חפש
+                        {isSearching? 
+                            <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 animate-spin"/> 
+                            :
+                        "חפש"
+                        }
                     </button>
                 </div>
 

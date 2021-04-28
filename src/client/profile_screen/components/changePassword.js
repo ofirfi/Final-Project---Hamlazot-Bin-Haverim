@@ -1,13 +1,15 @@
 import '../../utils/style.css'
 import { useState } from 'react'
 import axios from 'axios'
-
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 export function ChangePassword() {
     const userName = window.localStorage.getItem('userName');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isPasswordChange, setIsPasswordChange] = useState(false);
+
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -42,7 +44,7 @@ export function ChangePassword() {
     const changePassword = () => {
         if (!validationCheck())
             return;
-
+        setIsPasswordChange(true);
         axios.put("http://localhost:8001/auth/changePassword", {
             userName,
             current_password: currentPassword,
@@ -52,6 +54,7 @@ export function ChangePassword() {
             .then(res => {
                 alert('הסיסמא שונתה בהצלחה');
                 clearFields();
+                setIsPasswordChange(false);
             })
             .catch(err => {
                 if (err.response.data.message === 'confirm password is wrong')
@@ -95,10 +98,15 @@ export function ChangePassword() {
                     required
                 />
 
-                <button className="w-24 h-10 my-4 md:my-8 bg-blue-500 rounded-full text-md text-white hover:bg- focus:outline-none"
+                <button className="grid flex flex-row items-center w-24 h-10 my-4 md:my-8 bg-blue-500 rounded-full text-md text-white hover:bg- focus:outline-none"
+                    disabled={isPasswordChange}
                     onClick={changePassword}
                 >
-                    אישור
+                    {isPasswordChange ?
+                        <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 animate-spin" />
+                        :
+                        "אישור"
+                    }
                 </button>
             </div>
         </div>
