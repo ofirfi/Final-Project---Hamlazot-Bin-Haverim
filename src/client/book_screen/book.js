@@ -12,7 +12,6 @@ import { useHistory } from 'react-router-dom'
 
 const BookPage = (props) => {
     const bookId = props.match.params.id;
-    const [book, setBook] = useState('');
     // const [genres, setGenres] = useState('');
     const [poster, setPoster] = useState('');
     const isForm = useSelector(state => state.isForm);
@@ -20,16 +19,26 @@ const BookPage = (props) => {
     const history = useHistory();
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
-    const [voteAverage,setvoteAverage] = useState('');
+    const [voteAverage, setvoteAverage] = useState('');
+    const [book, setBook] = useState({
+        title: "",
+        publishedDate: "",
+        textSnippet: "",
+    });
 
     useEffect(async () => {
         await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookId}?key=${BOOKS_API_KEY}&language=iw`)
             .then((res) => {
-                // setBook(res.data);
-                console.log(res);return;
+                setBook({
+                    title: res.data.volumeInfo.title,
+                    publishedDate: res.data.volumeInfo.publishedDate,
+                    textSnippet: res.data.volumeInfo.textSnippet,
+                });
+
+                console.log(res.data); return;
                 // getGeneres(res.data);
                 setPoster(res.volumeInfo.imageLinks);
-                setvoteAverage((res.data.vote_average /2).toFixed(1));
+                setvoteAverage((res.data.vote_average / 2).toFixed(1));
             })
             .catch(() => {
                 history.push('/404');
@@ -46,7 +55,7 @@ const BookPage = (props) => {
     // }
 
 
-    const createRecommendation = () =>{
+    const createRecommendation = () => {
         dispatch({
             type: "SETFORMINFO",
             payload: {
@@ -60,7 +69,7 @@ const BookPage = (props) => {
         dispatch({ type: "TOGGLEFORM" })
     }
 
-    
+
     return (
         <div className="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
@@ -72,12 +81,12 @@ const BookPage = (props) => {
                 {/*title + genres + release*/}
                 <div className="flex flex-col w-full sm:h-2/6 grid divide-y-2  divide-black divide-opacity-25 bg-white mt-4">
                     <div className="flex items-center h-3/4 text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black  justify-self-center text-center">
-                        {book.volumeInfo.title}
+                        {book.title}
                     </div>
 
                     <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
                         <div className="">
-                            תאריך יציאה: {book.volumeInfo.publishedDate}
+                            תאריך יציאה: {book.publishedDate}
                         </div>
                         {/* <div className="">
                             ז'נאר: {genres}
@@ -88,7 +97,7 @@ const BookPage = (props) => {
                             חברים שדרגו: {raters}
                         </div>
                         <div className="text-red-700 font-black">
-                            דירוג: 5 / {rating!==0? rating : voteAverage}
+                            דירוג: 5 / {rating !== 0 ? rating : voteAverage}
                         </div>
                     </div>
                 </div>
@@ -106,7 +115,7 @@ const BookPage = (props) => {
                         תקציר
                     </div>
                     <div className="flex justify-start text-right  overflow-y-auto">
-                        {book.searchInfo.textSnippet}
+                        {book.textSnippet}
                     </div>
                 </div>
 
@@ -116,7 +125,7 @@ const BookPage = (props) => {
                         המלצות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations rId={bookId} closeness = {props.closeness} />
+                        <Recommendations rId={bookId} closeness={props.closeness} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
@@ -129,7 +138,7 @@ const BookPage = (props) => {
                 </div>
 
             </div>
-            {isForm ? <Form btnLabel = "הוסף"/> : null}
+            {isForm ? <Form btnLabel="הוסף" /> : null}
         </div>
     )
 
