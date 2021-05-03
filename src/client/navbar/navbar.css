@@ -1,0 +1,5 @@
+#NavMenu {
+    width: 0; 
+    overflow-x: hidden;
+    transition: 0.7s;
+  }
