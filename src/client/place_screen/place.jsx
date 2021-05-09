@@ -1,7 +1,6 @@
 import '../utils/style.css'
 import { useEffect, useState } from "react"
 import { Navbar } from '../navbar/navbar'
-import BackGround from '../images/background.jpg'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form } from '../utils/form'
@@ -14,6 +13,7 @@ const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 const PlacePage = (props) => {
     const placeId = props.match.params.id;
     const [voteAverage, setvoteAverage] = useState('');
+    const closeness = (props.location && props.location.state)? props.location.state.closeness : 1;
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
     const isForm = useSelector(state => state.isForm);
@@ -44,7 +44,7 @@ const PlacePage = (props) => {
     }, [])
 
 
-    const fillPlaceInfo = (place) => { console.log(place);
+    const fillPlaceInfo = (place) => { 
         let openingHours = place.opening_hours.weekday_text.map(day => day)
         setvoteAverage((place.rating).toFixed(1));
         setPlaceInfo({
@@ -92,7 +92,7 @@ const PlacePage = (props) => {
                 <div className="flex flex-row-reverse ">
 
                     <div className="flex w-1/2 h-48 sm:h-56 self-start">
-                        <img src={placeInfo.photo} />
+                        <img src={placeInfo.photo} alt = "" />
                     </div>
 
                     <div className="flex flex-col w-1/2  text-right text-md sm:text-lg">
@@ -131,7 +131,7 @@ const PlacePage = (props) => {
                     <div className="text-xl self-center my-2 font-bold underline">המלצות</div>
 
                     <div className="h-56 mb-5 w-full sm:w-3/4 mx-2 overflow-y-auto text-right">
-                        <Recommendations rId={placeId} closeness={props.closeness}/>
+                        <Recommendations rId={placeId} closeness={closeness}/>
                     </div>
 
                     <button className="self-center my-5 border-4 border-transparent text-sm sm:text-base text-white rounded-lg bg-blue-300 hover:bg-blue-500 focus:outline-none"

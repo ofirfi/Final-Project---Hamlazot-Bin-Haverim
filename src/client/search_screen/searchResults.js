@@ -3,16 +3,12 @@ import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.jso
 import axios from 'axios'
 import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { BsPersonCheckFill, BsArrowLeft } from 'react-icons/bs'
-const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 const headers = {
     headers: {
         Authorization: `Bearer ${window.localStorage.getItem('token')}`
     }
 }
-
-
-
 
 
 export function searchRes(input, type, page, history, closeness = 1) {
@@ -25,10 +21,11 @@ export function searchRes(input, type, page, history, closeness = 1) {
 }
 
 
+
+
 const placeSearch = async (input, page = 1, closeness, history) => {
     let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
         .then(res => {
-            console.log(res);
             if (res.data.results.length === 0)
                 return noResults();
             return getPlaceRates(res.data.results, closeness, history);
@@ -74,7 +71,7 @@ const getPlaceRates = async (places, closeness, history) => {
         }
     }
     ratedPlaces.sort(recommendationsSort)
-    return makePlacesDiv(ratedPlaces);
+    return makePlacesDiv(ratedPlaces,closeness);
 }
 
 const isFood = (place) => {
@@ -84,18 +81,19 @@ const isFood = (place) => {
     return false;
 }
 
-const makePlacesDiv = (places) => places.map(place => MakePlaceDiv(place))
+const makePlacesDiv = (places,closeness) => places.map(place => MakePlaceDiv(place,closeness))
 
-const MakePlaceDiv = (place) => {
+const MakePlaceDiv = (place,closeness) => {
     let friendIcon;
     let history = place.history;
-    if(place.isOurRate == true)
+    if(place.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return(
         <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200">
             <div className="flex flex-col items-center m-2 w-1/3">
                 <img src={place.image}
                     style={{ height: 112.5, weight: 150 }}
+                    alt = ""
                 />
             </div>
             <div className="flex flex-col items-center justify-self m-2 w-2/3">
@@ -107,7 +105,7 @@ const MakePlaceDiv = (place) => {
                 <div>חברים שדירגו: {place.raters}</div>
                 <div className="flex flex-row items-center">
                     <BsArrowLeft/>
-                    <button className="m-1" onClick={() => { history.push(`/place/${place.rId}`) }}>
+                    <button className="m-1" onClick={() => { history.push(`/place/${place.rId}`,{closeness}) }}>
                         מעבר לדף 
                     </button>
                 </div>
@@ -115,8 +113,6 @@ const MakePlaceDiv = (place) => {
         </div>
     )
 }
-
-
 
 
 
@@ -159,7 +155,7 @@ const getMoviesRates = async (movies, closeness, history) => {
         }
     }
     ratedMovies.sort(recommendationsSort)
-    return makeMoviesDiv(ratedMovies);
+    return makeMoviesDiv(ratedMovies,closeness);
 }
 
 const getMovieGeneres = async (movieId) => {
@@ -174,18 +170,20 @@ const getMovieGeneres = async (movieId) => {
     return gens.substring(0, gens.length - 2);
 }
 
-const makeMoviesDiv = (movies) => movies.map(movie => MakeMovieDiv(movie))
+const makeMoviesDiv = (movies,closeness) => movies.map(movie => MakeMovieDiv(movie,closeness))
 
-const MakeMovieDiv = (movie) => {
+const MakeMovieDiv = (movie,closeness) => {
+    console.log(closeness);
     let friendIcon;
     let history = movie.history;
-    if(movie.isOurRate == true)
+    if(movie.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
         <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200">
             <div className="flex flex-col items-center m-2 w-1/3">
                 <img src={`https://image.tmdb.org/t/p/w500${movie.image}`}
                     style={{ height: 150, weight: 112.5 }}
+                    alt = ""
                 />
             </div>
             <div className="flex flex-col self-center items-center text-center m-2 w-2/3">
@@ -196,7 +194,7 @@ const MakeMovieDiv = (movie) => {
                 <div>חברים שדירגו: {movie.raters}</div>
                 <div className="flex flex-row items-center">
                     <BsArrowLeft />
-                    <button className="m-1" onClick={() => { history.push(`/movie/${movie.rId}`) }}>
+                    <button className="m-1" onClick={() => { history.push(`/movie/${movie.rId}`,{closeness}) }}>
                         מעבר לדף
                 </button>
                 </div>
@@ -264,13 +262,14 @@ const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
 const MakeBookDiv = (book) => {
     let friendIcon;
     let history = book.history;
-    if(book.isOurRate == true)
+    if(book.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
     <div className="flex flex-row items-center text-right border-2 rounded w-96 my-5 p-3 bg-green-200">
         <div className="flex flex-col items-center m-2 w-1/3">
             <img src={`${book.image}`}
                 style={{ height: 150, weight: 112.5 }}
+                alt = ""
             />
         </div>
         <div className="flex flex-col self-center items-center text-center m-3 w-2/3">
@@ -313,7 +312,7 @@ const noResults = () => {
 
 const recommendationsSort = (rec1, rec2) => {
     if (rec1.importance > rec2.importance) return 1;
-    if (rec2.importance < rec2.importance) return -1;
+    if (rec1.importance < rec2.importance) return -1;
     if (rec1.rate < rec2.rate) return 1;
     if (rec1.rate > rec2.rate) return -1;
     return 0;
