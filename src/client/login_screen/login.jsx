@@ -5,12 +5,13 @@ import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
-
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLogin, setIsLogin] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -21,7 +22,7 @@ const LoginPage = () => {
       console.log('אנא הכנס מייל וסיסמא');
       return;
     }
-
+    setIsLogin(true);
     axios.post("http://localhost:8001/auth/login", {
       email,
       password
@@ -40,6 +41,7 @@ const LoginPage = () => {
           alert('מייל או סיסמא שגויים.');
         else
           alert('ארע שגיאה אנא נסה שנית.')
+        setIsLogin(false)
       })
   }
 
@@ -91,7 +93,7 @@ const LoginPage = () => {
               required />
           </div>
 
-          <div className = "w-full h-12 flex flex-col items-center grid justify-items-center text-center">
+          <div className="w-full h-12 flex flex-col items-center grid justify-items-center text-center">
             <input className="bg-blue-100 text-black placeholder-black sm:mt-2 text-center rounded focus:outline-none"
               placeholder="סיסמא"
               type="password"
@@ -100,7 +102,7 @@ const LoginPage = () => {
               required />
 
           </div>
-          
+
           <div className="h-5 w-full flex flex-col items-center">
             <button className="text-xs text-white focus:outline-none"
               onClick={forgot_password}
@@ -109,21 +111,27 @@ const LoginPage = () => {
             </button>
           </div>
 
-          <div className="h-12 w-full mt-4">
-            <button className="w-1/2 h-3/4 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
-              onClick={login}
-            >
-              התחבר
+          {isLogin ?
+            <AiOutlineLoading3Quarters className="grid justify-self-center w-1/6 h-1/6 my-3 animate-spin focus:outline-none" />
+            :
+            <div className = "w-full">
+              <div className="h-12 w-full mt-4">
+                <button className="w-1/2 h-3/4 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+                  onClick={login}
+                >
+                  התחבר
             </button>
-          </div>
+              </div>
 
-          <div className="h-12 w-full my-2">
-            <button className="w-1/2 h-3/4 sm:py:3 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
-              onClick={signup}
-            >
-              הרשם
+              <div className="h-12 w-full my-2">
+                <button className="w-1/2 h-3/4 sm:py:3 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+                  onClick={signup}
+                >
+                  הרשם
             </button>
-          </div>
+              </div>
+            </div>
+          }
 
         </div>
 

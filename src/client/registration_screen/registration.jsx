@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 
 const RegistrationPage = () => {
@@ -14,6 +15,7 @@ const RegistrationPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [surname, setSurname] = useState('');
+  const [isSigning, setIsSigning] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -46,7 +48,7 @@ const RegistrationPage = () => {
   const signup = () => {
     if (!fieldsCheck())
       return;
-
+    setIsSigning(true);
     let data = {
       email,
       userName,
@@ -74,10 +76,11 @@ const RegistrationPage = () => {
   const signUpFailure = (err) => {
     if (err.response.data.message.startsWith("Duplicated"))
       alert(`${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
-    else if(err.response.data.message === "Invalid input data. Please enter a valid E-mail!")
+    else if (err.response.data.message === "Invalid input data. Please enter a valid E-mail!")
       alert('המייל אינו בפורמט מתאים')
     else
       alert('ארע שגיאה, אנא נסה נסית');
+    setIsSigning(false);
   }
 
 
@@ -119,7 +122,7 @@ const RegistrationPage = () => {
           <input className="bg-blue-400 text-white placeholder-white sm:mt-2 text-center rounded focus:outline-none"
             placeholder="שם משתמש"
             value={userName}
-            maxlength="16"
+            maxLength="16"
             onChange={(event) => setUserName(event.target.value)}
             required
           />
@@ -154,25 +157,26 @@ const RegistrationPage = () => {
           />
         </div>
 
-        <div className="h-12 w-full mt-4">
-          <button className="w-1/2 h-3/4 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
-            onClick={signup}
-          >
-            הרשם
-                    </button>
-        </div>
+        <div className="h-24 w-full mb-6 flex flex-col items-center">
+          {isSigning ?
+            <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 mt-6 animate-spin focus:outline-none" />
+            :
+            <div className="h-24 w-full my-2 flex flex-col items-center">
+              <button className="flex flex-row-reverse items-center grid h-24 w-1/2 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+                onClick={signup}
+              >
+                "הרשם"
+              </button>
 
-        <div className="h-12 w-full my-2">
-          <button className="w-1/2 h-3/4 sm:py:3 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
-            onClick={() => history.goBack()}
-          >
-            התחבר
-                    </button>
+              <button className="flex flex-row-reverse items-center grid w-1/2 h-24 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+                onClick={() => history.goBack()}
+              >
+                "התחבר"
+              </button>
+            </div>
+          }
         </div>
-
       </div>
-
-
 
     </div>
   );

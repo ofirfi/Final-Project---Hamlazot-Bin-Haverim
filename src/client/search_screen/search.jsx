@@ -14,6 +14,7 @@ const SearchPage = (props)=>{
     const [isSearch,setIsSearch] = useState(false);
     const [input,setInput] = useState('');
     const [searchType,setSearchType] = useState("place");
+    const [searchCloseness,setSearchCloseness] = useState(1);
     const [page,setPage] = useState(1);
     const history = useHistory();
     const [searchResults,setSearchResults] = useState(null);
@@ -45,7 +46,7 @@ const SearchPage = (props)=>{
             return;
         }
         setIsSearching(true);
-        const res =  await searchRes(input,searchType,page,history);
+        const res =  await searchRes(input,searchType,page,history,parseInt(searchCloseness));
         setSearchResults(res);
         setIsSearch(true);
         setIsSearching(false);
@@ -59,17 +60,18 @@ const SearchPage = (props)=>{
         >
             <Navbar/>
 
-            <div className="flex flex-col bg-fixed items-center margin-3">
-                <div className="flex flex-row-reverse bg-fixed items-center mt-6">
-                    <input className="flex justify-self text-right w-96 h-12 rounded-full pr-2" 
+            <div className="flex flex-col bg-fixed items-center">
+
+                <div className="flex flex-col sm:flex-row-reverse bg-fixed items-center mx-2 mt-6">
+                    <input className="flex justify-self text-center w-96 h-12 my-3 sm:my-0 rounded-full pr-2 focus:outline-none" 
                         type="text"
                         placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"
                         value = {input}
                         onChange = {event => setInput(event.target.value)}
                     />
 
-                    <lab className="self-right justify-end mx-3">
-                        <select className=" w-18 text-black text-center h-10 w-24"
+                    <lab className="self-right justify-end mx-1 sm:mx-3">
+                        <select className="text-black text-center h-10 w-24 my-3 sm:my-0 focus:outline-none"
                             value={searchType}
                             onChange={event => setSearchType(event.target.value)}
                         >
@@ -79,21 +81,35 @@ const SearchPage = (props)=>{
                         </select>       
                     </lab>
 
-                    <button className="flex flex-row-reverse items-center grid text-lg bg-green-600 w-16 h-12 rounded-full hover:bg-green-700"
+                    <lab className="self-right justify-end mx-3 my-3 sm:my-0">
+                        <select className=" text-black text-center h-10 w-24 focus:outline-none"
+                            value={searchCloseness}
+                            onChange={event => setSearchCloseness(event.target.value)}
+                        >
+                            <option value={1}>חברים</option>
+                            <option value={2}>חברים של חברים</option>
+                        </select>       
+                    </lab>
+
+
+                    <button className="flex flex-row-reverse items-center grid text-lg bg-green-600 w-16 h-12 my-3 sm:my-0 rounded-full hover:bg-green-700 focus:outline-none"
                         disabled={isSearching} 
                         onClick={search}
                         >
                         {isSearching? 
-                            <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 animate-spin"/> 
+                            <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 animate-spin focus:outline-none"/> 
                             :
                         "חפש"
                         }
                     </button>
                 </div>
 
+
                 {isSearch?
                     <div>{searchResults}</div>:
-                    <Recommended/>
+                    <div className="hidden sm:block">
+                        <Recommended/>
+                    </div>
                 }
 
             </div>
