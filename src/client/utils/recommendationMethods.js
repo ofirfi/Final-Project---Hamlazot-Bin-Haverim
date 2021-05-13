@@ -13,7 +13,7 @@ const headers = {
 
 export async function makeRecommendationsInfo(rId, closeness = 1) {
 
-    let results = await axios.post('http://localhost:8001/users', {
+    let results = await axios.post('https://rbfserver.herokuapp.com/users', {
         userName,
         self: true
     }, headers)
@@ -130,7 +130,7 @@ async function getRank2Friends(rId, friends, friendsRecs, ratingList) {
     let randomRecIndex;
     for (let i = 0; i < friends.length; i++) {                  //for each Rank 1 friend
 
-        let res = await axios.post('http://localhost:8001/users', {
+        let res = await axios.post('https://rbfserver.herokuapp.com/users', {
             userName: friends[i].userName,
             self: true
         }, headers)

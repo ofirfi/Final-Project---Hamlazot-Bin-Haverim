@@ -25,7 +25,7 @@ export function searchRes(input, type, page, history, closeness = 1) {
 
 
 const placeSearch = async (input, page = 1, closeness, history) => {
-    let res = axios.get(`http://localhost:8001/place/search/${input}`,headers)
+    let res = axios.get(`https://rbfserver.herokuapp.com/place/search/${input}`,headers)
         .then(res => {
             if (res.data.results.length === 0)
                 return noResults();

@@ -35,7 +35,7 @@ const PlacePage = (props) => {
 
 
     useEffect(() => {
-        axios.get(`http://localhost:8001/place/show/${placeId}`, headers)
+        axios.get(`https://rbfserver.herokuapp.com/place/show/${placeId}`, headers)
             .then(res => fillPlaceInfo(res.data.result))
             .catch(err => {
                 console.log(err)

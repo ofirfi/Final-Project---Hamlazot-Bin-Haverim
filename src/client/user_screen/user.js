@@ -26,7 +26,7 @@ const UserPage = (props) => {
 
 
     useEffect(() => {
-        axios.post("http://localhost:8001/users", {
+        axios.post("https://rbfserver.herokuapp.com/users", {
             userName: props.match.params.userName,
             self: false
         }, headers)

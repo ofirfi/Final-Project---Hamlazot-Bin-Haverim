@@ -33,7 +33,7 @@ export function Searcher() {
         setRels([]);
         reliabilities = [];
 
-        axios.post(`http://localhost:8001/users/friends/search/${input}`, {}, headers)
+        axios.post(`https://rbfserver.herokuapp.com/users/friends/search/${input}`, {}, headers)
             .then(res => {
                 if (res.data.data.data.length === 0) {
                     setResults(<div className="">לא נמצאו תוצאות</div>);
@@ -97,7 +97,7 @@ export function Searcher() {
 
 
     const addFriend = (friend, i) => {
-        axios.post(`http://localhost:8001/users/friends/`, {
+        axios.post(`https://rbfserver.herokuapp.com/users/friends/`, {
             userName: window.localStorage.getItem('userName'),
             friend,
             reliability: reliabilities[i]

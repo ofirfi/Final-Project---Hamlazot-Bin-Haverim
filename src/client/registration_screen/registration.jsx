@@ -58,7 +58,7 @@ const RegistrationPage = () => {
       last_name: surname
     }
 
-    axios.post("http://localhost:8001/auth/signup", data)
+    axios.post("https://rbfserver.herokuapp.com/auth/signup", data)
       .then(res => signUpSuccess(res))
       .catch(err => signUpFailure(err))
   }
@@ -165,13 +165,13 @@ const RegistrationPage = () => {
               <button className="flex flex-row-reverse items-center grid h-24 w-1/2 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
                 onClick={signup}
               >
-                "הרשם"
+                הרשם
               </button>
 
               <button className="flex flex-row-reverse items-center grid w-1/2 h-24 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
                 onClick={() => history.goBack()}
               >
-                "התחבר"
+                התחבר
               </button>
             </div>
           }

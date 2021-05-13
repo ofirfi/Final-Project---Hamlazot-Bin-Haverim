@@ -19,11 +19,11 @@ const LoginPage = () => {
 
   const login = () => {
     if (!email || !password) {
-      console.log('אנא הכנס מייל וסיסמא');
+      alert('אנא הכנס מייל וסיסמא');
       return;
     }
     setIsLogin(true);
-    axios.post("http://localhost:8001/auth/login", {
+    axios.post("https://rbfserver.herokuapp.com/auth/login", {
       email,
       password
     })
@@ -50,7 +50,7 @@ const LoginPage = () => {
       alert('אנא הכנס מייל לשחזור סיסמא');
       return;
     }
-    axios.post("http://localhost:8001/auth/forgotPassword", {
+    axios.post("https://rbfserver.herokuapp.com/auth/forgotPassword", {
       email,
     })
       .then(res => {

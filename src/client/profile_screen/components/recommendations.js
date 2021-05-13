@@ -16,7 +16,7 @@ export function Recommendations() {
 
 
     useEffect(() => {
-        axios.post("http://localhost:8001/users", {
+        axios.post("https://rbfserver.herokuapp.com/users", {
             userName,
             self: true
         }, headers)
@@ -87,7 +87,7 @@ export function Recommendations() {
 
 
     const deleteRecommendation = rId =>
-        axios.delete("http://localhost:8001/recommendations",
+        axios.delete("https://rbfserver.herokuapp.com/recommendations",
             {
                 headers: { Authorization: `Bearer ${window.localStorage.getItem('token')}` },
                 data: { userName, rId }

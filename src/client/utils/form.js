@@ -17,7 +17,7 @@ export function Form(props) {
 
 
     const addRecommendation = () => {
-        axios.post("http://localhost:8001/recommendations",
+        axios.post("https://rbfserver.herokuapp.com/recommendations",
             {
                 rId: recommendationInfo.rId,
                 name: recommendationInfo.name,

@@ -26,7 +26,7 @@ const SearchPage = (props)=>{
     }}
 
     useEffect(()=>{
-        axios.get("http://localhost:8001/recommendations",{
+        axios.get("https://rbfserver.herokuapp.com/recommendations",{
             headers: {
                 Authorization: "Bearer " +token
             }

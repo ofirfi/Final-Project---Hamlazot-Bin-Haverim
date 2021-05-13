@@ -45,7 +45,7 @@ export function ChangePassword() {
         if (!validationCheck())
             return;
         setIsPasswordChange(true);
-        axios.put("http://localhost:8001/auth/changePassword", {
+        axios.put("https://rbfserver.herokuapp.com/auth/changePassword", {
             userName,
             current_password: currentPassword,
             password: newPassword,

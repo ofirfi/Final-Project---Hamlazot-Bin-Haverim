@@ -18,7 +18,7 @@ export function Friends() {
 
 
     useEffect(() => {
-        axios.post("http://localhost:8001/users", {
+        axios.post("https://rbfserver.herokuapp.com/users", {
             userName,
             self: true
         }, headers)
@@ -82,7 +82,7 @@ export function Friends() {
 
 
     const setFriendsReliability = (friend, reliability, i) => {
-        axios.put("http://localhost:8001/users/friends", {
+        axios.put("https://rbfserver.herokuapp.com/users/friends", {
             userName,
             friend,
             reliability
@@ -93,7 +93,7 @@ export function Friends() {
 
 
     const deleteFriend = (friend, index) => {
-        axios.delete("http://localhost:8001/users/friends",
+        axios.delete("https://rbfserver.herokuapp.com/users/friends",
             {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { userName, friend }
