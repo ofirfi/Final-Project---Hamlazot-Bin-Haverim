@@ -3,7 +3,7 @@ import { MOVIE_API_KEY, BOOKS_API_KEY, PLACE_API_KEY } from '../utils/config.jso
 import axios from 'axios'
 import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { BsPersonCheckFill, BsArrowLeft } from 'react-icons/bs'
-const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
+import { getAuthor } from '../book_screen/book'
 
 const headers = {
     headers: {
@@ -89,7 +89,7 @@ const makePlacesDiv = (places) => places.map(place => MakePlaceDiv(place))
 const MakePlaceDiv = (place) => {
     let friendIcon;
     let history = place.history;
-    if(place.isOurRate == true)
+    if(place.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return(
         <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200">
@@ -179,7 +179,7 @@ const makeMoviesDiv = (movies) => movies.map(movie => MakeMovieDiv(movie))
 const MakeMovieDiv = (movie) => {
     let friendIcon;
     let history = movie.history;
-    if(movie.isOurRate == true)
+    if(movie.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
         <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200">
@@ -236,7 +236,7 @@ const getBooksRates = async (books, closeness, history) => {
 
         let author = ``;
         if (books[i].volumeInfo.authors)
-            author = books[i].volumeInfo.authors[0];
+            author = getAuthor(books[i].volumeInfo.authors);
         
         let image = `אין תמונה זמינה`;
         if (books[i].volumeInfo.imageLinks)
@@ -264,7 +264,7 @@ const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
 const MakeBookDiv = (book) => {
     let friendIcon;
     let history = book.history;
-    if(book.isOurRate == true)
+    if(book.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
     <div className="flex flex-row items-center text-right border-2 rounded w-96 my-5 p-3 bg-green-200">

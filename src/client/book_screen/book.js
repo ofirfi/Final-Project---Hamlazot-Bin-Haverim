@@ -8,12 +8,47 @@ import { Form } from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
 import { BOOKS_API_KEY } from '../utils/config.json'
 import { useHistory } from 'react-router-dom'
+import picture_unavailable from '../images/picture_unavailable.jpg' 
+
+
+export const getAuthor = (res) => {
+    const data = res;
+    let hebrewAuthors = "";
+    let englishAuthors = "";
+    if (data === undefined)
+        return "שם הסופר אינו זמין";
+    if (data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+            if (isHebrew(data[i])) {
+                if (hebrewAuthors !== "")
+                    hebrewAuthors += ", " + data[i];
+                else hebrewAuthors += data[i];
+            }
+            else {
+                if (englishAuthors !== "")
+                    englishAuthors += ", " + data[i];
+                else englishAuthors += data[i];
+            }
+        }
+        if (hebrewAuthors !== "") {
+            return hebrewAuthors;
+        }
+        else if (englishAuthors !== "")
+            return englishAuthors;
+    }
+    else return "שם הסופר אינו זמין";
+}
+
+
+export const isHebrew = (data) => {
+    if ((("A" <= data[0]) && (data[0] <= "Z")) || (("a" <= data[0]) && (data[0] <= "z")))
+        return false;
+    return true;
+}
 
 
 const BookPage = (props) => {
     const bookId = props.match.params.id;
-    // const [genres, setGenres] = useState('');
-    const [poster, setPoster] = useState('');
     const isForm = useSelector(state => state.isForm);
     const dispatch = useDispatch();
     const history = useHistory();
@@ -22,8 +57,11 @@ const BookPage = (props) => {
     const [voteAverage, setvoteAverage] = useState('');
     const [book, setBook] = useState({
         title: "",
+        author: "",
         publishedDate: "",
-        textSnippet: "",
+        description: "",
+        publisher: "",
+        imageLinks: "",
     });
 
     useEffect(async () => {
@@ -31,14 +69,15 @@ const BookPage = (props) => {
             .then((res) => {
                 setBook({
                     title: res.data.volumeInfo.title,
+                    author: getAuthor(res.data.volumeInfo.authors),
                     publishedDate: res.data.volumeInfo.publishedDate,
-                    textSnippet: res.data.volumeInfo.textSnippet,
+                    description: getDescription(res.data.volumeInfo.description),
+                    publisher: res.data.volumeInfo.publisher,
+                    imageLinks: getImage(res.data.volumeInfo.imageLinks),
                 });
-
-                console.log(res.data); return;
-                // getGeneres(res.data);
-                setPoster(res.volumeInfo.imageLinks);
-                setvoteAverage((res.data.vote_average / 2).toFixed(1));
+                
+                console.log(res.data);
+                setvoteAverage("אינו זמין כעת");
             })
             .catch(() => {
                 history.push('/404');
@@ -55,12 +94,26 @@ const BookPage = (props) => {
     // }
 
 
+    const getDescription = (res) => {
+        if (res === undefined)
+            return "תקציר אינו זמין כעת";
+        return res;
+    }
+
+
+    const getImage = (res) => {
+        if (res === undefined)
+            return picture_unavailable;
+        else return res.thumbnail;
+    }
+
+
     const createRecommendation = () => {
         dispatch({
             type: "SETFORMINFO",
             payload: {
                 rId: bookId,
-                name: book.volumeInfo.title,
+                name: book.title,
                 rate: 1,
                 comment: "",
                 type: "ספר",
@@ -76,66 +129,59 @@ const BookPage = (props) => {
         >
             <Navbar />
 
-            <div className="flex flex-col my-24 bg-white box-border w-3/4 sm:h-5/6 sm:w-2/4 border-4 rounded-lg">
+            <div className="flex flex-col self-center w-4/5 lg:w-1/2 my-10 box-border border-4 rounded-lg bg-gray-300">
 
-                {/*title + genres + release*/}
-                <div className="flex flex-col w-full sm:h-2/6 grid divide-y-2  divide-black divide-opacity-25 bg-white mt-4">
-                    <div className="flex items-center h-3/4 text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black  justify-self-center text-center">
-                        {book.title}
+                {/* Name */}
+                <div className="w-full h-16 sm:h-24 text-3xl sm:text-5xl lg:text-6xl text-center font-bold bg-white">
+                    <div> {book.title} </div>
+                    <div className="text-base md:text-xl"> {book.author} </div>
+                </div>
+
+                {/* Photo */}
+                <div className="flex flex-row-reverse w-full">
+
+                    <div className="flex w-1/2 h-48 sm:h-56 justify-center p-2 border-l-2">
+                        <img src={book.imageLinks} />
                     </div>
 
-                    <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
-                        <div className="">
-                            תאריך יציאה: {book.publishedDate}
-                        </div>
-                        {/* <div className="">
-                            ז'נאר: {genres}
-                        </div> */}
+                    <div className="flex w-1/2 justify-end text-right text-md sm:text-lg p-2 border-r-2">
+                        
+                            {book.description}
+                        
                     </div>
-                    <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
-                        <div className="">
-                            חברים שדרגו: {raters}
-                        </div>
-                        <div className="text-red-700 font-black">
-                            דירוג: 5 / {rating !== 0 ? rating : voteAverage}
-                        </div>
+
+                </div>
+
+                {/* Author + rating */}
+                <div className="flex flex-row-reverse text-md md:text-lg text-center border-2">
+                    <div className="w-1/2 border-2">
+                        {book.publisher}, {book.publishedDate}
+                    </div>
+                    <div className="w-1/4 text-center border-2">
+                        דירוג: {rating !== 0 ?  5 / rating : voteAverage}
+                    </div>
+                    <div className="w-1/4 text-center border-2">
+                        חברים שדרגו: {raters}
                     </div>
                 </div>
 
-                {/*Photo*/}
-                <div className="flex flex-row w-full h-2/6  grid justify-items-center bg-gray-300">
-                    <div className="flex flex-row w-1/2">
-                        <img src={poster} alt="" />
-                    </div>
-                </div>
+                {/* Recommendations + add button */}
+                <div className="flex flex-col w-full items-center bg-white">
 
+                    <div className="text-xl self-center my-2 font-bold underline">המלצות</div>
 
-                <div className="flex flex-col h-16 sm:h-1/6 text-xs sm:text-sm mt-5 mx-2"> {/*overview*/}
-                    <div className="flex justify-end underline">
-                        תקציר
-                    </div>
-                    <div className="flex justify-start text-right  overflow-y-auto">
-                        {book.textSnippet}
-                    </div>
-                </div>
-
-
-                <div className="flex flex-col h-40 sm:h-1/6 text-right mt-5 mx-2"> {/* Recommendations */}
-                    <div className="underline mb-2">
-                        המלצות
-                    </div>
-                    <div className="max-h-52 overflow-y-auto">
-                        <Recommendations rId={bookId} closeness={props.closeness} />
+                    <div className="h-56 mb-5 w-full sm:w-3/4 mx-2 overflow-y-auto text-right">
+                        <Recommendations rId={bookId} closeness={props.closeness}/>
                     </div>
 
-                    <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
+                    <button className="self-center my-5 border-4 border-transparent text-sm sm:text-base text-white rounded-lg bg-blue-300 hover:bg-blue-500 focus:outline-none"
                         onClick={() => createRecommendation()}
                     >
                         הוסף המלצה
                         </button>
 
-
                 </div>
+
 
             </div>
             {isForm ? <Form btnLabel="הוסף" /> : null}
