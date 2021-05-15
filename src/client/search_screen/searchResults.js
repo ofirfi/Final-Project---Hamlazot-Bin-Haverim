@@ -5,14 +5,15 @@ import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { BsPersonCheckFill, BsArrowLeft } from 'react-icons/bs'
 import { getAuthor } from '../book_screen/book'
 
-const headers = {
-    headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('token')}`
-    }
-}
+let headers;
 
 
 export function searchRes(input, type, page, history, closeness = 1) {
+    headers = {
+        headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('token')}`
+        }
+    }
     if (type === "place")
         return placeSearch(input, page, closeness, history);
     if (type === "movie")
@@ -174,7 +175,6 @@ const getMovieGeneres = async (movieId) => {
 const makeMoviesDiv = (movies,closeness) => movies.map(movie => MakeMovieDiv(movie,closeness))
 
 const MakeMovieDiv = (movie,closeness) => {
-    console.log(closeness);
     let friendIcon;
     let history = movie.history;
     if(movie.isOurRate === true)

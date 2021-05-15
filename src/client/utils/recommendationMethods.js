@@ -1,25 +1,28 @@
 import axios from 'axios';
 
-const recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
-const userName = window.localStorage.getItem('userName');
-const token = window.localStorage.getItem('token');
-const headers = {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-}
-
+let recommendations;
+let userName;
+let token ;
+let headers;
 
 
 export async function makeRecommendationsInfo(rId, closeness = 1) {
+    recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
+    userName = window.localStorage.getItem('userName');
+    token = window.localStorage.getItem('token');
+    headers = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
 
     let results = await axios.post('https://rbfserver.herokuapp.com/users', {
         userName,
         self: true
     }, headers)
         .then(async res => makeInfo(res.data.data, rId, closeness))
-        .catch(err => {})
-
+        .catch(err => console.log(err))
     return results;
 }
 
