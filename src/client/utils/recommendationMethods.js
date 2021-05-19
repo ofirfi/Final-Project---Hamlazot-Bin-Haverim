@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-//
+//The score and precent of "High" of friend's reliability
 const HIGH_C = 3;
 const HIGH_M = 0.75;
-//
+//The score and precent of "Medium" of friend's reliability
 const MID_C = 2;
 const MID_M = 0.5;
-//
+//The score and precent of "Low" of friend's reliability
 const LOW_C = 1;
 const LOW_M = 0.25;
 
@@ -17,12 +17,14 @@ let headers;
 
 
 /**
- * 
- * @param {*} rId 
- * @param {*} closeness 
- * @returns 
+ * @description The function makes a request to the server to get the user's information to get
+ * the recommendations and the ratings according to the user's friends and the number of friends that rated.
+ * @param {String} rId      The id of a recommendation to look for. 
+ * @param {int} closeness   The rank level of friends to search for. 
+ * @returns an object containing the user's recommendation, friends recommendations in an array, 
+ *          every other recommendation in an array, the calculated rating and the number of raters
  */
-export async function makeRecommendationsInfo2(rId, closeness = 1) {
+export async function makeRecommendationsInfo(rId, closeness = 1) {
     recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
     userName = window.localStorage.getItem('userName');
     token = window.localStorage.getItem('token');
@@ -31,7 +33,6 @@ export async function makeRecommendationsInfo2(rId, closeness = 1) {
             Authorization: `Bearer ${token}`
         }
     }
-
 
     let results = await axios.post('https://rbfserver.herokuapp.com/users', {
         userName,
@@ -43,11 +44,14 @@ export async function makeRecommendationsInfo2(rId, closeness = 1) {
 }
 
 /**
- * 
- * @param {*} user 
- * @param {*} rId 
- * @param {*} closeness 
- * @returns 
+ * @description The function gets the user's recommendation for the specific rId, the friends recommendations
+ * and every other recommendations. If no friends recommendations, the rate will be valued by a normal average
+ * of every recommendation in the server thats given by strangers (normal average).
+ * @param {Object} user     The user's information (userName,friendsList,recommendationsList) 
+ * @param {String} rId      The id of a recommendation to look for.
+ * @param {int} closeness   The rank level of friends to search for.
+ * @returns An object containing user's recommendation, an array of friends recommendations and an array of every
+ * other users recommendations, the rating by friends / "strangers" and the number of friends that rated.
  */
 const getInfo =  async (user, rId, closeness) =>{
 
@@ -84,12 +88,12 @@ const getInfo =  async (user, rId, closeness) =>{
 }
 
 /**
- * 
- * @param {*} rId 
- * @param {*} userInfo 
- * @returns 
+ * @description The function searchs for the the user's recommendation for the specific recommendation id.
+ * @param {String} rId          The id of a recommendation to look for.
+ * @param {Object} userInfo     The user's information (userName,friendsList,recommendationsList).
+ * @returns an object of the recommendation's info or undefined if the user does not have a recommendation.
  */
-const getMyRecommendation2 = (rId, userInfo) => {
+const getMyRecommendation = (rId, userInfo) => {
     let myRec;
     for (let i = 0; i < userInfo.recommendations.length; i++)
         if (userInfo.recommendations[i].rId === rId) {
@@ -101,13 +105,15 @@ const getMyRecommendation2 = (rId, userInfo) => {
 }
 
 /**
- * 
- * @param {*} user 
- * @param {*} rId 
- * @param {*} closeness 
- * @returns 
+ * @description The function creates an array filled with the user's friends recommendations, their weighted average
+ * and the number of friends that rated.
+ * The function searchs for friends by BFS up to distance of "closeness" from the user.
+ * @param {Object} user         The user's information (userName,friendsList,recommendationsList).
+ * @param {String} rId          The id of a recommendation to look for.
+ * @param {int} closeness       The rank level of friends to search for.
+ * @returns an object containing an array filled with  friends recommendations, the calculated rating and the number of raters.
  */
-const getFriendsRecommendations2 = async (user, rId, closeness) => {
+const getFriendsRecommendations = async (user, rId, closeness) => {
     let raters = 0,
     rating = 0,
     top = 0,
@@ -173,12 +179,12 @@ const getFriendsRecommendations2 = async (user, rId, closeness) => {
 }
 
 /**
- * 
- * @param {*} userName 
- * @param {*} w 
- * @param {*} reliability 
- * @param {*} rank 
- * @returns 
+ * @description The function determines the Ci and Mi of a friend for the weighted calculation.
+ * @param {String} userName     The friend's userName
+ * @param {double} w            The weight of the friend's rating.
+ * @param {String} reliability  The friend's reliability that was determined by the previous friend.
+ * @param {int} rank            The friend's distance from the user searching for the recommendations.
+ * @returns an object containing the friend's Ci, Mi, Wi, userName, and rank (distance).
  */
 const makeFriendsInfo = (userName,w,reliability,rank) => {
     let c,m;
@@ -204,10 +210,11 @@ const makeFriendsInfo = (userName,w,reliability,rank) => {
 }
 
 /**
- * 
- * @param {*} userName 
- * @param {*} used 
- * @returns 
+ * @description The function checks if the userName was checked before. 
+ * @param {String} userName     The userName of a friend.
+ * @param {Array} used          The array of the userName that were checked.
+ * @returns True if the Username hasn't been used yet,
+ * else if the userName was used or checked returns false. 
  */
 const isNotUsed = (userName,used) => {
     for (let i = 0; i < used.length; i++)
@@ -217,10 +224,10 @@ const isNotUsed = (userName,used) => {
 }
 
 /**
- * 
- * @param {*} rId 
- * @param {*} friend 
- * @returns 
+ * @description The function finds the user's recommendation index in the recommendations array.
+ * @param {String} rId          The id of a recommendation to look for.
+ * @param {Object} friend       The friend (user) that's needed to find the recommendation for.
+ * @returns the index of the recommendation. Returns -1 if there's no recommendation for the friend.
  */
 const getRecommendationIndex = (rId, friend) => {
 
@@ -254,12 +261,12 @@ const getRecommendationIndex = (rId, friend) => {
 }
 
 /**
- * 
- * @param {*} rId 
- * @param {*} used 
- * @param {*} isRated 
- * @param {*} randomIndex 
- * @returns 
+ * @description
+ * @param {String} rId          The id of a recommendation to look for.
+ * @param {Array} used          The array of the userName that were checked.
+ * @param {Boolean} isRated     A boolean variable that indicates if there's a rating from friends or not.
+ * @param {int} randomIndex     A random index of a recommendation for the specific rId or -1 if there are no friends recommendations (for faster search).
+ * @returns an object containing an array of rest of the recommendations by users, thier rating in case isRated is false.
  */
 const getStrangersRecommendion = (rId,used,isRated,randomIndex) => {
     let index = getStartingPosition2(rId, randomIndex, isRated);
@@ -301,13 +308,13 @@ const getStrangersRecommendion = (rId,used,isRated,randomIndex) => {
 }
 
 /**
- * 
- * @param {*} rId 
- * @param {*} index 
- * @param {*} isRated 
- * @returns 
+ * @description The function gets the starting index of the recommandtions in the recommendations array.
+ * @param {String} rId          The id of a recommendation to look for.
+ * @param {int} index           A random index of a recommendation for the specific rId or -1 if there are no friends recommendations.
+ * @param {Boolean} isRated     A boolean variable indicating whether there's rating for the specified rId.
+ * @returns The starting index of the recommendations in the array or -1 if there are no recommendations.
  */
-const getStartingPosition2 = (rId, index, isRated) => {
+const getStartingPosition = (rId, index, isRated) => {
     if (isRated) {
         while (index >= 0 && recommendations[index].rId === rId)
             index--;
@@ -408,7 +415,7 @@ const getStartingPosition2 = (rId, index, isRated) => {
 
 
 
-export async function makeRecommendationsInfo(rId, closeness = 1) {
+export async function makeRecommendationsInfo2(rId, closeness = 1) {
     recommendations = JSON.parse(window.localStorage.getItem('recommendations'));
     userName = window.localStorage.getItem('userName');
     token = window.localStorage.getItem('token');
@@ -464,7 +471,7 @@ const makeInfo = async (userInfo, rId, closeness = 1) => {
  * A function that gets the user's recommendations.
  * The function returns the recommendation if found, else undefined.
 */
-function getMyRecommendation(rId, userInfo) {
+function getMyRecommendation2(rId, userInfo) {
     let myRec;
     for (let i = 0; i < userInfo.recommendations.length; i++)
         if (userInfo.recommendations[i].rId === rId) {
@@ -479,7 +486,7 @@ function getMyRecommendation(rId, userInfo) {
  * A function that makes the user's friends recommendations and rating.
  * The function returns an object that contains array of friends recommendations, a rating array and a random index of a recommendation.
  */
-async function getFriendsRecommendations(rId, friends, closeness) {
+async function getFriendsRecommendations2(rId, friends, closeness) {
     let results = getRank1Friends(rId, friends);
     let friendsRecs = results.friendsRecs;
     let ratingList = results.ratingList;
@@ -617,7 +624,7 @@ const getStangersRecommendations = (rId, recs, randomIndex, isRated) => {
  * If there are recommendations, the function returns the first index,
  * else returns -1.
  */
-const getStartingPosition = (rId, index, isRated) => {
+const getStartingPosition2 = (rId, index, isRated) => {
 
     if (isRated) {
         while (index >= 0 && recommendations[index].rId === rId)

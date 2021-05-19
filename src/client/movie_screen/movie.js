@@ -15,28 +15,25 @@ const MoviePage = (props) => {
     const [movie, setMovie] = useState('');
     const [genres, setGenres] = useState('');
     const [poster, setPoster] = useState('');
-    const closeness = (props.location && props.location.state)?props.location && props.location.state.closeness : 1;
+    const closeness = (props.location && props.location.state) ? props.location && props.location.state.closeness : 1;
     const isForm = useSelector(state => state.isForm);
     const dispatch = useDispatch();
     const history = useHistory();
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
-    const [voteAverage,setvoteAverage] = useState('');
+    const [voteAverage, setvoteAverage] = useState('');
 
     useEffect(() => {
-        if (movieId > 60 && movieId < 806126) 
-            axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
-                .then((res) => {
-                    setMovie(res.data);
-                    getGeneres(res.data);
-                    setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`);
-                    setvoteAverage((res.data.vote_average /2).toFixed(1));
-                })
-                .catch(() => {
-                    history.push('/404');
-                })
-        else
-            history.push('/404');
+        axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
+            .then((res) => {
+                setMovie(res.data);
+                getGeneres(res.data);
+                setPoster(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`);
+                setvoteAverage((res.data.vote_average / 2).toFixed(1));
+            })
+            .catch(() => {
+                history.push('/404');
+            })
     }, [])
 
 
@@ -49,7 +46,7 @@ const MoviePage = (props) => {
     }
 
 
-    const createRecommendation = () =>{
+    const createRecommendation = () => {
         dispatch({
             type: "SETFORMINFO",
             payload: {
@@ -63,7 +60,7 @@ const MoviePage = (props) => {
         dispatch({ type: "TOGGLEFORM" })
     }
 
-    
+
     return (
         <div className="flex flex-col bg-fixed items-center"
             style={{ backgroundImage: `url(${BackGround})`, backgroundSize: '100% 100%' }}
@@ -91,7 +88,7 @@ const MoviePage = (props) => {
                             חברים שדרגו: {raters}
                         </div>
                         <div className="text-red-700 font-black">
-                            דירוג: 5 / {rating!==0? rating : voteAverage}
+                            דירוג: 5 / {rating !== 0 ? rating : voteAverage}
                         </div>
                     </div>
                 </div>
@@ -119,7 +116,7 @@ const MoviePage = (props) => {
                         המלצות
                     </div>
                     <div className="max-h-52 overflow-y-auto">
-                        <Recommendations rId={movieId} closeness = {closeness} />
+                        <Recommendations rId={movieId} closeness={closeness} />
                     </div>
 
                     <button className="self-center border-4 border-transparent text-sm sm:text-base rounded-full p-1 bg-blue-300 text-white my-2 focus:outline-none"
@@ -132,7 +129,7 @@ const MoviePage = (props) => {
                 </div>
 
             </div>
-            {isForm ? <Form btnLabel = "הוסף"/> : null}
+            {isForm ? <Form btnLabel="הוסף" /> : null}
         </div>
     )
 
