@@ -6,7 +6,7 @@ const User = require('../models/User_model'),
 
 
 
-const get_Friends_list = async (friendsList,personal_profile) => {
+const get_Friends_list = async (friendsList,personal_profile,sort_method) => {
     let friends = []
     for (let i = 0; i < friendsList.length; i++) {
         const user = await User.findById(friendsList[i].userRef);
@@ -23,9 +23,32 @@ const get_Friends_list = async (friendsList,personal_profile) => {
                 fullName: `${user.first_name} ${user.last_name}`
             });
     }
-    friends.sort((friend1,friend2) => friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0)
+    if (personal_profile && sort_method === "reliability")
+        friends.sort((friend1,friend2) => sort_By_Reliability(friend1,friend2));
+    else
+        friends.sort((friend1,friend2) => friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0);
     return friends
 };
+
+
+const sort_By_Reliability = (friend1,friend2) =>{
+    if (friend1.reliability === "הרבה"){
+        if(friend2.reliability === "בינוני" || friend2.reliability === "מעט" )
+            return -1;
+    }
+
+    if(friend1.reliability === "בינוני"){
+        if (friend2.reliability === "הרבה")
+            return 1;
+        if (friend2.reliability === "מעט")
+            return -1;
+    }
+
+    if (friend1.reliability === "מעט" && (friend2.reliability === "הרבה" ||friend2.reliability === "בינוני"))
+        return 1;
+    return friend1.userName>friend2.userName? 1 : friend2.userName>friend1.userName? -1 : 0 ;
+}
+
 
 const get_Recommendations_list = async (recommendations_list) =>{
     let recommendations = [];
@@ -76,8 +99,8 @@ module.exports = {
         let user = await User.findOne({ userName: req.body.userName });
         if(!user)
             return next(new AppError('User was not found', 404));
-            
-        const friends = await get_Friends_list(user.friendsList.sort(),req.body.self);
+        
+        const friends = await get_Friends_list(user.friendsList,req.body.self,req.body.sort);
     
         const recommendations = await get_Recommendations_list(user.recommendationsList);
 
