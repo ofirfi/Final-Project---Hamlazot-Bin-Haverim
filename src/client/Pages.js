@@ -8,6 +8,7 @@ import ProfilePage from './profile_screen/profile'
 import UserPage from './user_screen/user'
 import SearchPage from './search_screen/search'
 import PageNotFound from './pageNotFound/pageNotFound'
+import resetPasswordPage from './reset_password/resetPassword'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import checkAuth from './utils/auth'
@@ -20,8 +21,6 @@ import {
 } from 'react-router-dom'
 
 
-
-
 const Pages = () => {
     let log = useSelector(state => state.logged)
     let logged = checkAuth()
@@ -29,8 +28,6 @@ const Pages = () => {
         logged = checkAuth()
     })
     
-
-
     return <Router>
         {(logged||log) ?
             (
@@ -50,6 +47,7 @@ const Pages = () => {
                 <Switch>
                     <Route exact path="/login" component={LoginPage} />
                     <Route exact path="/signUp" component={RegistrationPage} />
+                    <Route exact path="/resetPassword/:token" component={resetPasswordPage} />
                     <Redirect to="/login" />
                 </Switch>
             )}

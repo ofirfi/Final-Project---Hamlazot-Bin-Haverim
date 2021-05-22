@@ -103,21 +103,24 @@ module.exports = {
         }
     }),
 
-    reset_password: catchAsync(async (req,res,next) =>{
+    reset_password: catchAsync(async (req,res,next) =>{ 
         const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-
+        
         const user = await User.findOne({
             passwordResetToken: hashedToken,
             passwordResetExpires: { $gt: Date.now() }
-        });
+        }); 
+        if(!user)
+            return next(new AppError('Token is invalid or has expired',400));
+        
         if(req.body.password !== req.body.confirm_password)
-            return next(new AppError('Password and confirm password dont match',400));
-
+            return (new AppError('Password and confirm password dont match',400));
+    
         user.password = req.body.password;
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save();
-
+        
         res.status(204).json({
             status:"success",
             data:null
