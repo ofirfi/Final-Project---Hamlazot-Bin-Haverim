@@ -7,7 +7,7 @@ import axios from "axios";
 import {searchRes} from './searchResults'
 import { useHistory } from 'react-router-dom'
 import {AiOutlineLoading3Quarters} from 'react-icons/ai'
-
+import Footer from '../footer/footer'
 
 const SearchPage = (props)=>{
     const token = window.localStorage.getItem('token')
@@ -60,7 +60,7 @@ const SearchPage = (props)=>{
         >
             <Navbar/>
 
-            <div className="flex flex-col bg-fixed items-center">
+            <div className="flex flex-col bg-fixed items-center min-h-full">
 
                 <div className="flex flex-col sm:flex-row-reverse bg-fixed items-center mx-2 mt-6">
                     <input className="flex justify-self text-center w-96 h-12 my-3 sm:my-0 rounded-full pr-2 focus:outline-none" 
@@ -112,6 +112,9 @@ const SearchPage = (props)=>{
                     </div>
                 }
 
+            </div>
+            <div>
+                <Footer/>
             </div>
         </div>
     );

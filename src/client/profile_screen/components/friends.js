@@ -93,6 +93,8 @@ export function Friends() {
 
 
     const deleteFriend = (friend, index) => {
+        if (!window.confirm(`האם את/ה בטוח/ה שברצונך להסיר את ${friend} זה מרשימת החברים? `))
+            return;
         axios.delete("https://rbfserver.herokuapp.com/users/friends",
             {
                 headers: { Authorization: `Bearer ${token}` },

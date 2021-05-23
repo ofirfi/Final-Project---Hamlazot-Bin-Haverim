@@ -86,7 +86,9 @@ export function Recommendations() {
     }
 
 
-    const deleteRecommendation = rId =>
+    const deleteRecommendation = rId => {
+        if (!window.confirm(`האם את/ה בטוח/ה שברצונך למחוק המלצה זו? `))
+            return;
         axios.delete("https://rbfserver.herokuapp.com/recommendations",
             {
                 headers: { Authorization: `Bearer ${window.localStorage.getItem('token')}` },
@@ -97,7 +99,7 @@ export function Recommendations() {
                 alert('ההמלצה נמחקה');
             })
             .catch(err => console.log(err))
-
+    }
 
     return (
         <div className="flex flex-col w-full text-white">

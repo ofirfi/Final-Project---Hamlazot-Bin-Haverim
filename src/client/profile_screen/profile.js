@@ -20,7 +20,7 @@ const ProfilePage = () => {
     const isFriendSearch = useSelector(state => state.isFriendSearch);
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
-    const [display, setDisplay] = useState(<ChangePassword />)
+    const [display, setDisplay] = useState(<Friends/>)
     const [myRecommendations, setMyRecommendations] = useState('')
     const [myFriends, setMyFriends] = useState('')
     const headers = {

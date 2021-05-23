@@ -307,7 +307,7 @@ const getImportance = (rate, raters) => {
 
 const noResults = () => {
     return <div>
-        לא נמצאו תצאות
+        לא נמצאו תוצאות
     </div>
 }
 
