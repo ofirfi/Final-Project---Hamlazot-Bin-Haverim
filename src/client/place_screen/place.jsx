@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Form } from '../utils/form'
 import { Recommendations } from '../recommendations_component/recommendation'
 import { useHistory } from 'react-router-dom'
+import { getByPlaceholderText } from '@testing-library/dom'
 const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 
@@ -21,12 +22,13 @@ const PlacePage = (props) => {
     const history = useHistory();
     const [placeInfo, setPlaceInfo] = useState({
         name: "",
-        openingHours: [[], [], [], [], [], [], []],
+        openingHours: [[""], [""], [""], [""], [""], [""], [""]],
         address: "",
         phoneNumber: "",
         isOpened: "",
         photo: ""
     });
+ 
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -45,14 +47,21 @@ const PlacePage = (props) => {
 
 
     const fillPlaceInfo = (place) => { 
-        let openingHours = place.opening_hours.weekday_text.map(day => day)
+        let openingHours = [[""], [""], [""], [""], [""], [""], [""]];
+        let isOpened;
+        if (place.opening_hours){ 
+            openingHours = place.opening_hours.weekday_text.map(day => day);
+            isOpened = place.opening_hours.open_now ? "פתוח" :"סגור" ; 
+        }
+        else 
+            isOpened = "סגור לצמיתות";
         setvoteAverage((place.rating).toFixed(1));
         setPlaceInfo({
             name: place.name,
             openingHours: openingHours,
             address: place.vicinity,
             phoneNumber: place.formatted_phone_number,
-            isOpened: place.opening_hours.opne_now,
+            isOpened,
             photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
         })
 
@@ -97,7 +106,7 @@ const PlacePage = (props) => {
 
                     <div className="flex flex-col w-1/2  text-right text-md sm:text-lg">
                         <div className="border-2">
-                            <div className="underline">שעות פתיחה</div>
+                            <div className="underline">{`שעות פתיחה (${placeInfo.isOpened})`}</div>
                             <div className="">
                                 <div>{placeInfo.openingHours[0]}</div>
                                 <div>{placeInfo.openingHours[1]}</div>
