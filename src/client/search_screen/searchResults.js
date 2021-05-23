@@ -27,7 +27,7 @@ export function searchRes(input, type, page, history, closeness = 1) {
 
 const placeSearch = async (input, page = 1, closeness, history) => {
     let res = axios.get(`https://rbfserver.herokuapp.com/place/search/${input}`,headers)
-        .then(res => {
+        .then(res => { console.log(res);
             if (res.data.results.length === 0)
                 return noResults();
             return getPlaceRates(res.data.results, closeness, history);
@@ -72,6 +72,8 @@ const getPlaceRates = async (places, closeness, history) => {
             history
         }
     }
+    if(ratedPlaces.length === 0)
+        return noResults();
     ratedPlaces.sort(recommendationsSort)
     return makePlacesDiv(ratedPlaces,closeness);
 }

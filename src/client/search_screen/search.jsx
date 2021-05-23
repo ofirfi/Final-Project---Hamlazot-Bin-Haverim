@@ -65,7 +65,7 @@ const SearchPage = (props)=>{
                 <div className="flex flex-col sm:flex-row-reverse bg-fixed items-center mx-2 mt-6">
                     <input className="flex justify-self text-center w-96 h-12 my-3 sm:my-0 rounded-full pr-2 focus:outline-none" 
                         type="text"
-                        placeholder="חפש המלצות על מסעדות, הצגות, סרטים וספרים"
+                        placeholder="חפש המלצות על מסעדות, סרטים וספרים"
                         value = {input}
                         onChange = {event => setInput(event.target.value)}
                     />
