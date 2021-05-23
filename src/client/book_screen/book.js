@@ -137,7 +137,7 @@ const BookPage = (props) => {
                     <div className="text-base md:text-xl"> {book.author} </div>
                 </div>
 
-                {/* Photo */}
+                {/* Photo + description */}
                 <div className="flex flex-row-reverse w-full">
 
                     <div className="flex w-1/2 h-48 sm:h-56 justify-center p-2 border-l-2">

@@ -100,12 +100,12 @@ const PlacePage = (props) => {
                 {/* Photo + opening hours */}
                 <div className="flex flex-row-reverse ">
 
-                    <div className="flex w-1/2 h-48 sm:h-56 self-start">
+                    <div className="flex w-1/2 h-48 sm:h-56 justify-center self-center p-2 border-l-2">
                         <img src={placeInfo.photo} alt = "" />
                     </div>
 
-                    <div className="flex flex-col w-1/2  text-right text-md sm:text-lg">
-                        <div className="border-2">
+                    <div className="flex w-1/2 justify-end text-right text-md sm:text-lg p-2 border-r-2">
+                        <div className="">
                             <div className="underline">{`שעות פתיחה (${placeInfo.isOpened})`}</div>
                             <div className="">
                                 <div>{placeInfo.openingHours[0]}</div>

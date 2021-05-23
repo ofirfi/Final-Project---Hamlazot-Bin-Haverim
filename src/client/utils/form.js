@@ -87,17 +87,17 @@ export function Form(props) {
                 </div>
 
 
-                <div className="flex justify-around w-full h-14 text-white">
+                <div className="flex justify-around w-full h-12 md:h-14 text-xs lg:text-sm text-white">
                     <button className="w-1/4 h-full bg-blue-400 rounded-full self-center hover:bg-blue-700 focus:outline-none"
                         onClick={() => dispatch({ type: "TOGGLEFORM" })}
                     >
-                        סגור
+                        אמליץ בפעם אחרת
                         </button>
 
                     <button className="w-1/4 h-full bg-blue-400 rounded-full hover:bg-blue-700 focus:outline-none"
                         onClick={addRecommendation}
                     >
-                        {props.btnLabel}
+                        שלח את ההמלצה שלי
                         </button>
                 </div>
 

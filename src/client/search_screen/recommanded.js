@@ -33,9 +33,13 @@ export function Recommended(props) {
 
     }
 
+    const recommended = () => {
+        
+    }
+
     return (
         <div className = "">
-            <div className="flex flex-row space-x-10 my-5 justify-center">
+            <div className="flex flex-row space-x-10 my-5 justify-center ">
                 <button className="hover:text-gray-600 focus:outline-none"
                     onClick={foodSearch}
                 >
@@ -60,7 +64,7 @@ export function Recommended(props) {
 
             </div>
 
-            <div className="flex flex-col bg-fixed items-center">
+            <div className="flex flex-col bg-fixed items-center font-bold">
                 <h1 style={{ color: "rgb(53, 111, 123)" }}>מומלצים</h1>
 
             </div>

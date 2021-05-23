@@ -41,6 +41,8 @@ const getPlaceRates = async (places, closeness, history) => {
     for (let i = 0; i < places.length; i++) {
         if (!isFood(places[i]))
             continue;
+        if (!inIsrael(places[i]))
+            continue;
         let res = await makeRecommendationsInfo((places[i].place_id).toString(), closeness);
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
@@ -85,6 +87,12 @@ const isFood = (place) => {
     return false;
 }
 
+const inIsrael = (place) => {
+    if (place.formatted_address.search("ישראל") >= 0)
+        return true;
+    return false;
+}
+
 const makePlacesDiv = (places,closeness) => places.map(place => MakePlaceDiv(place,closeness))
 
 const MakePlaceDiv = (place,closeness) => {
@@ -93,7 +101,7 @@ const MakePlaceDiv = (place,closeness) => {
     if(place.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return(
-        <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200">
+        <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200 cursor-pointer" onClick={() => { history.push(`/place/${place.rId}`,{closeness}) }}>
             <div className="flex flex-col items-center m-2 w-1/3">
                 <img src={place.image}
                     style={{ height: 112.5, weight: 150 }}
@@ -103,16 +111,16 @@ const MakePlaceDiv = (place,closeness) => {
             <div className="flex flex-col items-center justify-self m-2 w-2/3">
                 <div>{friendIcon}</div>
                 <div className="font-extrabold text-lg">{place.name}</div>
-                <div>{place.address}</div>
+                <div>{place.address.replace(', ישראל', '')}</div>
                 <div>{place.isOpenNow}</div>
                 <div>דירוג: {place.rate}</div>
                 <div>חברים שדירגו: {place.raters}</div>
-                <div className="flex flex-row items-center">
+                {/* <div className="flex flex-row items-center">
                     <BsArrowLeft/>
                     <button className="m-1" onClick={() => { history.push(`/place/${place.rId}`,{closeness}) }}>
                         מעבר לדף 
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     )
@@ -182,7 +190,7 @@ const MakeMovieDiv = (movie,closeness) => {
     if(movie.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
-        <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200">
+        <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200 cursor-pointer" onClick={() => { history.push(`/movie/${movie.rId}`,{closeness}) }}>
             <div className="flex flex-col items-center m-2 w-1/3">
                 <img src={`https://image.tmdb.org/t/p/w500${movie.image}`}
                     style={{ height: 150, weight: 112.5 }}
@@ -195,12 +203,12 @@ const MakeMovieDiv = (movie,closeness) => {
                 <div>{movie.genres}</div>
                 <div>דירוג: {movie.rate}</div>
                 <div>חברים שדירגו: {movie.raters}</div>
-                <div className="flex flex-row items-center">
+                {/* <div className="flex flex-row items-center">
                     <BsArrowLeft />
                     <button className="m-1" onClick={() => { history.push(`/movie/${movie.rId}`,{closeness}) }}>
                         מעבר לדף
                 </button>
-                </div>
+                </div> */}
             </div>
         </div>
     )
@@ -268,7 +276,7 @@ const MakeBookDiv = (book) => {
     if(book.isOurRate === true)
         friendIcon = <BsPersonCheckFill/>;
     return (
-    <div className="flex flex-row items-center text-right border-2 rounded w-96 my-5 p-3 bg-green-200">
+    <div className="flex flex-row items-center text-right border-2 rounded w-96 my-5 p-3 bg-green-200 cursor-pointer" onClick={() => { history.push(`/book/${book.rId}`) }}>
         <div className="flex flex-col items-center m-2 w-1/3">
             <img src={`${book.image}`}
                 style={{ height: 150, weight: 112.5 }}
@@ -282,12 +290,12 @@ const MakeBookDiv = (book) => {
             {/* <div>{book.genres}</div> */}
             <div>דירוג: {book.rate}</div>
             <div>חברים שדירגו: {book.raters}</div>
-            <div className="flex flex-row items-center text-right">
+            {/* <div className="flex flex-row items-center text-right">
                 <BsArrowLeft/>
                 <button className="m-1" onClick={() => { history.push(`/book/${book.rId}`) }}>
                     מעבר לדף 
                 </button>
-            </div>
+            </div> */}
         </div>
     </div>
     )
