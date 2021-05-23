@@ -51,7 +51,7 @@ const getPlaceRates = async (places, closeness, history) => {
             rate = (places[i].rating).toFixed(1);
         let isOpenNow = `פתוח עכשיו`;
         if (!places[i].opening_hours)
-            isOpenNow = ``;
+            isOpenNow = `סגור לצמיתות`;
         else if (!places[i].opening_hours.open_now)
             isOpenNow = `סגור כעת`;
 
