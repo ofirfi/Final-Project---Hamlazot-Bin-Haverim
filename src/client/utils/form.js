@@ -61,15 +61,15 @@ export function Form(props) {
                 <div className="flex flex-row-reverse w-full text-xl text-right mt-3 h-7 self-start grid">
                     <lab className="self-right justify-end">
 
-                        <select className="mr-2 w-16 text-black text-center"
+                        <select className="mr-2 w-36 text-black text-center"
                             value={rate}
                             onChange={event => setRate(event.target.value)}
                         >
-                            <option value="1">1</option>
+                            <option value="1">1 - לא ממליץ</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="5">5 - !ממליץ מאוד</option>
                         </select>
                             בחר דירוג
                         </lab>
