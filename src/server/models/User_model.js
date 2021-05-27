@@ -12,6 +12,15 @@ const UserSchema = new mongoose.Schema({
     maxlength:16,
     trim:true,
   },
+  username:{
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    minlength:3,
+    maxlength:16,
+    trim:true,
+  },
   email: {
     type: String,
     required: [true,'למשתמש חייב להיות מייל'],

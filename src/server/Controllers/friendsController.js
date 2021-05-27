@@ -28,8 +28,8 @@ const send_data = (res,statusCode,data) =>{
 module.exports  = {
 
     search_users: catchAsync(async(req,res,next)=>{
-        let {userName} = req.params
-        const users = await User.find({userName : {$regex : userName}  },['userName','first_name','last_name']);
+        const {userName} = req.params
+        const users = await User.find({username : {$regex : userName.toLowerCase()}  },['userName','first_name','last_name']);
         send_data(res,200,{results: users.length,data: users});
     }),
 

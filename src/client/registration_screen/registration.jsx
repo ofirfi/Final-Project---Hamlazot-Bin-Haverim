@@ -58,7 +58,7 @@ const RegistrationPage = () => {
       last_name: surname
     }
 
-    axios.post("https://rbfserver.herokuapp.com/auth/signup", data)
+    axios.post("http://localhost:8001/auth/signup", data)
       .then(res => signUpSuccess(res))
       .catch(err => signUpFailure(err))
   }
@@ -78,6 +78,8 @@ const RegistrationPage = () => {
       alert(`${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
     else if (err.response.data.message === "Invalid input data. Please enter a valid E-mail!")
       alert('המייל אינו בפורמט מתאים')
+    else if (err.response.data.message === `${userName} already exists`)
+      alert(`${userName} כבר קיים במערכת, אנא הכנס משהו אחר`)
     else
       alert('ארע שגיאה, אנא נסה נסית');
     setIsSigning(false);

@@ -33,11 +33,19 @@ module.exports = {
 
 
     register: catchAsync(async (req, res, next) => {
-        const {password,confirm_password} = req.body
+        const {userName,password,confirm_password} = req.body
+        const username = userName.toLowerCase();
+        
+        const user = await User.find({username})
+        if(user)
+            return next(new AppError(`${userName} already exists`,400));
+    
         if(password.toString() !== confirm_password.toString())
-            return next(new AppError("password and confirm password do not match"))
+            return next(new AppError("password and confirm password do not match",400));
+
         const new_user = await User.create({
-            userName : req.body.userName,
+            userName,
+            username,
             email : req.body.email,
             password : req.body.password,
             first_name:req.body.first_name,
