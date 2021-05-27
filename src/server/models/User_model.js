@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     maxlength:16,
     trim:true,
   },
-  username:{
+  userTag:{
     type: String,
     required: true,
     unique: true,

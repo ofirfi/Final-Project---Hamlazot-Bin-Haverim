@@ -34,9 +34,8 @@ module.exports = {
 
     register: catchAsync(async (req, res, next) => {
         const {userName,password,confirm_password} = req.body
-        const username = userName.toLowerCase();
         
-        const user = await User.find({username})
+        const user = await User.find({userTag : userName.toLowerCase()})
         if(user)
             return next(new AppError(`${userName} already exists`,400));
     
@@ -45,7 +44,7 @@ module.exports = {
 
         const new_user = await User.create({
             userName,
-            username,
+            userTag : userName.toLowerCase(),
             email : req.body.email,
             password : req.body.password,
             first_name:req.body.first_name,
