@@ -58,7 +58,7 @@ const RegistrationPage = () => {
       last_name: surname
     }
 
-    axios.post("http://localhost:8001/auth/signup", data)
+    axios.post("https://rbfserver.herokuapp.com/auth/signup", data)
       .then(res => signUpSuccess(res))
       .catch(err => signUpFailure(err))
   }
