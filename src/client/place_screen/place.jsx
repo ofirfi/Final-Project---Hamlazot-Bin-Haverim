@@ -26,7 +26,8 @@ const PlacePage = (props) => {
         address: "",
         phoneNumber: "",
         isOpened: "",
-        photo: ""
+        photo: "",
+        location: ""
     });
  
     const headers = {
@@ -62,7 +63,8 @@ const PlacePage = (props) => {
             address: place.vicinity,
             phoneNumber: place.formatted_phone_number,
             isOpened,
-            photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
+            photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`,//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
+            location: place.url
         })
 
     }
@@ -122,14 +124,27 @@ const PlacePage = (props) => {
                 </div>
 
                 {/* Adress + rating */}
-                <div className="flex flex-row-reverse text-md md:text-lg text-center border-2">
-                    <div className="w-1/2 border-2">
+                <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2">
+                    <div className="w-1/2 border-t-2 border-l-2">
                         כתובת: {placeInfo.address}
                     </div>
-                    <div className="w-1/4 text-center border-2">
+                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2">
                         דירוג: 5 / {rating !== 0 ? rating : voteAverage}
                     </div>
-                    <div className="w-1/4 text-center border-2">
+                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2">
+                        חברים שדרגו: {raters}
+                    </div>
+                </div>
+
+                {/* Phone + Location */}
+                <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2 ">
+                    <div className="w-1/2 border-t-2 border-l-2 border-b-4">
+                        טלפון: {placeInfo.phoneNumber}
+                    </div>
+                    <a className="w-1/4 text-center border-t-2 border-r-2 border-l-2 border-b-4" href={placeInfo.location}>
+                        פתח במפה
+                    </a>
+                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2 border-b-4">
                         חברים שדרגו: {raters}
                     </div>
                 </div>
