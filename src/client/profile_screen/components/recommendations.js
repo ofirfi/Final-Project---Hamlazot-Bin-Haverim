@@ -2,9 +2,10 @@ import '../../utils/style.css'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
-
+import {useHistory} from 'react-router-dom'
 
 export function Recommendations() {
+    const history = useHistory();
     const dispatch = useDispatch();
     const userName = window.localStorage.getItem('userName');
     const [myRecommandations, setMyRecommandations] = useState('');
@@ -63,12 +64,24 @@ export function Recommendations() {
                 {recommend.rate}
             </td>
             <td className="w-4/12 h-16 md:h-24 border">
-                <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
+                <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center underline cursor-pointer hover:text-gray-300"
+                    onClick={()=>goToRecommendationPage(recommend)}
+                >
                     {recommend.name}
                 </div>
             </td>
         </tr>
     )
+
+    
+    const goToRecommendationPage = (recommendation) =>{
+        if (recommendation.type === "מקום")
+            history.push(`/place/${recommendation.rId}`);
+        else if (recommendation.type === "סרט")
+            history.push(`/movie/${recommendation.rId}`);
+        else
+            history.push(`/book/${recommendation.rId}`);
+    }
 
 
     const editRecommendation = recommend => {

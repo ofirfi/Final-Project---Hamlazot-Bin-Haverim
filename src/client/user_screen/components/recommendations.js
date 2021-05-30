@@ -1,10 +1,10 @@
 import '../../utils/style.css'
 import { useEffect, useState } from "react"
-
+import { useHistory } from 'react-router-dom'
 
 export function Recommendations(props) {
     const [myRecommandations, setMyRecommandations] = useState('');
-
+    const history = useHistory();
 
     useEffect(() => {
         getRecommendations(props.myRecommendations);
@@ -22,7 +22,9 @@ export function Recommendations(props) {
 
 
     const createRecommendation = recommend => (
-        <tr className="text-xs sm:text-sm md:text-base overflow-y-auto">
+        <tr className="text-xs sm:text-sm md:text-base overflow-y-auto cursor-pointer"
+            onClick={() =>goToRecommendationPage(recommend)}
+        >
             <td className="w-4/12 h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
                     {recommend.comment}
@@ -45,6 +47,14 @@ export function Recommendations(props) {
         </tr>
     )
 
+    const goToRecommendationPage = (recommendation) =>{
+        if (recommendation.type === "מקום")
+            history.push(`/place/${recommendation.rId}`);
+        else if (recommendation.type === "סרט")
+            history.push(`/movie/${recommendation.rId}`);
+        else
+            history.push(`/book/${recommendation.rId}`);
+    }
 
     return (
         <div className="flex flex-col w-full text-white mt-8">
