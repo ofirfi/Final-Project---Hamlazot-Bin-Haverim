@@ -75,9 +75,13 @@ const LoginPage = () => {
         <img src={Header} alt="" className="" />
       </header>
 
+      <div className="flex self-center text-center mt-5">
+       האתר מציע חיפוש מקומות אוכל,סרטים וספרים ע"פ דירוג חברים משוקלל
+       <br/>
+       כאן תוכלו לכתוב המלצה עם דירוג למסעדות, בתי קפה, סרטים וספרים ולעזור לחבריכם
+      </div>
 
-
-      <div className="flex flex-col self-center w-72 h-72 sm:h-3/4 my-6 sm:my-28 bg-red-400 rounded-md shadow-xl text-center items-center">
+      <div className="flex flex-col self-center w-72 h-72 sm:h-3/4 my-6 sm:my-12 bg-red-400 rounded-md shadow-xl text-center items-center">
 
         <div className="my-3 underline font-black text-xl">
           !ברוך הבא

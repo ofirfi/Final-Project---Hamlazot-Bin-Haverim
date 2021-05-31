@@ -80,7 +80,7 @@ export function Form(props) {
                 <div className="w-5/6 h-28 self-center text-xl flex flex-col grid">
                     <textarea className="self-center placeholder-gray-300 text-right rounded w-full h-20 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-70 resize-none"
                         placeholder="תגובה"
-                        maxlength = '300'
+                        maxlength='300'
                         value={comment}
                         onChange={(event) => setComment(event.target.value)}
                     />
@@ -91,14 +91,14 @@ export function Form(props) {
                     <button className="w-1/4 h-full bg-blue-400 rounded-full self-center hover:bg-blue-700 focus:outline-none"
                         onClick={() => dispatch({ type: "TOGGLEFORM" })}
                     >
-                        אמליץ בפעם אחרת
-                        </button>
+                        {props.closeBtnLabel}
+                    </button>
 
                     <button className="w-1/4 h-full bg-blue-400 rounded-full hover:bg-blue-700 focus:outline-none"
                         onClick={addRecommendation}
                     >
-                        שלח את ההמלצה שלי
-                        </button>
+                        {props.openBtnLabel}
+                    </button>
                 </div>
 
             </div>

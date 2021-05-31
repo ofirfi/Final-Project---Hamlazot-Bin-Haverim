@@ -129,7 +129,7 @@ const MoviePage = (props) => {
                 </div>
 
             </div>
-            {isForm ? <Form btnLabel="הוסף" /> : null}
+            {isForm ? <Form openBtnLabel="שלח את ההמלצה שלי" closeBtnLabel="אמליץ בפעם אחרת" /> : null}
         </div>
     )
 

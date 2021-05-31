@@ -20,7 +20,7 @@ const ProfilePage = () => {
     const isFriendSearch = useSelector(state => state.isFriendSearch);
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
-    const [display, setDisplay] = useState(<Friends/>)
+    const [display, setDisplay] = useState(<Friends />)
     const [myRecommendations, setMyRecommendations] = useState('')
     const [myFriends, setMyFriends] = useState('')
     const headers = {
@@ -75,7 +75,7 @@ const ProfilePage = () => {
                             {email}
                         </div>
                     </div>
-               
+
                     <button className="w-2/3 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 rounded-full text-xs md:text-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"
                         onClick={() => setDisplay(<Friends myFriends={myFriends} />)}
                     >
@@ -110,7 +110,7 @@ const ProfilePage = () => {
 
             </div>
 
-            {isForm ? <Form btnLabel="ערוך" /> : null}
+            {isForm ? <Form openBtnLabel="ערוך את ההמלצה שלי" closeBtnLabel="אולי בפעם אחרת" /> : null}
             { isFriendSearch ? <Searcher /> : null}
         </div>
     );
