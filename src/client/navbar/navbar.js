@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import checkAuth from '../utils/auth'
 import Hamburger from 'hamburger-react'
 import { Searcher } from '../profile_screen/searchFriends'
+import { FaMapMarkerAlt } from 'react-icons/fa'
 
 export function Navbar() {
     const userName = window.localStorage.getItem('userName')
@@ -63,8 +64,8 @@ export function Navbar() {
         >
             <div />
 
-            <div className="flex self-center">
-                <img className="h-28 md:h-44 lg:h-52 w-full cursor-pointer"
+            <div className="flex justify-center self-center">
+                <img className="h-28 w-36 md:h-44 md:w-52 lg:h-52 lg:w-80 cursor-pointer"
                     alt=""
                     src={LogoShield}
                     onClick={() => history.push('')}

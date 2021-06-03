@@ -7,6 +7,9 @@ import { Form } from '../utils/form'
 import { Recommendations } from '../recommendations_component/recommendation'
 import { useHistory } from 'react-router-dom'
 import { getByPlaceholderText } from '@testing-library/dom'
+import { FaMapMarkerAlt, FaPhone, FaHome, FaUserFriends, FaChartBar } from 'react-icons/fa'
+import { CgWebsite } from 'react-icons/cg'
+import picture_unavailable from '../images/picture_unavailable.jpg' 
 const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 
@@ -27,7 +30,8 @@ const PlacePage = (props) => {
         phoneNumber: "",
         isOpened: "",
         photo: "",
-        location: ""
+        location: "",
+        website: ""
     });
  
     const headers = {
@@ -39,7 +43,10 @@ const PlacePage = (props) => {
 
     useEffect(() => {
         axios.get(`https://rbfserver.herokuapp.com/place/show/${placeId}`, headers)
-            .then(res => fillPlaceInfo(res.data.result))
+            .then(res => {
+                fillPlaceInfo(res.data.result)
+                console.log(res)
+            })
             .catch(err => {
                 console.log(err)
                 history.push('/404')
@@ -56,6 +63,11 @@ const PlacePage = (props) => {
         }
         else 
             isOpened = "סגור לצמיתות";
+
+        let isPhoto = picture_unavailable;
+        if (place.photos)
+            isPhoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=2000&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`
+        
         setvoteAverage((place.rating).toFixed(1));
         setPlaceInfo({
             name: place.name,
@@ -63,8 +75,9 @@ const PlacePage = (props) => {
             address: place.vicinity,
             phoneNumber: place.formatted_phone_number,
             isOpened,
-            photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`,//AIzaSyDByhBwcAy1pRhQuJUNL_DyAcl6YFUFocw`
-            location: place.url
+            photo: isPhoto,
+            location: place.url,
+            website: place.website
         })
 
     }
@@ -95,7 +108,7 @@ const PlacePage = (props) => {
             <div className="flex flex-col self-center w-4/5 lg:w-1/2 my-10 box-border border-4 rounded-lg bg-gray-300">
 
                 {/* Name */}
-                <div className="w-full h-12 sm:h-24 text-3xl sm:text-5xl lg:text-6xl text-center font-bold bg-white">
+                <div className="w-full h-full text-3xl sm:text-5xl lg:text-6xl text-center font-bold bg-white">
                     {placeInfo.name}
                 </div>
 
@@ -123,29 +136,35 @@ const PlacePage = (props) => {
 
                 </div>
 
-                {/* Adress + rating */}
+                {/* Adress + Rating */}
                 <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2">
-                    <div className="w-1/2 border-t-2 border-l-2">
-                        כתובת: {placeInfo.address}
+                    <div className="flex w-1/2 text-center justify-center border-t-2 border-l-2">
+                        <div className="mr-2"> {placeInfo.address} </div>
+                        <div className="self-center"> <FaHome/> </div>
                     </div>
-                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2">
-                        דירוג: 5 / {rating !== 0 ? rating : voteAverage}
+                    <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2">
+                        <div className="mr-2"> {rating !== 0 ? rating : voteAverage} / 5 </div>
+                        <div className="self-center"> <FaChartBar/> </div>
                     </div>
-                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2">
-                        חברים שדרגו: {raters}
+                    <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2">
+                        <div className="mr-2"> {raters} </div>
+                        <div className="self-center"> <FaUserFriends/> </div>
                     </div>
                 </div>
 
                 {/* Phone + Location */}
                 <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2 ">
-                    <div className="w-1/2 border-t-2 border-l-2 border-b-4">
-                        טלפון: {placeInfo.phoneNumber}
+                    <div className="flex w-1/2 text-center justify-center border-t-2 border-l-2 border-b-4">
+                        <div className="mr-2"> {placeInfo.phoneNumber} </div>
+                        <div className="self-center"> <FaPhone/> </div>
                     </div>
-                    <a className="w-1/4 text-center border-t-2 border-r-2 border-l-2 border-b-4" href={placeInfo.location}>
-                        פתח במפה
-                    </a>
-                    <div className="w-1/4 text-center border-t-2 border-r-2 border-l-2 border-b-4">
-                        חברים שדרגו: {raters}
+                    <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2 border-b-4">
+                        <a className="mr-1" href={placeInfo.location}> פתח במפה </a>
+                        <div className="self-center"> <FaMapMarkerAlt/> </div>
+                    </div>
+                    <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2 border-b-4">
+                        <a className="mr-2" href={placeInfo.website}> לאתר העסק </a>
+                        <div className="self-center"> <CgWebsite/> </div>
                     </div>
                 </div>
 

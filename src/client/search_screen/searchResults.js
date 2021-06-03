@@ -4,6 +4,7 @@ import axios from 'axios'
 import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { BsPersonCheckFill, BsArrowLeft } from 'react-icons/bs'
 import { getAuthor } from '../book_screen/book'
+import picture_unavailable from '../images/picture_unavailable.jpg' 
 
 let headers;
 
@@ -57,9 +58,9 @@ const getPlaceRates = async (places, closeness, history) => {
         else if (!places[i].opening_hours.open_now)
             isOpenNow = `סגור כעת`;
 
-        let image = `אין תמונה זמינה`
+        let image = picture_unavailable
         if (places[i].photos)
-            image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${places[i].photos[0].photo_reference}&key=${PLACE_API_KEY}`;
+            image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=2000&photoreference=${places[i].photos[0].photo_reference}&key=${PLACE_API_KEY}`;
 
         ratedPlaces[i] = {
             rId: places[i].place_id,
