@@ -131,7 +131,9 @@ const getFriendsRecommendations = async (user, rId, closeness) => {
     
     while (que.length > 0){
         user = que.shift();
-        used.push(user.userName);
+        if (!isNotUsed(user.userName,used))
+            continue;
+        
 
         let recommendationIndex = getRecommendationIndex(rId,user);
 
@@ -142,7 +144,7 @@ const getFriendsRecommendations = async (user, rId, closeness) => {
             bot += (user.w * user.c);
             raters++;
         }
-
+        used.push(user.userName);
         if (user.rank === closeness)
             continue;
 

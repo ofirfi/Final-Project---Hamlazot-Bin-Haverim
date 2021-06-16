@@ -9,9 +9,6 @@ import { useHistory } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Footer from '../footer/footer'
 import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-
 
 
 const SearchPage = (props) => {
@@ -75,49 +72,32 @@ const SearchPage = (props) => {
                         onChange={event => setInput(event.target.value)}
                     />
 
-                    <div className="flex flex-col items-center text-center mx-3">
-                        <InputLabel className="" 
-                            id="type">מה לחפש
-                        </InputLabel>
-                        <Select labelId="type"
-                            value = {searchType}
+                    <div className="flex flex-col items-center mx-3 border-b-2 border-black border-opacity-20">
+                        <InputLabel htmlFor="type">מה לחפש</InputLabel>
+
+                        <select id="type" className="text-xl bg-transparent my-2"
+                            value={searchType}
                             onChange={event => setSearchType(event.target.value)}
-                            >
-                            <MenuItem value="place">אוכל</MenuItem>
-                            <MenuItem value="movie">סרט</MenuItem>
-                            <MenuItem value="book">ספר</MenuItem>
-                        </Select>
+                        >
+                            <option value="place" className="bg-gray-300">אוכל</option>
+                            <option value="movie" className="bg-gray-300">סרט</option>
+                            <option value="book" className="bg-gray-300">ספר</option>
+                        </select>
                     </div>
 
 
-
-                    <div className="flex flex-col items-center text-center mx-3">
-                        <InputLabel className="" 
-                            id="closeness">רמת חיפוש
-                        </InputLabel>
-                        <Select labelId="closeness"
-                            value = {searchCloseness}
+                    <div className="flex flex-col items-center mx-3 border-b-2 border-black border-opacity-20">
+                        <InputLabel htmlFor="closeness">רמת חיפוש</InputLabel>
+                        <select id="closeness" className="text-xl bg-transparent my-2"
+                            value={searchCloseness}
                             onChange={event => setSearchCloseness(event.target.value)}
-                            >
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
-                            <MenuItem value={3}>3</MenuItem>
-                            <MenuItem value={4}>4</MenuItem>
-                        </Select>
+                        >
+                            <option value={1} className="bg-gray-300">1</option>
+                            <option value={2} className="bg-gray-300">2</option>
+                            <option value={3} className="bg-gray-300">3</option>
+                            <option value={4} className="bg-gray-300">4</option>
+                        </select>
                     </div>
-
-                    {/* <div className="flex flex-col items-center mx-3">
-                    <InputLabel htmlFor="closeness">רמת חיפוש</InputLabel>
-                    <NativeSelect id="closeness"
-                        onChange={event => setSearchCloseness(event.target.value)}
-                    >
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                    </NativeSelect>
-                    </div> */}
-
 
                     <button className="flex flex-row-reverse items-center grid text-lg bg-green-600 w-16 h-12 my-3 sm:my-0 rounded-full hover:bg-green-700 focus:outline-none"
                         disabled={isSearching}
