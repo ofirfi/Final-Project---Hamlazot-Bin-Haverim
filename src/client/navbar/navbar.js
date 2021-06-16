@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import checkAuth from '../utils/auth'
 import Hamburger from 'hamburger-react'
-import { Searcher } from '../profile_screen/searchFriends'
+import { Searcher } from '../searchFriends/searchFriends'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 
 export function Navbar() {

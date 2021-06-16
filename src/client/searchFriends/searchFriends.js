@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { FriendResult } from './userSearchResult'
 
 
 export function Searcher() {
     const [results, setResults] = useState('');
     const [input, setInput] = useState('');
-    const [rels, setRels] = useState([]);
-    let reliabilities;
+
 
     const headers = {
         headers: {
@@ -14,6 +14,7 @@ export function Searcher() {
         }
     }
 
+    
     const head = <div className="flex flex-row-reverse text-xs sm:text-sm text-center font-bold h-10 my-2">
         <div className="w-1/6 ">#</div>
         <div className="w-1/6 underline">משתמש</div>
@@ -30,9 +31,6 @@ export function Searcher() {
             return;
         }
         setResults('');
-        setRels([]);
-        reliabilities = [];
-
         axios.post(`https://rbfserver.herokuapp.com/users/friends/search/${input}`, {}, headers)
             .then(res => {
                 if (res.data.data.data.length === 0) {
@@ -44,73 +42,11 @@ export function Searcher() {
             .catch(err => console.log(err))
     }
 
-
     const fillResults = users => {
         setResults(old => [...old, head])
-        reliabilities = [];
-        setRels([]);
-
-        for (let i = 0; i < users.length; i++)
-            setRels(old => [...old, 'מעט'])
-
-        for (let i = 0; i < users.length; i++) {
-            reliabilities.push('מעט');
-            fillUser(users[i], i);
-        }
-    }
-
-
-    const fillUser = (user, i) => {
-        let insertion =
-            <div className="flex flex-row-reverse h-10 py-2 text-xs sm:text-sm text-center hover:bg-green-700">
-                <div className="w-1/6 grid items-center">{i + 1}</div>
-                <div className="w-1/6 grid items-center">{user.userName}</div>
-                <div className="w-1/6 grid items-center">{user.first_name}</div>
-                <div className="w-1/6 grid items-center">{user.last_name}</div>
-
-                <div className="w-1/6 grid items-center">
-
-                    <lab className="self-right justify-end">
-                        <select id={i} className=" w-18 text-black text-center"
-                            value={rels[i]}
-                            onChange={event => reliabilities[i] = event.target.value}
-                        >
-                            <option value="מעט"> מעט </option>
-                            <option value="בינוני">בינוני</option>
-                            <option value="הרבה">הרבה</option>
-                        </select>
-                    </lab>
-
-
-                </div>
-                <div className="w-1/6 flex flex-col items-center grid justify-items-center">
-                    <button id={user.userName} className="w-3/4 md:w-1/2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none"
-                        onClick={() => addFriend(user.userName, i)}
-                    >
-                        הוסף
-                    </button>
-                </div>
-            </div>
+        let insertion = users.map((user,index) =><FriendResult user = {user} index = {index+1}/>)
         setResults(old => [...old, insertion]);
     }
-
-
-
-    const addFriend = (friend, i) => {
-        axios.post(`https://rbfserver.herokuapp.com/users/friends/`, {
-            userName: window.localStorage.getItem('userName'),
-            friend,
-            reliability: reliabilities[i]
-        }, headers)
-            .then(res => {
-                alert(`${friend} התווסף לרשימת החברים שלך`);
-                document.getElementById(friend).remove();
-            })
-            .catch(err => {
-                alert(`לא ניתן להוסיף את ${friend}, ייתכן שנמצא כבר ברשימת החברים שלך`)
-            })
-    }
-
 
 
     return (

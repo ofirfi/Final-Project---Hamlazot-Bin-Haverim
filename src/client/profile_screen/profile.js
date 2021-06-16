@@ -9,7 +9,7 @@ import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
 import { Friends } from './components/friends'
 import { ChangePassword } from './components/changePassword'
 import { Recommendations } from './components/recommendations'
-import { Searcher } from './searchFriends'
+import { Searcher } from '../searchFriends/searchFriends'
 
 import axios from 'axios'
 
