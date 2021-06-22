@@ -1,6 +1,6 @@
 import '../utils/style.css'
 import React, { useEffect, useState } from "react"
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Form } from '../utils/form'
 import BackGround from '../images/background.jpg'
 import default_user from '../images/default_user.png'
@@ -10,12 +10,14 @@ import { Friends } from './components/friends'
 import { ChangePassword } from './components/changePassword'
 import { Recommendations } from './components/recommendations'
 import { Searcher } from '../searchFriends/searchFriends'
-
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 const ProfilePage = () => {
     const userName = window.localStorage.getItem('userName')
     const token = window.localStorage.getItem('token')
+    const history = useHistory();
+    const dispatch = useDispatch();
     const isForm = useSelector(state => state.isForm);
     const isFriendSearch = useSelector(state => state.isFriendSearch);
     const [fullName, setFullName] = useState('')
@@ -28,7 +30,6 @@ const ProfilePage = () => {
             Authorization: "Bearer " + token
         }
     }
-
 
 
     useEffect(() => {
@@ -45,6 +46,25 @@ const ProfilePage = () => {
             console.log(err)
         })
     }, [])
+
+
+    const deleteButtonHandler = () =>{
+        if (!window.confirm(`האם את/ה בטוח/ה שברצונך למחוק חשבון זה?${'\n'}לאחר פעולה זו לא יהיה ניתן לשחזר את החשבון!`))
+            return;
+        axios.delete(`https://rbfserver.herokuapp.com/users`,{ 
+            headers: { Authorization: `Bearer ${token}` },
+            data: { userName }
+        })
+        .then(res=>{
+            alert('נמחק');
+            window.localStorage.removeItem('userName');
+            window.localStorage.removeItem('recommendations');
+            window.localStorage.removeItem('token');
+            dispatch({ type: "SETLOGGED", payload: false });
+            history.push('/login');
+        })
+        .catch(err=>{console.log(err)})
+    }
 
 
     return (
@@ -102,6 +122,16 @@ const ProfilePage = () => {
                         </div>
                         <FaLock className="w-1/6 ml-2" />
                     </button>
+                    
+                    <button className="w-1/4 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 md:mt-2 md:mb-8 rounded-full text-xs md:text-md text-white bg-red-700 hover:bg-red-900 focus:outline-none"
+                        onClick={deleteButtonHandler}
+                    >
+                        <div className="w-5/6">
+                            מחק
+                        </div>
+                        <FaLock className="w-1/6 ml-2" />
+                    </button>
+
                 </div>
 
                 <div className="my-5 md:my-0 w-full sm:w-3/4 self-center md:w-3/5 lg:w-3/5 xl:w-1/2 flex bg-green-800 mr-0 md:mr-8">

@@ -75,10 +75,8 @@ const getInfo =  async (user, rId, closeness) =>{
         isRated,
         friendsResults.randomIndex
         );
-    if (!isRated && strangersRecommendion.raters > 0){
+    if (!isRated && strangersRecommendion.raters > 0)
         rate = strangersRecommendion.rate;
-        raters = strangersRecommendion.raters;
-    }
 
     return ({
         myRecommendation: myRec,
