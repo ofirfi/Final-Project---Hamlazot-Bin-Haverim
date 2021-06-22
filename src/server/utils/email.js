@@ -20,13 +20,3 @@ module.exports = sendEmail = async options =>{
 
     await transporter.sendMail(mailOptions)
 }
-
-
-
-
-
-
-
-
-
-

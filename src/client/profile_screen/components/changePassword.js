@@ -2,6 +2,8 @@ import '../../utils/style.css'
 import { useState } from 'react'
 import axios from 'axios'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { Alert } from '../../alertComponent/alert'
+
 
 export function ChangePassword() {
     const userName = window.localStorage.getItem('userName');
@@ -9,7 +11,6 @@ export function ChangePassword() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isPasswordChange, setIsPasswordChange] = useState(false);
-
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -19,15 +20,15 @@ export function ChangePassword() {
 
     const validationCheck = () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
-            alert('אנא מלא את כל השדות');
+            Alert("שגיאה", "אנא מלא את כל השדות", "danger", 5000);
             return false;
         }
-        if (newPassword.length < 8) {
-            alert('הסיסמא צריכה להיות בין 8 ל-16 תווים');
+        if (newPassword.length < 8 || newPassword.length > 16) {
+            Alert("שגיאה", "הסיסמא צריכה להיות בין 8 ל-16 תווים", "danger", 5000);
             return false;
         }
         if (newPassword !== confirmPassword) {
-            alert('הסיסמאות אינן תואמות');
+            Alert("שגיאה", "הסיסמאות אינן תואמות", "danger", 5000);
             return false;
         }
         return true;
@@ -44,6 +45,7 @@ export function ChangePassword() {
     const changePassword = () => {
         if (!validationCheck())
             return;
+
         setIsPasswordChange(true);
         axios.put("https://rbfserver.herokuapp.com/auth/changePassword", {
             userName,
@@ -52,15 +54,15 @@ export function ChangePassword() {
             confirm_password: confirmPassword,
         }, headers)
             .then(res => {
-                alert('הסיסמא שונתה בהצלחה');
+                Alert("", "הסיסמא שונתה בהצלחה", "success", 5000);
                 clearFields();
                 setIsPasswordChange(false);
             })
             .catch(err => {
                 if (err.response.data.message === 'confirm password is wrong')
-                    alert('הסיסמא הנוכחית שגויה');
+                    Alert("שגיאה", "הסיסמא הנוכחית שגויה", "danger", 5000);
                 else
-                    alert('קרתה שגיאה אנא נסה שנית');
+                    Alert("שגיאה", "ארע שגיאה אנא נסה שנית", "danger", 5000);
                 clearFields();
             })
     }
