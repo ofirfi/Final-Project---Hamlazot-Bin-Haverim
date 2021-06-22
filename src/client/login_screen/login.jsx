@@ -6,6 +6,7 @@ import axios from 'axios'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { Alert } from '../alertComponent/alert'
 
 
 const LoginPage = () => {
@@ -16,10 +17,9 @@ const LoginPage = () => {
   const history = useHistory();
 
 
-
   const login = () => {
     if (!email || !password) {
-      alert('אנא הכנס מייל וסיסמא');
+      Alert("שגיאה","אנא הכנס מייל וסיסמא","danger",5000);
       return;
     }
     setIsLogin(true);
@@ -31,40 +31,43 @@ const LoginPage = () => {
         window.localStorage.setItem('token', res.data.token);
         window.localStorage.setItem('userName', res.data.data.userName);
         dispatch({ type: "SETLOGGED", payload: true });
-        alert(res.data.data.userName + ' ברוך הבא');
+        Alert(`${res.data.data.userName} ברוך הבא`,"שמחים לראותך שוב","success",5000);
         history.push('');
       })
       .catch(err => {
         if (err.response.data.message === "Please provide an email and a password")
-          alert('אנא הכנס מייל וסיסמא.');
+          Alert("שגיאה","אנא הכנס מייל וסיסמא","danger",5000);
         else if (err.response.data.message === 'Wrong email or password')
-          alert('מייל או סיסמא שגויים.');
+          Alert("שגיאה","מייל או סיסמא שגויים","danger",5000);
         else
-          alert('ארע שגיאה אנא נסה שנית.')
+          Alert("שגיאה","ארע שגיאה אנא נסה שנית","danger",5000);
         setIsLogin(false)
       })
   }
 
+
   const forgot_password = () => {
     if (email === "") {
-      alert('אנא הכנס מייל לשחזור סיסמא');
+      Alert("שגיאה",'אנא הכנס מייל לשחזור סיסמא',"danger",5000);
       return;
     }
+    let message = 'מייל לשחזור סיסמא נשלח ל' + "\n" + email;
+    
     axios.post("https://rbfserver.herokuapp.com/auth/forgotPassword", {
       email,
     })
       .then(res => {
-        alert('מייל לשחזור סיסמא נשלח ל-' + email);
+        Alert("",message,"success",5000);
         setEmail('');
       })
       .catch(err => {
-        alert('מייל לשחזור סיסמא נשלח ל-' + email);
+        Alert("",message,"success",5000);
         setEmail('');
       })
   }
 
-  const signup = () => history.push('/signup')
 
+  const signup = () => history.push('/signup')
 
 
   return (
@@ -74,11 +77,11 @@ const LoginPage = () => {
       <header className="flex flex-col sm:w-full h-0 sm:h-1/6 invisible sm:visible">
         <img src={Header} alt="" className="" />
       </header>
-
+      <div id="test"></div>
       <div className="flex self-center text-center mt-5">
-       האתר מציע חיפוש מקומות אוכל,סרטים וספרים ע"פ דירוג חברים משוקלל
-       <br/>
-       כאן תוכלו לכתוב המלצה עם דירוג למסעדות, בתי קפה, סרטים וספרים ולעזור לחבריכם
+        האתר מציע חיפוש מקומות אוכל,סרטים וספרים ע"פ דירוג חברים משוקלל
+        <br />
+        כאן תוכלו לכתוב המלצה עם דירוג למסעדות, בתי קפה, סרטים וספרים ולעזור לחבריכם
       </div>
 
       <div className="flex flex-col self-center w-72 h-72 sm:h-3/4 my-6 sm:my-12 bg-red-400 rounded-md shadow-xl text-center items-center">
@@ -118,13 +121,13 @@ const LoginPage = () => {
           {isLogin ?
             <AiOutlineLoading3Quarters className="grid justify-self-center w-1/6 h-1/6 my-3 animate-spin focus:outline-none" />
             :
-            <div className = "w-full">
+            <div className="w-full">
               <div className="h-12 w-full mt-4">
                 <button className="w-1/2 h-3/4 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
                   onClick={login}
                 >
                   התחבר
-            </button>
+                </button>
               </div>
 
               <div className="h-12 w-full my-2">
@@ -132,14 +135,14 @@ const LoginPage = () => {
                   onClick={signup}
                 >
                   הרשם
-            </button>
+                </button>
               </div>
             </div>
           }
 
         </div>
-
       </div>
+
     </div>
   )
 }
