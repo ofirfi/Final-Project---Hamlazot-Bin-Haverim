@@ -2,9 +2,11 @@ import '../../utils/style.css'
 import { useEffect, useState } from "react"
 import { useHistory } from 'react-router-dom'
 
+
 export function Friends(props) {
     const [myFriends, setmyFriends] = useState('')
     const history = useHistory()
+
 
     useEffect(() => {
         fillFriendsList(props.myFriends);

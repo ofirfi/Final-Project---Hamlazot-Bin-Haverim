@@ -4,7 +4,6 @@ import BackGround from '../images/background.jpg'
 import { Navbar } from '../navbar/navbar'
 import default_user from '../images/default_user.png'
 import axios from 'axios'
-// import { Friends, Recommendations } from './userInfo'
 import { Recommendations } from './components/recommendations'
 import { Friends } from './components/friends'
 import { useHistory } from 'react-router-dom'
@@ -51,7 +50,7 @@ const UserPage = (props) => {
                         src={default_user}
                     />
                 </div>
-                <div className = "w-1/2 flex flex-col text-center">
+                <div className="w-1/2 flex flex-col text-center">
                     <div className="h-1/2 self-center md:text-xl">
                         {user}
                     </div>

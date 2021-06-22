@@ -13,7 +13,6 @@ const initialState = {
 }
 
 
-
 const rootReducer = (state = initialState, { type, payload }) => {
     switch (type) {
         case "SETLOGGED":

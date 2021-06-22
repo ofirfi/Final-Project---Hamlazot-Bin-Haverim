@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { Alert } from '../alertComponent/alert'
 
 
 export function FriendResult(props) {
@@ -12,6 +13,7 @@ export function FriendResult(props) {
         }
     }
 
+
     const addFriend = () => {
         axios.post(`https://rbfserver.herokuapp.com/users/friends/`, {
             userName: window.localStorage.getItem('userName'),
@@ -19,12 +21,10 @@ export function FriendResult(props) {
             reliability: reliability
         }, headers)
             .then(res => {
-                alert(`${user.userName} התווסף לרשימת החברים שלך`);
+                Alert("", `${user.userName} התווסף לרשימת החברים שלך`, "success", 3000);
                 document.getElementById(user.userName).remove();
             })
-            .catch(err => {
-                alert(`לא ניתן להוסיף את ${user.userName}, ייתכן שנמצא כבר ברשימת החברים שלך`)
-            })
+            .catch(err => Alert("שגיאה", `לא ניתן להוסיף את ${user.userName}, ייתכן שנמצא כבר ברשימת החברים שלך`, "danger", 5000))
     }
 
 

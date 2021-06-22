@@ -2,41 +2,44 @@ import '../utils/style.css'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
+import { Alert } from '../alertComponent/alert'
+
 
 const ResetPasswordPage = (props) => {
     const [password, setPassword] = useState('');
     const [consifrmPassword, setConfirmPassword] = useState('');
     const history = useHistory();
 
+
     const isValidData = () => {
         if (!password || !consifrmPassword) {
-            alert("אנא וודא שהשדות מלאים");
+            Alert("שגיאה", "אנא וודא שהשדות מלאים", "danger", 5000);
             return false;
         }
-        if (password.length < 8) {
-            alert("סיסמא חייבת להיות לפחות 8 תווים");
+        if (password.length < 8 || password.length > 16) {
+            Alert("שגיאה", "סיסמא חייבת להיות בין 8 ל-16 תווים", "danger", 5000);
             return false;
         }
         if (password !== consifrmPassword) {
-            alert("הסיסמאות אינן תואמות");
+            Alert("שגיאה", "הסיסמאות אינן תואמות", "danger", 5000);
             return false;
         }
         return true;
     }
-    
+
     const sendReset = () => {
         if (!isValidData())
             return;
 
-        axios.put(`https://rbfserver.herokuapp.com/auth/resetPassword/${props.match.params.token}`,{
+        axios.put(`https://rbfserver.herokuapp.com/auth/resetPassword/${props.match.params.token}`, {
             password,
-            confirm_password : consifrmPassword
+            confirm_password: consifrmPassword
         })
-        .then(res => {
-            alert("הסיסמא שונתה בהצלחה");
-            history.push('/login');
-        })
-        .catch(err => alert("Token is invalid or has expired"))
+            .then(res => {
+                Alert("", "הסיסמא שונתה בהצלחה", "success", 5000);
+                history.push('/login');
+            })
+            .catch(err => Alert("שגיאה", "האסימון אינו תקין או פג תוקף", "danger", 5000))
     }
 
 
@@ -69,7 +72,7 @@ const ResetPasswordPage = (props) => {
                 >
                     אישור
                 </button>
-                
+
             </div>
         </div>
     )

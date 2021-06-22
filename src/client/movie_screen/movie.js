@@ -23,6 +23,7 @@ const MoviePage = (props) => {
     const raters = useSelector(state => state.raters);
     const [voteAverage, setvoteAverage] = useState('');
 
+    
     useEffect(() => {
         axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
             .then((res) => {
@@ -123,7 +124,7 @@ const MoviePage = (props) => {
                         onClick={() => createRecommendation()}
                     >
                         הוסף המלצה
-                        </button>
+                    </button>
 
 
                 </div>

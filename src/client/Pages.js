@@ -13,6 +13,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import checkAuth from './utils/auth'
 
+
 import {
     BrowserRouter as Router,
     Route,
@@ -24,12 +25,12 @@ import {
 const Pages = () => {
     let log = useSelector(state => state.logged)
     let logged = checkAuth()
-    useEffect(()=>{ 
+    useEffect(() => {
         logged = checkAuth()
     })
-    
+
     return <Router>
-        {(logged||log) ?
+        {(logged || log) ?
             (
                 <Switch>
                     <Route exact path="/" component={SearchPage} />

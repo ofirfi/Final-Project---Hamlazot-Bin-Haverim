@@ -45,6 +45,7 @@ export async function makeRecommendationsInfo(rId, closeness = 1) {
     return results;
 }
 
+
 /**
  * @description The function gets the user's recommendation for the specific rId, the friends recommendations
  * and every other recommendations. If no friends recommendations, the rate will be valued by a normal average
@@ -87,6 +88,7 @@ const getInfo =  async (user, rId, closeness) =>{
     });
 }
 
+
 /**
  * @description The function searchs for the the user's recommendation for the specific recommendation id.
  * @param {String} rId          The id of a recommendation to look for.
@@ -103,6 +105,7 @@ const getMyRecommendation = (rId, userInfo) => {
         }
     return myRec;
 }
+
 
 /**
  * @description The function creates an array filled with the user's friends recommendations, their weighted average
@@ -179,6 +182,7 @@ const getFriendsRecommendations = async (user, rId, closeness) => {
     })
 }
 
+
 /**
  * @description The function determines the Ci and Mi of a friend for the weighted calculation.
  * @param {String} userName     The friend's userName
@@ -210,6 +214,7 @@ const makeFriendsInfo = (userName,w,reliability,rank) => {
     })
 }
 
+
 /**
  * @description The function checks if the userName was checked before. 
  * @param {String} userName     The userName of a friend.
@@ -223,6 +228,7 @@ const isNotUsed = (userName,used) => {
             return false;
     return true;
 }
+
 
 /**
  * @description The function finds the user's recommendation index in the recommendations array.
@@ -260,6 +266,7 @@ const getRecommendationIndex = (rId, friend) => {
 
     return -1;
 }
+
 
 /**
  * @description
@@ -327,4 +334,3 @@ const getStartingPosition = (rId, index, isRated) => {
         return -1;
     return index;
 }
-

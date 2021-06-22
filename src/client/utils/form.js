@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 
+
 export function Form(props) {
     const recommendationInfo = useSelector(state => state.recommendationInfo);
     const [rate, setRate] = useState(recommendationInfo.rate);
@@ -46,14 +47,12 @@ export function Form(props) {
     }
 
 
-
-
     return (
         <div className="grid flex fixed w-full h-full block  bg-gray-400 bg-opacity-80 ">
             <div className="flex flex-col w-3/5 md:w-2/5 lg:w-1/4 h-96 bg-red-400 rounded-2xl self-center justify-self-center">
                 <div className="text-4xl text-center grid place-content-center break-normal h-16 w-full ">
                     הוסף המלצה
-                    </div>
+                </div>
                 <div className="text-4xl text-center grid place-content-center break-normal h-24 w-full ">
                     {recommendationInfo.name}
                 </div>
@@ -71,8 +70,8 @@ export function Form(props) {
                             <option value="4">4</option>
                             <option value="5">5 - !ממליץ מאוד</option>
                         </select>
-                            בחר דירוג
-                        </lab>
+                        בחר דירוג
+                    </lab>
 
                 </div>
 

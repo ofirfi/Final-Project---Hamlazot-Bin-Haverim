@@ -14,7 +14,7 @@ export function Searcher() {
         }
     }
 
-    
+
     const head = <div className="flex flex-row-reverse text-xs sm:text-sm text-center font-bold h-10 my-2">
         <div className="w-1/6 ">#</div>
         <div className="w-1/6 underline">משתמש</div>
@@ -30,6 +30,7 @@ export function Searcher() {
             alert("אנא הזן שם משתמש לחיפוש");
             return;
         }
+
         setResults('');
         axios.post(`https://rbfserver.herokuapp.com/users/friends/search/${input}`, {}, headers)
             .then(res => {
@@ -42,9 +43,10 @@ export function Searcher() {
             .catch(err => console.log(err))
     }
 
+    
     const fillResults = users => {
         setResults(old => [...old, head])
-        let insertion = users.map((user,index) =><FriendResult user = {user} index = {index+1}/>)
+        let insertion = users.map((user, index) => <FriendResult user={user} index={index + 1} />)
         setResults(old => [...old, insertion]);
     }
 
@@ -54,7 +56,7 @@ export function Searcher() {
             <div className="flex flex-col w-5/6 md:w-4/5 h-3/4 bg-gray-600 text-white rounded-2xl self-center justify-self-center">
                 <div className="text-4xl text-center grid place-content-center break-normal h-16 w-full ">
                     חיפוש חברים
-                    </div>
+                </div>
                 <div className="flex flex-row h-1/6">
                     <div className="flex flex-col w-1/4 h-full grid">
                         <button className="w-2/3 md:w-1/3 h-1/2 self-center justify-self-center rounded-full text-white bg-blue-500 hover:bg-blue-700 focus:outline-none"

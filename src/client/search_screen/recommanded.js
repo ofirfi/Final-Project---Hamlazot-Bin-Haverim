@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../utils/style.css'
-import axios from 'axios'
 import { GiPopcorn, GiWhiteBook } from 'react-icons/gi'
 import { IoRestaurant } from 'react-icons/io5'
-
-
 
 
 export function Recommended(props) {
@@ -25,20 +22,24 @@ export function Recommended(props) {
 
     }
 
+
     const moviesSearch = () => {
 
     }
+
 
     const booksSearch = () => {
 
     }
 
+
     const recommended = () => {
-        
+
     }
 
+
     return (
-        <div className = "">
+        <div className="">
             <div className="flex flex-row space-x-10 my-5 justify-center ">
                 <button className="hover:text-gray-600 focus:outline-none"
                     onClick={foodSearch}

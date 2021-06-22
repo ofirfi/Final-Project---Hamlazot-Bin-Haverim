@@ -6,10 +6,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Form } from '../utils/form'
 import { Recommendations } from '../recommendations_component/recommendation'
 import { useHistory } from 'react-router-dom'
-import { getByPlaceholderText } from '@testing-library/dom'
 import { FaMapMarkerAlt, FaPhone, FaHome, FaUserFriends, FaChartBar } from 'react-icons/fa'
 import { CgWebsite } from 'react-icons/cg'
-import picture_unavailable from '../images/picture_unavailable.jpg' 
+import picture_unavailable from '../images/picture_unavailable.jpg'
 const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 
 
@@ -17,7 +16,7 @@ const placeApiKey = require("../utils/config.json").PLACE_API_KEY;
 const PlacePage = (props) => {
     const placeId = props.match.params.id;
     const [voteAverage, setvoteAverage] = useState('');
-    const closeness = (props.location && props.location.state)? props.location.state.closeness : 1;
+    const closeness = (props.location && props.location.state) ? props.location.state.closeness : 1;
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
     const isForm = useSelector(state => state.isForm);
@@ -33,7 +32,7 @@ const PlacePage = (props) => {
         location: "",
         website: ""
     });
- 
+
     const headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -54,20 +53,20 @@ const PlacePage = (props) => {
     }, [])
 
 
-    const fillPlaceInfo = (place) => { 
+    const fillPlaceInfo = (place) => {
         let openingHours = [[""], [""], [""], [""], [""], [""], [""]];
         let isOpened;
-        if (place.opening_hours){ 
+        if (place.opening_hours) {
             openingHours = place.opening_hours.weekday_text.map(day => day);
-            isOpened = place.opening_hours.open_now ? "פתוח" :"סגור" ; 
+            isOpened = place.opening_hours.open_now ? "פתוח" : "סגור";
         }
-        else 
+        else
             isOpened = "סגור לצמיתות";
 
         let isPhoto = picture_unavailable;
         if (place.photos)
             isPhoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=2000&photoreference=${place.photos[0].photo_reference}&key=${placeApiKey}`
-        
+
         setvoteAverage((place.rating).toFixed(1));
         setPlaceInfo({
             name: place.name,
@@ -98,7 +97,6 @@ const PlacePage = (props) => {
     }
 
 
-
     return (
         <div className="flex flex-col bg-fixed"
             style={{ backgroundImage: `url(${placeInfo.photo})`, backgroundSize: '100% 100%' }}
@@ -116,7 +114,7 @@ const PlacePage = (props) => {
                 <div className="flex flex-row-reverse ">
 
                     <div className="flex w-1/2 h-48 sm:h-56 justify-center self-center p-2 border-l-2">
-                        <img src={placeInfo.photo} alt = "" />
+                        <img src={placeInfo.photo} alt="" />
                     </div>
 
                     <div className="flex w-1/2 justify-end text-right text-md sm:text-lg p-2 border-r-2">
@@ -140,15 +138,15 @@ const PlacePage = (props) => {
                 <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2">
                     <div className="flex w-1/2 text-center justify-center border-t-2 border-l-2">
                         <div className="mr-2"> {placeInfo.address} </div>
-                        <div className="self-center"> <FaHome/> </div>
+                        <div className="self-center"> <FaHome /> </div>
                     </div>
                     <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2">
                         <div className="mr-2"> {rating !== 0 ? rating : voteAverage} / 5 </div>
-                        <div className="self-center"> <FaChartBar/> </div>
+                        <div className="self-center"> <FaChartBar /> </div>
                     </div>
                     <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2">
                         <div className="mr-2"> {raters} </div>
-                        <div className="self-center"> <FaUserFriends/> </div>
+                        <div className="self-center"> <FaUserFriends /> </div>
                     </div>
                 </div>
 
@@ -156,15 +154,15 @@ const PlacePage = (props) => {
                 <div className="flex flex-row-reverse text-md md:text-lg text-center border-t-2 ">
                     <div className="flex w-1/2 text-center justify-center border-t-2 border-l-2 border-b-4">
                         <div className="mr-2"> {placeInfo.phoneNumber} </div>
-                        <div className="self-center"> <FaPhone/> </div>
+                        <div className="self-center"> <FaPhone /> </div>
                     </div>
                     <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2 border-b-4">
                         <a className="mr-1" href={placeInfo.location}> פתח במפה </a>
-                        <div className="self-center"> <FaMapMarkerAlt/> </div>
+                        <div className="self-center"> <FaMapMarkerAlt /> </div>
                     </div>
                     <div className="flex w-1/4 text-center justify-center border-t-2 border-r-2 border-l-2 border-b-4">
                         <a className="mr-2" href={placeInfo.website}> לאתר העסק </a>
-                        <div className="self-center"> <CgWebsite/> </div>
+                        <div className="self-center"> <CgWebsite /> </div>
                     </div>
                 </div>
 
@@ -174,14 +172,14 @@ const PlacePage = (props) => {
                     <div className="text-xl self-center my-2 font-bold underline">המלצות</div>
 
                     <div className="h-56 mb-5 w-full sm:w-3/4 mx-2 overflow-y-auto text-right">
-                        <Recommendations rId={placeId} closeness={closeness}/>
+                        <Recommendations rId={placeId} closeness={closeness} />
                     </div>
 
                     <button className="self-center my-5 border-4 border-transparent text-sm sm:text-base text-white rounded-lg bg-blue-300 hover:bg-blue-500 focus:outline-none"
                         onClick={() => createRecommendation()}
                     >
                         הוסף המלצה
-                        </button>
+                    </button>
 
                 </div>
 

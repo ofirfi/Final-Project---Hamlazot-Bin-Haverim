@@ -20,7 +20,6 @@ export function searchRes(input, type, page, history, closeness = 1) {
     if (type === "movie")
         return movieSearch(input, page, closeness, history);
     return bookSearch(input, page, closeness, history);
-
 }
 
 
@@ -43,10 +42,12 @@ const getPlaceRates = async (places, closeness, history) => {
             continue;
         if (!inIsrael(places[i]))
             continue;
+
         let res = await makeRecommendationsInfo((places[i].place_id).toString(), closeness);
         let importance = getImportance(res.rate, res.raters);
         let rate = res.rate;
         let isOurRate = true;
+
         if (importance === 3)
             isOurRate = false;
         if (rate === 0)
@@ -104,6 +105,7 @@ const MakePlaceDiv = (place, closeness) => {
     let history = place.history;
     if (place.isOurRate === true)
         friendIcon = <BsPersonCheckFill />;
+
     return (
         <div className="flex flex-row items-center border-2 rounded my-5 bg-green-200 cursor-pointer" onClick={() => { history.push(`/place/${place.rId}`, { closeness }) }}>
             <div className="flex flex-col items-center m-2 w-1/3">
@@ -138,6 +140,7 @@ const movieSearch = async (input, page, closeness, history) => {
     return res;
 }
 
+
 const getMoviesRates = async (movies, closeness, history) => {
     let ratedMovies = [];
     for (let i = 0; i < movies.length; i++) {
@@ -168,6 +171,7 @@ const getMoviesRates = async (movies, closeness, history) => {
     return makeMoviesDiv(ratedMovies, closeness);
 }
 
+
 const getMovieGeneres = async (movieId) => {
     let gens = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_API_KEY}&language=he`)
         .then(res => {
@@ -180,13 +184,16 @@ const getMovieGeneres = async (movieId) => {
     return gens.substring(0, gens.length - 2);
 }
 
+
 const makeMoviesDiv = (movies, closeness) => movies.map(movie => MakeMovieDiv(movie, closeness))
+
 
 const MakeMovieDiv = (movie, closeness) => {
     let friendIcon;
     let history = movie.history;
     if (movie.isOurRate === true)
         friendIcon = <BsPersonCheckFill />;
+
     return (
         <div className="flex flex-row items-center border-2 rounded w-96 my-5 bg-green-200 cursor-pointer" onClick={() => { history.push(`/movie/${movie.rId}`, { closeness }) }}>
             <div className="flex flex-col items-center m-2 w-1/3">
@@ -220,6 +227,7 @@ const bookSearch = (input, page, closeness, history) => {
         .catch(err => console.log(err))
     return res;
 }
+
 
 const getBooksRates = async (books, closeness, history) => {
     let ratedBooks = [];
@@ -258,7 +266,9 @@ const getBooksRates = async (books, closeness, history) => {
     return makeBooksDiv(ratedBooks);
 }
 
+
 const makeBooksDiv = (books) => books.map(book => MakeBookDiv(book))
+
 
 const MakeBookDiv = (book) => {
     let friendIcon;

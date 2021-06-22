@@ -9,10 +9,10 @@ import { useHistory } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Footer from '../footer/footer'
 import InputLabel from '@material-ui/core/InputLabel'
+import { Alert } from '../alertComponent/alert'
 
 
-const SearchPage = (props) => {
-    const token = window.localStorage.getItem('token')
+const SearchPage = () => {
     const [isSearch, setIsSearch] = useState(false);
     const [input, setInput] = useState('');
     const [searchType, setSearchType] = useState("place");
@@ -22,20 +22,14 @@ const SearchPage = (props) => {
     const [searchResults, setSearchResults] = useState(null);
     const [isSearching, setIsSearching] = useState(false);
 
-    const headers = {
-        headers: {
-            Authorization: "Bearer " + token
-        }
-    }
 
     useEffect(() => {
         axios.get("https://rbfserver.herokuapp.com/recommendations", {
             headers: {
-                Authorization: "Bearer " + token
+                Authorization: "Bearer " + window.localStorage.getItem('token')
             }
         }).then((res) => {
             window.localStorage.setItem('recommendations', JSON.stringify(res.data.data))
-
         }).catch(err => {
             window.localStorage.setItem('logged', false)
         })
@@ -44,7 +38,7 @@ const SearchPage = (props) => {
 
     const search = async () => {
         if (!input) {
-            alert('שדה החיפוש ריק');
+            Alert("שגיאה", "שדה החיפוש ריק", "danger", 5000);
             return;
         }
         setIsSearching(true);

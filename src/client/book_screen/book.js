@@ -8,7 +8,7 @@ import { Form } from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
 import { BOOKS_API_KEY } from '../utils/config.json'
 import { useHistory } from 'react-router-dom'
-import picture_unavailable from '../images/picture_unavailable.jpg' 
+import picture_unavailable from '../images/picture_unavailable.jpg'
 
 
 export const getAuthor = (res) => {
@@ -64,6 +64,7 @@ const BookPage = (props) => {
         imageLinks: "",
     });
 
+
     useEffect(async () => {
         await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookId}?key=${BOOKS_API_KEY}&language=iw`)
             .then((res) => {
@@ -75,7 +76,7 @@ const BookPage = (props) => {
                     publisher: res.data.volumeInfo.publisher,
                     imageLinks: getImage(res.data.volumeInfo.imageLinks),
                 });
-                
+
                 console.log(res.data);
                 setvoteAverage("אינו זמין כעת");
             })
@@ -83,15 +84,6 @@ const BookPage = (props) => {
                 history.push('/404');
             })
     }, [])
-
-
-    // const getGeneres = (movie) => {
-    //     let gens = ""
-    //     movie.genres.map(genre => {
-    //         return gens += genre.name + " "
-    //     })
-    //     setGenres(gens)
-    // }
 
 
     const getDescription = (res) => {
@@ -145,9 +137,9 @@ const BookPage = (props) => {
                     </div>
 
                     <div className="flex w-1/2 justify-end text-right text-md sm:text-lg p-2 border-r-2">
-                        
-                            {book.description}
-                        
+
+                        {book.description}
+
                     </div>
 
                 </div>
@@ -158,7 +150,7 @@ const BookPage = (props) => {
                         {book.publisher}, {book.publishedDate}
                     </div>
                     <div className="w-1/4 text-center border-2">
-                        דירוג: {rating !== 0 ?  5 / rating : voteAverage}
+                        דירוג: {rating !== 0 ? 5 / rating : voteAverage}
                     </div>
                     <div className="w-1/4 text-center border-2">
                         חברים שדרגו: {raters}
@@ -171,14 +163,14 @@ const BookPage = (props) => {
                     <div className="text-xl self-center my-2 font-bold underline">המלצות</div>
 
                     <div className="h-56 mb-5 w-full sm:w-3/4 mx-2 overflow-y-auto text-right">
-                        <Recommendations rId={bookId} closeness={props.closeness}/>
+                        <Recommendations rId={bookId} closeness={props.closeness} />
                     </div>
 
                     <button className="self-center my-5 border-4 border-transparent text-sm sm:text-base text-white rounded-lg bg-blue-300 hover:bg-blue-500 focus:outline-none"
                         onClick={() => createRecommendation()}
                     >
                         הוסף המלצה
-                        </button>
+                    </button>
 
                 </div>
 

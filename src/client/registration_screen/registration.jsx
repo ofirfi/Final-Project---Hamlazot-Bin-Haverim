@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import Header from '../images/logo.jpg'
 import BackGround from '../images/background.jpg'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { Alert } from '../alertComponent/alert'
 
 
 const RegistrationPage = () => {
@@ -22,23 +23,23 @@ const RegistrationPage = () => {
 
   const fieldsCheck = () => {
     if (!firstName || !surname || !userName || !email || !password || !confirmPassword) {
-      alert('אנא מלא את כל השדות');
+      Alert("שגיאה", "אנא מלא את כל השדות", "daner", 5000);
       return false;
     }
     if (password.length < 8) {
-      alert('הסיסמא צריכה להיות בין 8 ל-16 תווים');
+      Alert("שגיאה", "הסיסמא צריכה להיות בין 8 ל-16 תווים", "danger", 5000);
       return false;
     }
     if (password !== confirmPassword) {
-      alert('הסיסמאות אינן תואמות');
+      Alert("שגיאה", "הסיסמאות אינן תואמות", "danger", 5000);
       return false;
     }
     if (userName.length < 5) {
-      alert('שם משתמש חייב להיות לפחות באורך 5 תווים');
+      Alert("שגיאה", "שם המשתמש חייב להיות לפחות באורך של 5 תווים", "danger", 5000);
       return false;
     }
     if (firstName.length < 2 || surname.length < 2) {
-      alert('שם פרטי ומשפחה חייבים להיות לפחות באורך 2 תווים');
+      Alert("שגיאה", "שם פרטים ומשפחה חייבים להיות לפחות באורך של 2 תווים", "danger", 5000);
       return false;
     }
     return true;
@@ -68,20 +69,24 @@ const RegistrationPage = () => {
     window.localStorage.setItem('token', res.data.token);
     window.localStorage.setItem('userName', userName);
     dispatch({ type: "SETLOGGED", payload: true });
-    alert(userName + " ברוך הבא, שמחים שהצטרפת!");
+    Alert(`ברוך הבא ${userName}`, "שמחים שהצטרפת!", "success", 5000);
     history.push('');
   }
 
 
   const signUpFailure = (err) => {
     if (err.response.data.message.startsWith("Duplicated"))
-      alert(`${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`);
+      Alert("שגיאה",
+        `${err.response.data.message.substring(17, err.response.data.message.search(". please"))} כבר קיים במערכת, אנא הכנס משהו אחר`,
+        "danger",
+        5000
+      );
     else if (err.response.data.message === "Invalid input data. Please enter a valid E-mail!")
-      alert('המייל אינו בפורמט מתאים')
+      Alert("שגיאה", "המייל אינו בפורמט מתאים", "danger", 5000);
     else if (err.response.data.message === `${userName} already exists`)
-      alert(`${userName} כבר קיים במערכת, אנא הכנס משהו אחר`)
+      Alert("שגיאה", `${userName} כבר קיים במערכת, אנא הכנס משהו אחר`, "danger", 5000);
     else
-      alert('ארע שגיאה, אנא נסה נסית');
+      Alert("שגיאה", "ארע שגיאה, אנא נסה שנית", "danger", 5000);
     setIsSigning(false);
   }
 

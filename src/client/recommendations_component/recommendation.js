@@ -4,10 +4,12 @@ import { makeRecommendationsInfo } from '../utils/recommendationMethods'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+
 export function Recommendations(props) {
     const [recommendations, setRecommendations] = useState('');
     const dispatch = useDispatch();
     const history = useHistory();
+
 
     useEffect(async () => {
         setRecommendations("")
@@ -37,7 +39,7 @@ export function Recommendations(props) {
     const createRecommendation = (rec, isFriend) => {
         let newRec =
             <div class="flex flex-col mb-5 box-border border-2 bg-red-400 rounded-xl text-xs sm:text-sm ms:text-base cursor-pointer"
-                onClick={() =>history.push(`/user/${rec.userName}`)}
+                onClick={() => history.push(`/user/${rec.userName}`)}
             >
                 <div class="flex flex-row-reverse">
                     <div class="w-1/6">ממליץ</div>

@@ -1,6 +1,5 @@
 import '../utils/style.css'
 import './navbar.css'
-import Header from '../images/logo.jpg'
 import LogoBackground from '../images/logo-background.jpg'
 import LogoShield from '../images/logo-shield.png'
 import { useState } from 'react'
@@ -9,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import checkAuth from '../utils/auth'
 import Hamburger from 'hamburger-react'
 import { Searcher } from '../searchFriends/searchFriends'
-import { FaMapMarkerAlt } from 'react-icons/fa'
+import { Alert } from '../alertComponent/alert'
 
 export function Navbar() {
     const userName = window.localStorage.getItem('userName')
@@ -26,11 +25,13 @@ export function Navbar() {
         dispatch({ type: "SETLOGGED", payload: false });
     }
 
+
     const log_out = () => {
-        alert('להתראות ' + userName + ' מקווים לראותך שוב!');
+        Alert(`להתראות ${userName}`, "מקווים לראותך שוב", "success", 5000);
         clear();
         history.push('/login');
     }
+
 
     const tokenIsValid = () => {
         if (!checkAuth()) {
@@ -40,14 +41,18 @@ export function Navbar() {
         return true
     }
 
+
     const relog = () => {
-        alert('אנא התחבר מחדש')
+        Alert("שגיאה", "אנא התחבר מחדש", "danger", 5000);
         history.push('/login')
     }
 
+
     const profilePage = () => !tokenIsValid() ? relog() : history.push('/profile')
 
+
     const homePage = () => !tokenIsValid() ? relog() : history.push('')
+
 
     const toggleNav = () => {
         if (!isOpened)
@@ -88,28 +93,28 @@ export function Navbar() {
                             onClick={() => homePage()}
                         >
                             דף הבית
-                 </button>
+                        </button>
                         <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
                             onClick={() => setIsFriendsSearch(true)}
                         >
                             חיפוש חברים
-                 </button>
+                        </button>
 
                         <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
                             onClick={() => profilePage()}
                         >
                             פרופיל
-                </button>
+                        </button>
 
                         <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
                             onClick={() => log_out()}
                         >
                             יציאה
-                </button>
+                        </button>
                     </div>
                 </div>
             </div>
-            { isFriendsSearch ? <Searcher /> : null}
+            {isFriendsSearch ? <Searcher /> : null}
         </div >
     )
 
