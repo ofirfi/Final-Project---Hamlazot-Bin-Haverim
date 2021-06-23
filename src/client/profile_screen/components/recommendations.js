@@ -2,7 +2,9 @@ import '../../utils/style.css'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { Alert } from '../../alertComponent/alert'
+
 
 export function Recommendations() {
     const history = useHistory();
@@ -40,17 +42,17 @@ export function Recommendations() {
         <tr id={recommend.rId} className="overflow-y-auto text-xs sm:text-sm md:text-base">
             <td className="w-1/12 h-16 md:h-24 border-l border">
                 <button className="w-full h-full bg-red-700 hover:bg-red-900 focus:outline-none"
-                    onClick={() => deleteRecommendation(recommend.rId)}
+                    onClick={() => deleteRecommendation(recommend.rId, recommend.name)}
                 >
                     מחק
-                    </button>
+                </button>
             </td>
             <td className="w-1/12 h-16 md:h-24 border-l border">
                 <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => editRecommendation(recommend)}
                 >
                     ערוך
-                    </button>
+                </button>
             </td>
             <td className="w-4/12 h-16 md:h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
@@ -65,7 +67,7 @@ export function Recommendations() {
             </td>
             <td className="w-4/12 h-16 md:h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center underline cursor-pointer hover:text-gray-300"
-                    onClick={()=>goToRecommendationPage(recommend)}
+                    onClick={() => goToRecommendationPage(recommend)}
                 >
                     {recommend.name}
                 </div>
@@ -73,8 +75,8 @@ export function Recommendations() {
         </tr>
     )
 
-    
-    const goToRecommendationPage = (recommendation) =>{
+
+    const goToRecommendationPage = (recommendation) => {
         if (recommendation.type === "מקום")
             history.push(`/place/${recommendation.rId}`);
         else if (recommendation.type === "סרט")
@@ -99,9 +101,11 @@ export function Recommendations() {
     }
 
 
-    const deleteRecommendation = rId => {
-        if (!window.confirm(`האם את/ה בטוח/ה שברצונך למחוק המלצה זו? `))
-            return;
+    const deleteRecommendation = (rId, name) =>
+        Alert("", `האם אתה בטוח שברצונך למחוק את ההמלצה עבור ${name}?`, "danger", 0, () => deleteConfirmed(rId))
+
+
+    const deleteConfirmed = rId => {
         axios.delete("https://rbfserver.herokuapp.com/recommendations",
             {
                 headers: { Authorization: `Bearer ${window.localStorage.getItem('token')}` },
@@ -109,10 +113,11 @@ export function Recommendations() {
             })
             .then(res => {
                 document.getElementById(rId).remove();
-                alert('ההמלצה נמחקה');
+                Alert("", "ההמלצה נמחקה", "success", 5000);
             })
             .catch(err => console.log(err))
     }
+
 
     return (
         <div className="flex flex-col w-full text-white">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
+import { Alert } from '../../alertComponent/alert'
 
 
 export function Friends() {
@@ -41,28 +42,28 @@ export function Friends() {
                     onClick={() => deleteFriend(friend.userName, index)}
                 >
                     מחק
-            </button>
+                </button>
             </td>
             <td className="w-1/6 border">
                 <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => setFriendsReliability(friend.userName, 'מעט', index)}
                 >
                     מעט
-            </button>
+                </button>
             </td>
             <td className="w-1/6 border">
                 <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => setFriendsReliability(friend.userName, 'בינוני', index)}
                 >
                     בינוני
-            </button>
+                </button>
             </td>
             <td className="w-1/6 border">
                 <button className="w-full h-full bg-blue-500 hover:bg-blue-700 focus:outline-none"
                     onClick={() => setFriendsReliability(friend.userName, 'הרבה', index)}
                 >
                     הרבה
-            </button>
+                </button>
             </td>
             <td id={index} className="w-1/6 border">
                 {friend.reliability}
@@ -92,9 +93,11 @@ export function Friends() {
     }
 
 
-    const deleteFriend = (friend, index) => {
-        if (!window.confirm(`האם את/ה בטוח/ה שברצונך להסיר את ${friend} זה מרשימת החברים? `))
-            return;
+    const deleteFriend = (friend, index) =>
+        Alert("", `האם את/ה בטוח/ה שברצונך להסיר את ${friend} מרשימת החברים? `, "danger", 0, () => deletedConfirmed(friend, index));
+
+
+    const deletedConfirmed = (friend, index) => {
         axios.delete("https://rbfserver.herokuapp.com/users/friends",
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -102,6 +105,7 @@ export function Friends() {
             })
             .then(res => {
                 document.getElementById(`a${index}`).remove();
+                Alert("", "חבר הוסר מרשימת החברים", "success", 5000);
             })
             .catch(err => { })
     }
@@ -137,7 +141,7 @@ export function Friends() {
                     onClick={() => dispatch({ type: "TOGGLEFRIENDSEARCH" })}
                 >
                     חפש חבר
-            </button>
+                </button>
             </div>
             <div className="text-xs md:text-sm font-bold text-center py-2">
                 תוכל לדרג את הרמה שבה אתה סומך על ההמלצות של החברים שלך בלחיצה על הכפתור הנכון

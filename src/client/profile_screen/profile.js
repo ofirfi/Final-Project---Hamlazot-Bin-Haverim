@@ -6,12 +6,15 @@ import BackGround from '../images/background.jpg'
 import default_user from '../images/default_user.png'
 import { Navbar } from '../navbar/navbar'
 import { FaUserFriends, FaPenFancy, FaLock } from 'react-icons/fa'
+import { RiDeleteBinLine } from 'react-icons/ri'
 import { Friends } from './components/friends'
 import { ChangePassword } from './components/changePassword'
 import { Recommendations } from './components/recommendations'
 import { Searcher } from '../searchFriends/searchFriends'
 import { useHistory } from 'react-router-dom'
+import { Alert } from '../alertComponent/alert'
 import axios from 'axios'
+
 
 const ProfilePage = () => {
     const userName = window.localStorage.getItem('userName')
@@ -48,22 +51,24 @@ const ProfilePage = () => {
     }, [])
 
 
-    const deleteButtonHandler = () =>{
-        if (!window.confirm(`האם את/ה בטוח/ה שברצונך למחוק חשבון זה?${'\n'}לאחר פעולה זו לא יהיה ניתן לשחזר את החשבון!`))
-            return;
-        axios.delete(`https://rbfserver.herokuapp.com/users`,{ 
+    const deleteButtonHandler = () =>
+        Alert("", `האם את/ה בטוח/ה שברצונך למחוק חשבון זה?${'\n'}לאחר פעולה זו לא יהיה ניתן לשחזר את החשבון!`, "danger", 0, () => deleteConfirmed())
+
+
+    const deleteConfirmed = () => {
+        axios.delete(`https://rbfserver.herokuapp.com/users`, {
             headers: { Authorization: `Bearer ${token}` },
             data: { userName }
         })
-        .then(res=>{
-            alert('נמחק');
-            window.localStorage.removeItem('userName');
-            window.localStorage.removeItem('recommendations');
-            window.localStorage.removeItem('token');
-            dispatch({ type: "SETLOGGED", payload: false });
-            history.push('/login');
-        })
-        .catch(err=>{console.log(err)})
+            .then(res => {
+                Alert("", "ברוך שפטרנו", "success", 5000);
+                window.localStorage.removeItem('userName');
+                window.localStorage.removeItem('recommendations');
+                window.localStorage.removeItem('token');
+                dispatch({ type: "SETLOGGED", payload: false });
+                history.push('/login');
+            })
+            .catch(err => { console.log(err) })
     }
 
 
@@ -122,14 +127,14 @@ const ProfilePage = () => {
                         </div>
                         <FaLock className="w-1/6 ml-2" />
                     </button>
-                    
+
                     <button className="w-1/4 h-10 flex flex-row-reverse items-center mx-2 md:mx-0 my-2 md:mt-2 md:mb-8 rounded-full text-xs md:text-md text-white bg-red-700 hover:bg-red-900 focus:outline-none"
                         onClick={deleteButtonHandler}
                     >
-                        <div className="w-5/6">
+                        <div className="w-full sm:w-5/6">
                             מחק
                         </div>
-                        <FaLock className="w-1/6 ml-2" />
+                        <RiDeleteBinLine className="w-0 sm:w-1/5 sm:ml-2" />
                     </button>
 
                 </div>
@@ -141,7 +146,7 @@ const ProfilePage = () => {
             </div>
 
             {isForm ? <Form openBtnLabel="ערוך את ההמלצה שלי" closeBtnLabel="אולי בפעם אחרת" /> : null}
-            { isFriendSearch ? <Searcher /> : null}
+            {isFriendSearch ? <Searcher /> : null}
         </div>
     );
 }
