@@ -23,10 +23,10 @@ export function Friends(props) {
     const fillFriendsRow = friend => (
         <tr className="text-xs sm:text-sm md:text-base">
             <td className="w-1/3 border">
-                {friend.fullName.split(' ')[0]}
+                {friend.fullName.split(' ')[1]}
             </td>
             <td className="w-1/3 border">
-                {friend.fullName.split(' ')[1]}
+                {friend.fullName.split(' ')[0]}
             </td>
             <td className="w-1/3 border">
                 <button className="underline hover:text-gray-400 focus:outline-none"

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import '../utils/style.css'
 import { GiPopcorn, GiWhiteBook } from 'react-icons/gi'
 import { IoRestaurant } from 'react-icons/io5'
-
+import { RecommendationList } from './recommendationList'
 
 export function Recommended(props) {
     const userName = window.localStorage.getItem('userName');
@@ -14,12 +14,12 @@ export function Recommended(props) {
     }
 
     useEffect(() => {
-
+        RecommendationList();
     }, [])
 
 
     const foodSearch = () => {
-
+        
     }
 
 
@@ -67,7 +67,9 @@ export function Recommended(props) {
 
             <div className="flex flex-col bg-fixed items-center font-bold">
                 <h1 style={{ color: "rgb(53, 111, 123)" }}>מומלצים</h1>
+                <div>
 
+                </div>
             </div>
         </div>
     )
