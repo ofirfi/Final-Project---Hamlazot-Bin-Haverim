@@ -2,39 +2,68 @@ import React, { useEffect, useState } from "react";
 import '../utils/style.css'
 import { GiPopcorn, GiWhiteBook } from 'react-icons/gi'
 import { IoRestaurant } from 'react-icons/io5'
-import { RecommendationList } from './recommendationList'
+import { RecommendedList } from './recommended/recommendedList'
+import { MakeFriendsRecommendationList } from './makeFriendsRecommendationList'
+import { useHistory } from 'react-router-dom'
 
-export function Recommended(props) {
-    const userName = window.localStorage.getItem('userName');
-    const [recForMe, setRecForMe] = useState('')
-    const headers = {
-        headers: {
-            Authorization: `Bearer ${window.localStorage.getItem('token')}`
-        }
-    }
 
-    useEffect(() => {
-        RecommendationList();
+export function Recommended() {
+    const [recommendedMovies, setRecommendedMovies] = useState('');
+    const [recommendedBooks, setRecommendedBooks] = useState('');
+    const [recommendedPlaces, setRecommendedPlaces] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
+    const history = useHistory();
+
+    useEffect(async () => {
+        let { movies, books, places } = await MakeFriendsRecommendationList();
+        setRecommendedMovies(movies);
+        setRecommendedBooks(books);
+        setRecommendedPlaces(places);
+        setIsLoaded(true);
+
     }, [])
 
 
+    const isValid = (itemToSearch) => {
+        if (!isLoaded) {
+            alert('not loaded');
+            return false;
+        }
+        if (!itemToSearch || itemToSearch.length === 0) {
+            alert('no recs');
+            return false;
+        }
+        return true;
+    }
+
+
+    const getRandomInt = max => {
+        return Math.floor(Math.random() * max);
+    }
+
+
     const foodSearch = () => {
-        
+        if (!isValid(recommendedPlaces))
+            return;
+        let random = getRandomInt(recommendedPlaces.length);
+        history.push(`/place/${recommendedPlaces[random].rId}`)
+
     }
 
 
     const moviesSearch = () => {
-
+        if (!isValid(recommendedMovies))
+            return;
+        let random = getRandomInt(recommendedMovies.length);
+        history.push(`/movie/${recommendedMovies[random].rId}`)
     }
 
 
     const booksSearch = () => {
-
-    }
-
-
-    const recommended = () => {
-
+        if (!isValid(recommendedBooks))
+            return;
+        let random = getRandomInt(recommendedBooks.length);
+        history.push(`/book/${recommendedBooks[random].rId}`)
     }
 
 
@@ -67,10 +96,16 @@ export function Recommended(props) {
 
             <div className="flex flex-col bg-fixed items-center font-bold">
                 <h1 style={{ color: "rgb(53, 111, 123)" }}>מומלצים</h1>
-                <div>
 
+                <div className="flex flex-row-reverse text-center">
+                    {isLoaded ? <RecommendedList title="movie" items={recommendedMovies} /> : null}
+                    {isLoaded ? <RecommendedList title="book" items={recommendedBooks} /> : null}
+                    {isLoaded ? <RecommendedList title="place" items={recommendedPlaces} /> : null}
+                    <div />
                 </div>
+
             </div>
-        </div>
+
+        </div >
     )
 }

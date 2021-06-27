@@ -42,10 +42,7 @@ const PlacePage = (props) => {
 
     useEffect(() => {
         axios.get(`https://rbfserver.herokuapp.com/place/show/${placeId}`, headers)
-            .then(res => {
-                fillPlaceInfo(res.data.result)
-                console.log(res)
-            })
+            .then(res => fillPlaceInfo(res.data.result))
             .catch(err => {
                 console.log(err)
                 history.push('/404')

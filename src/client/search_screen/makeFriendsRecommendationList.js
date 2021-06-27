@@ -1,4 +1,3 @@
-import '../utils/style.css'
 import axios from 'axios'
 
 
@@ -17,26 +16,42 @@ let headers,
 
 
 
-export function RecommendationList() {
+export async function MakeFriendsRecommendationList() {
+    if (window.localStorage.getItem("hasFriendsRecommendations")) {
+        return {
+            movies: JSON.parse(window.localStorage.getItem("movies")),
+            books: JSON.parse(window.localStorage.getItem("books")),
+            places: JSON.parse(window.localStorage.getItem("places"))
+        }
+    }
+
     headers = {
         headers: {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
         }
     }
 
-    axios.post('https://rbfserver.herokuapp.com/users', {
+    await axios.post('https://rbfserver.herokuapp.com/users', {
         userName: window.localStorage.getItem('userName'),
         self: true,
     }, headers)
-        .then(async res => getFriendsRecommendations(res.data.data))
+        .then(async res => await getFriendsRecommendations(res.data.data))
         .catch(err => console.log(err))
 
-
-    return null;
+    save();
+    return { movies, books, places };
 }
 
 
-async function getFriendsRecommendations(user) {
+const save = () => {
+    window.localStorage.setItem("hasFriendsRecommendations", true);
+    window.localStorage.setItem("movies", JSON.stringify(movies));
+    window.localStorage.setItem("books", JSON.stringify(books));
+    window.localStorage.setItem("places", JSON.stringify(places));
+}
+
+
+const getFriendsRecommendations = async (user) => {
     userRecommendations = user.recommendations;
 
     for (let i = 0; i < user.friends.length; i++) {
@@ -44,14 +59,14 @@ async function getFriendsRecommendations(user) {
             userName: user.friends[i].userName,
             self: true,
         }, headers)
-            .then(async res => getOneFriendRecommendations(res.data.data, user.friends[i].reliability))
+            .then(async res => await getOneFriendRecommendations(res.data.data, user.friends[i].reliability))
             .catch(err => console.log(err))
     }
     makeRating();
 }
 
 
-function getOneFriendRecommendations(friend, reliability) {
+const getOneFriendRecommendations = (friend, reliability) => {
     let weight = getWeight(reliability);
 
     for (let i = 0; i < friend.recommendations_length; i++) {
@@ -69,7 +84,7 @@ function getOneFriendRecommendations(friend, reliability) {
 }
 
 
-function getWeight(reliability) {
+const getWeight = (reliability) => {
     if (reliability === "הרבה")
         return HIGH_WEIGHT;
     if (reliability === "בינוני")
@@ -78,7 +93,7 @@ function getWeight(reliability) {
 }
 
 
-function userRated(rId) {
+const userRated = (rId) => {
     for (let i = 0; i < userRecommendations.length; i++)
         if (userRecommendations[i].rId === rId)
             return true;
@@ -86,7 +101,7 @@ function userRated(rId) {
 }
 
 
-function movieRecommendationHandle(recommendation, weight) {
+const movieRecommendationHandle = (recommendation, weight) => {
     if (!movies[recommendation.rId]) {
         movies[recommendation.rId] = {
             "rId": recommendation.rId,
@@ -103,7 +118,7 @@ function movieRecommendationHandle(recommendation, weight) {
 }
 
 
-function bookRecommendationHandle(recommendation, weight) {
+const bookRecommendationHandle = (recommendation, weight) => {
     if (!books[recommendation.rId]) {
         books[recommendation.rId] = {
             "rId": recommendation.rId,
@@ -120,7 +135,7 @@ function bookRecommendationHandle(recommendation, weight) {
 }
 
 
-function placeRecommendationHandle(recommendation, weight) {
+const placeRecommendationHandle = (recommendation, weight) => {
     if (!places[recommendation.rId]) {
         places[recommendation.rId] = {
             "rId": recommendation.rId,
@@ -137,14 +152,14 @@ function placeRecommendationHandle(recommendation, weight) {
 }
 
 
-function makeRating() {
+const makeRating = () => {
     movies = makeFinalRecommendations(movies);
     books = makeFinalRecommendations(books);
     places = makeFinalRecommendations(places);
 }
 
 
-function makeFinalRecommendations(items) {
+const makeFinalRecommendations = (items) => {
     let finalItems = [],
         index = 0;
 
@@ -161,10 +176,18 @@ function makeFinalRecommendations(items) {
 }
 
 
-function sortByRating(item1, item2) {
+const sortByRating = (item1, item2) => {
     if (item1.rating > item2.rating) return -1;
     if (item1.rating < item2.rating) return 1;
     if (item1.raters > item2.raters) return -1;
     if (item1.raters > item2.raters) return 1;
     return 0;
 }
+
+
+
+
+
+
+
+

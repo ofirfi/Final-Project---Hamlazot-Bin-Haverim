@@ -22,6 +22,10 @@ export function Navbar() {
         window.localStorage.removeItem('userName');
         window.localStorage.removeItem('recommendations');
         window.localStorage.removeItem('token');
+        window.localStorage.removeItem('hasFriendsRecommendations');
+        window.localStorage.removeItem('movies');
+        window.localStorage.removeItem('books');
+        window.localStorage.removeItem('places');
         dispatch({ type: "SETLOGGED", payload: false });
     }
 
