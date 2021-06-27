@@ -14,7 +14,7 @@ export function RecommendedList(props) {
                 rating={item.rating}
                 raters={item.raters}
                 rId={item.rId}
-                type={props.title}
+                type={props.type}
             />
         )
         setItems(list);
@@ -24,21 +24,19 @@ export function RecommendedList(props) {
 
 
     return (
-        <table className="mx-2 w-1/3">
+        <div className = "flex flex-col w-1/3 mx-5 text-sm">
             {props.title}
-            <th className="flex flex-row-reverse">
-                <tr className="mx-2 text-center w-3/6">שם</tr>
-                <tr className="mx-2 text-center w-1/6">דירוג</tr>
-                <tr className="mx-2 text-center w-1/6">מדרגים</tr>
-                <tr className="mx-2 text-center w-1/6"></tr>
-            </th>
-            <tbody>
-                {items}
-                {/* <RecommendedItem />
-                <RecommendedItem />
-                <RecommendedItem />
-                <RecommendedItem /> */}
-            </tbody>
-        </table>
+            <table className="w-full">
+                <th className="flex">
+                    <tr className="w-full border-2">מדרגים</tr>
+                    <tr className="w-full border-2">דירוג</tr>
+                    <tr className="w-full border-2">שם</tr>
+                </th>
+                <tbody>
+                    {items}
+                </tbody>
+            </table>
+        </div>
+
     )
 }

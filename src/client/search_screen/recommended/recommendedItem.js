@@ -12,12 +12,14 @@ export function RecommendedItem(props) {
     
 
     return (
-        <tr className = "flex flex-row-reverse border-2"
-            onClick = {transferation}
-            >
-            <td className ="mx-2 text-center w-1/2">{props.name}</td>
-            <td className ="mx-2 text-center w-1/6">{props.rating}</td>
-            <td className ="mx-2 text-center w-1/6">{props.raters}</td>
+        <tr className = "flex border-2">
+            <td className ="w-full border-2">{props.raters}</td>
+            <td className ="w-full border-2">{props.rating}</td>
+            <td className ="w-full border-2"
+                onClick = {transferation}
+                >
+                    {props.name}
+                </td>
         </tr>
     )
 }

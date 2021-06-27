@@ -68,7 +68,7 @@ export function Recommended() {
 
 
     return (
-        <div className="">
+        <div className="w-full">
             <div className="flex flex-row space-x-10 my-5 justify-center ">
                 <button className="hover:text-gray-600 focus:outline-none"
                     onClick={foodSearch}
@@ -94,14 +94,13 @@ export function Recommended() {
 
             </div>
 
-            <div className="flex flex-col bg-fixed items-center font-bold">
+            <div className="flex flex-col bg-fixed items-center font-bold w-full">
                 <h1 style={{ color: "rgb(53, 111, 123)" }}>מומלצים</h1>
 
-                <div className="flex flex-row-reverse text-center">
-                    {isLoaded ? <RecommendedList title="movie" items={recommendedMovies} /> : null}
-                    {isLoaded ? <RecommendedList title="book" items={recommendedBooks} /> : null}
-                    {isLoaded ? <RecommendedList title="place" items={recommendedPlaces} /> : null}
-                    <div />
+                <div className="flex flex-row-reverse text-center mt-2">
+                    {isLoaded ? <RecommendedList title="ספר" type="book" items={recommendedBooks} /> : null}
+                    {isLoaded ? <RecommendedList title="סרט" type="movie" items={recommendedMovies} /> : null}
+                    {isLoaded ? <RecommendedList title="מקום לאכול" type="place" items={recommendedPlaces} /> : null}
                 </div>
 
             </div>
