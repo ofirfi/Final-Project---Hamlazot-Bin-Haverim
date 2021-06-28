@@ -53,7 +53,9 @@ const save = () => {
 
 const getFriendsRecommendations = async (user) => {
     userRecommendations = user.recommendations;
-
+    movies = {};
+    books = {};
+    places = {};
     for (let i = 0; i < user.friends.length; i++) {
         await axios.post('https://rbfserver.herokuapp.com/users', {
             userName: user.friends[i].userName,
@@ -62,6 +64,7 @@ const getFriendsRecommendations = async (user) => {
             .then(async res => await getOneFriendRecommendations(res.data.data, user.friends[i].reliability))
             .catch(err => console.log(err))
     }
+
     makeRating();
 }
 
