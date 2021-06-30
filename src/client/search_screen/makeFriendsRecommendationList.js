@@ -8,8 +8,8 @@ const MID_WEIGHT = 2;
 //The score and precent of "Low" of friend's reliability
 const LOW_WEIGHT = 1;
 
-const MAX_RECOMMENDED_ITEMS = 50
-
+const MAX_RECOMMENDED_ITEMS = 50;
+const MINIMUM_RATING = 3.5;
 
 let headers,
     userRecommendations,
@@ -179,9 +179,8 @@ const makeFinalRecommendations = (items) => {
     finalItems.sort((item1, item2) => sortByRating(item1, item2));
     
     let limitedItems = []; 
-    for (let i = 0; i < finalItems.length && i < MAX_RECOMMENDED_ITEMS; i++)
+    for (let i = 0; i < finalItems.length && i < MAX_RECOMMENDED_ITEMS && finalItems[i].rating > MINIMUM_RATING; i++)
         limitedItems[i] = finalItems[i];
-
     return limitedItems;
 }
 
