@@ -4,34 +4,45 @@ import { RecommendedItem } from './recommendedItem'
 
 export function RecommendedList(props) {
     const [items, setItems] = useState([]);
-
+    const MAX_ITEMS = 5;
 
     useEffect(() => {
         let items = props.items;
-        let list = items.map(item =>
-            <RecommendedItem
-                name={item.name}
-                rating={item.rating}
-                raters={item.raters}
-                rId={item.rId}
-                type={props.type}
-            />
-        )
+
+        if (items.length === 0){
+            setItems(
+                <div className="w-64 text-sm">
+                    אין המלצות עבורך
+                </div>
+            )
+            return;
+        }
+
+        let list = [];
+        for (let i = 0; i< items.length && i < MAX_ITEMS; i++)
+            list[i] = <RecommendedItem
+                        name={items[i].name}
+                        rating={items[i].rating}
+                        raters={items[i].raters}
+                        rId={items[i].rId}
+                        type={props.type}
+                    />
         setItems(list);
+
     }, [])
 
 
 
 
     return (
-        <div className = "flex flex-col w-1/3 mx-5 text-sm">
-            {props.title}
+        <div className="flex flex-col w-1/3 mx-5 text-sm">
+            <div className="text-lg">{props.title}</div>
             <table className="w-full">
-                <th className="flex">
+                {/* <th className="flex">
                     <tr className="w-full border-2">מדרגים</tr>
                     <tr className="w-full border-2">דירוג</tr>
                     <tr className="w-full border-2">שם</tr>
-                </th>
+                </th> */}
                 <tbody>
                     {items}
                 </tbody>
