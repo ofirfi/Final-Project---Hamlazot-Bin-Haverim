@@ -2,17 +2,17 @@ import axios from 'axios';
 
 //The score and precent of "High" of friend's reliability
 const HIGH_C = 3;
-const HIGH_M = 0.75;
+const HIGH_M = 0.8;
 //The score and precent of "Medium" of friend's reliability
 const MID_C = 2;
-const MID_M = 0.5;
+const MID_M = 0.4;
 //The score and precent of "Low" of friend's reliability
 const LOW_C = 1;
-const LOW_M = 0.25;
+const LOW_M = 0.2;
 
 let recommendations;
 let userName;
-let token ;
+let token;
 let headers;
 
 
@@ -38,7 +38,7 @@ export async function makeRecommendationsInfo(rId, closeness = 1) {
     let results = await axios.post('https://rbfserver.herokuapp.com/users', {
         userName,
         self: true,
-        sort : "reliability"
+        sort: "reliability"
     }, headers)
         .then(async res => getInfo(res.data.data, rId, closeness))
         .catch(err => console.log(err))
@@ -56,26 +56,26 @@ export async function makeRecommendationsInfo(rId, closeness = 1) {
  * @returns An object containing user's recommendation, an array of friends recommendations and an array of every
  * other users recommendations, the rating by friends / "strangers" and the number of friends that rated.
  */
-const getInfo =  async (user, rId, closeness) =>{
+const getInfo = async (user, rId, closeness) => {
 
     let myRec = await getMyRecommendation(rId, user);
 
-    let friendsResults = await getFriendsRecommendations(user,rId,closeness);
-    
-    let rate = friendsResults.rating,
-    raters = friendsResults.raters,
-    isRated = true;;
+    let friendsResults = await getFriendsRecommendations(user, rId, closeness);
 
-    if(friendsResults.rating === 0)
+    let rate = friendsResults.rating,
+        raters = friendsResults.raters,
+        isRated = true;;
+
+    if (friendsResults.rating === 0)
         isRated = false;
-    
-    
-    let strangersRecommendion = await getStrangersRecommendion (
+
+
+    let strangersRecommendion = await getStrangersRecommendion(
         rId,
         friendsResults.used,
         isRated,
         friendsResults.randomIndex
-        );
+    );
     if (!isRated && strangersRecommendion.raters > 0)
         rate = strangersRecommendion.rate;
 
@@ -83,7 +83,7 @@ const getInfo =  async (user, rId, closeness) =>{
         myRecommendation: myRec,
         friendsRecommendations: friendsResults.friendsRecommendations,
         strangersRecommendations: strangersRecommendion.recommendations,
-        rate ,
+        rate,
         raters
     });
 }
@@ -118,27 +118,27 @@ const getMyRecommendation = (rId, userInfo) => {
  */
 const getFriendsRecommendations = async (user, rId, closeness) => {
     let raters = 0,
-    rating = 0,
-    top = 0,
-    bot = 0,
-    randomIndex = -1,
-    que = [],
-    friendsRecommendations = [];
+        rating = 0,
+        top = 0,
+        bot = 0,
+        randomIndex = -1,
+        que = [],
+        friendsRecommendations = [];
 
-    for (let i =0 ; i < user.friends_length; i++)
-        que.push(makeFriendsInfo(user.friends[i].userName,1,user.friends[i].reliability,1))
-    
+    for (let i = 0; i < user.friends_length; i++)
+        que.push(makeFriendsInfo(user.friends[i].userName, 1, user.friends[i].reliability, 1))
+
     let used = [user.userName];
-    
-    while (que.length > 0){
+
+    while (que.length > 0) {
         user = que.shift();
-        if (!isNotUsed(user.userName,used))
+        if (!isNotUsed(user.userName, used))
             continue;
-        
 
-        let recommendationIndex = getRecommendationIndex(rId,user);
 
-        if(recommendationIndex !== -1){
+        let recommendationIndex = getRecommendationIndex(rId, user);
+
+        if (recommendationIndex !== -1) {
             randomIndex = recommendationIndex;
             friendsRecommendations.push(recommendations[recommendationIndex]);
             top += (user.w * user.c * recommendations[recommendationIndex].rate);
@@ -150,29 +150,29 @@ const getFriendsRecommendations = async (user, rId, closeness) => {
             continue;
 
         let userInfo = await axios.post('https://rbfserver.herokuapp.com/users', {
-                userName : user.userName,
-                self: true,
-                sort : "reliability"
-            }, headers)
+            userName: user.userName,
+            self: true,
+            sort: "reliability"
+        }, headers)
             .then(async res => res.data.data)
             .catch(err => console.log(err))
 
 
-        for (let i = 0 ; i < userInfo.friends_length; i++){
-            if (isNotUsed(userInfo.friends[i].userName,used)) //push to the que if not used
+        for (let i = 0; i < userInfo.friends_length; i++) {
+            if (isNotUsed(userInfo.friends[i].userName, used)) //push to the que if not used
                 que.push(makeFriendsInfo(
                     userInfo.friends[i].userName,       // UserName
-                    user.w*user.m,                      // w (weight)
+                    user.w * user.m,                      // w (weight)
                     userInfo.friends[i].reliability,    // reliability for c and m
-                    user.rank+1                         // rank
-                    )); 
+                    user.rank + 1                         // rank
+                ));
         }
 
     }
 
     if (raters > 0)
-        rating = (top/bot).toFixed(1);
-    
+        rating = (top / bot).toFixed(1);
+
     return ({
         friendsRecommendations,
         rating,
@@ -191,21 +191,21 @@ const getFriendsRecommendations = async (user, rId, closeness) => {
  * @param {int} rank            The friend's distance from the user searching for the recommendations.
  * @returns an object containing the friend's Ci, Mi, Wi, userName, and rank (distance).
  */
-const makeFriendsInfo = (userName,w,reliability,rank) => {
-    let c,m;
-    if (reliability === "הרבה"){
+const makeFriendsInfo = (userName, w, reliability, rank) => {
+    let c, m;
+    if (reliability === "הרבה") {
         c = HIGH_C;
         m = HIGH_M;
     }
-    else if(reliability === "בינוני"){
+    else if (reliability === "בינוני") {
         c = MID_C;
         m = MID_M;
     }
-    else{
+    else {
         c = LOW_C;
         m = LOW_M;
     }
-    return({
+    return ({
         userName,
         w,
         c,
@@ -222,7 +222,7 @@ const makeFriendsInfo = (userName,w,reliability,rank) => {
  * @returns True if the Username hasn't been used yet,
  * else if the userName was used or checked returns false. 
  */
-const isNotUsed = (userName,used) => {
+const isNotUsed = (userName, used) => {
     for (let i = 0; i < used.length; i++)
         if (userName === used[i])
             return false;
@@ -276,7 +276,7 @@ const getRecommendationIndex = (rId, friend) => {
  * @param {int} randomIndex     A random index of a recommendation for the specific rId or -1 if there are no friends recommendations (for faster search).
  * @returns an object containing an array of rest of the recommendations by users, thier rating in case isRated is false.
  */
-const getStrangersRecommendion = (rId,used,isRated,randomIndex) => {
+const getStrangersRecommendion = (rId, used, isRated, randomIndex) => {
     let index = getStartingPosition(rId, randomIndex, isRated);
     if (index < 0)     //If there are no recommendations for the rId
         return ({
@@ -284,29 +284,29 @@ const getStrangersRecommendion = (rId,used,isRated,randomIndex) => {
             raters: 0,
             recommendations: []
         });
-    
+
     let recs = [],
-    rating =0,
-    raters = 0;
+        rating = 0,
+        raters = 0;
 
     while (index < recommendations.length && recommendations[index].rId === rId) {
-        
-        if (isNotUsed(recommendations[index].userName,used) === true) {
+
+        if (isNotUsed(recommendations[index].userName, used) === true) {
             recs.push(recommendations[index]);
-    
-            if (!isRated){                           //If there isn't a rating from friends' recommendations.
+
+            if (!isRated) {                           //If there isn't a rating from friends' recommendations.
                 rating += recommendations[index].rate;
-                raters ++;  
-            }     
-            
+                raters++;
+            }
+
         }
         index++;
     }
 
-    if (raters > 0){
-        rating = (rating/raters).toFixed(1);
+    if (raters > 0) {
+        rating = (rating / raters).toFixed(1);
     }
-        
+
     return ({
         rate: rating,
         raters,
