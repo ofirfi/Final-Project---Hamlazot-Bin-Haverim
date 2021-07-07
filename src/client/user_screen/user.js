@@ -6,6 +6,7 @@ import default_user from '../images/default_user.png'
 import axios from 'axios'
 import { Recommendations } from './components/recommendations'
 import { Friends } from './components/friends'
+import { UserManageButton } from './components/userManageButton'
 import { useHistory } from 'react-router-dom'
 
 
@@ -56,6 +57,9 @@ const UserPage = (props) => {
                     </div>
                     <div className="h-1/2 self-center text-sm md:text-lg">
                         {fullName}
+                    </div>
+                    <div>
+                        <UserManageButton friend={user} />
                     </div>
                 </div>
             </div>
