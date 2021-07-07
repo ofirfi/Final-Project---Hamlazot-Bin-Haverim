@@ -10,6 +10,7 @@ import Hamburger from 'hamburger-react'
 import { Searcher } from '../searchFriends/searchFriends'
 import { Alert } from '../alertComponent/alert'
 
+
 export function Navbar() {
     const userName = window.localStorage.getItem('userName')
     const [isOpened, setIsOpened] = useState(false);
@@ -67,6 +68,35 @@ export function Navbar() {
     }
 
 
+    const menus = () =>
+        <div className="flex flex-col">
+
+            <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
+                onClick={() => homePage()}
+            >
+                דף הבית
+            </button>
+            <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
+                onClick={() => setIsFriendsSearch(true)}
+            >
+                חיפוש חברים
+            </button>
+
+            <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
+                onClick={() => profilePage()}
+            >
+                פרופיל
+            </button>
+
+            <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
+                onClick={() => log_out()}
+            >
+                יציאה
+            </button>
+        </div>
+
+
+
     return (
         <div className="flex h-28 md:h-44 lg:h-52 w-full grid grid-cols-3"
             style={{ backgroundImage: `url(${LogoBackground})`, backgroundSize: '100% 100%' }}
@@ -81,9 +111,9 @@ export function Navbar() {
                 />
             </div>
 
-            <div className="flex h-full">
+            <div className="flex h-full sm:hidden">
                 <div className="w-full flex flex-col items-center">
-                    <div className="flex flex-col w-24 self-end text-white text-sm md:text-md lg:text-lg justify-self-end items-center">
+                    <div className="flex flex-col w-24 self-end text-white text-xs md:text-md lg:text-lg justify-self-end items-center">
                         <Hamburger
                             easing="ease-in"
                             toggled={isOpened}
@@ -91,33 +121,18 @@ export function Navbar() {
                         />
                     </div>
 
-                    <div id="NavMenu" className="flex flex-col h-16 md:h-36 self-end items-center grid justify-self-end jusitfy-items-center text-white text-sm md:text-md lg:text-lg bg-black bg-opacity-75">
-
-                        <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
-                            onClick={() => homePage()}
-                        >
-                            דף הבית
-                        </button>
-                        <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
-                            onClick={() => setIsFriendsSearch(true)}
-                        >
-                            חיפוש חברים
-                        </button>
-
-                        <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
-                            onClick={() => profilePage()}
-                        >
-                            פרופיל
-                        </button>
-
-                        <button className="transition ease-in-out duration-700 hover:text-gray-500 focus:outline-none"
-                            onClick={() => log_out()}
-                        >
-                            יציאה
-                        </button>
+                    <div id="NavMenu" className="flex flex-col h-16 md:h-36 self-end items-center grid justify-self-end jusitfy-items-center text-white text-xs bg-black bg-opacity-75">
+                        {menus()}
                     </div>
                 </div>
             </div>
+
+            <div className="flex h-full invisible sm:visible">
+                <div className = "w-full flex flex-col items-end mr-4 my-3 md:text-xl lg:text-2xl text-white">
+                    {menus()}
+                </div>
+            </div>
+
             {isFriendsSearch ? <Searcher /> : null}
         </div >
     )
