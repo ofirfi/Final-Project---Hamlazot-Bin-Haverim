@@ -5,7 +5,7 @@ import { IoRestaurant } from 'react-icons/io5'
 import { RecommendedList } from './recommended/recommendedList'
 import { MakeFriendsRecommendationList } from './makeFriendsRecommendationList'
 import { useHistory } from 'react-router-dom'
-
+import { Alert } from '../alertComponent/alert'
 
 export function Recommended() {
     const [recommendedMovies, setRecommendedMovies] = useState('');
@@ -26,11 +26,11 @@ export function Recommended() {
 
     const isValid = (itemToSearch) => {
         if (!isLoaded) {
-            alert('not loaded');
+            Alert("המערכת טוענת פיצ'ר זה", "אנא נסה שנית בעוד מספר שניות", "warning", 5000);
             return false;
         }
         if (!itemToSearch || itemToSearch.length === 0) {
-            alert('no recs');
+            Alert("לא קיימות המלצות עבורך כרגע", "הוסף חברים כדי לקבל המלצות לקטגוריה זו", "default", 5000);
             return false;
         }
         return true;
