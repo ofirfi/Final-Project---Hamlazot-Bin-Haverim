@@ -24,9 +24,7 @@ export function Recommendations(props) {
 
 
     const createRecommendation = recommend => (
-        <tr className="text-xs sm:text-sm md:text-base overflow-y-auto cursor-pointer"
-            onClick={() => goToRecommendationPage(recommend)}
-        >
+        <tr className="text-xs sm:text-sm md:text-base overflow-y-auto">
             <td className="w-4/12 h-24 border">
                 <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
                     {recommend.comment}
@@ -42,9 +40,11 @@ export function Recommendations(props) {
             </td>
 
             <td className="w-4/12 h-24 border">
-                <div className="w-full h-full overflow-y-auto overflow-x-auto flex items-center grid justify-items-center">
+                <button className="underline hover:text-gray-400 focus:outline-none"
+                    onClick={() => goToRecommendationPage(recommend)}
+                >
                     {recommend.name}
-                </div>
+                </button>
             </td>
         </tr>
     )
@@ -59,20 +59,20 @@ export function Recommendations(props) {
             history.push(`/book/${recommendation.rId}`);
     }
 
-    
-    return (
-        <div className="flex flex-col w-full text-white mt-8">
 
-            <div className="h-96 overflow-y-auto">
+    return (
+        <div className="flex flex-col w-full text-white">
+
+            <div className="overflow-y-auto">
 
                 <table className="table-fixed self-end text-center border-separate">
 
                     <thead>
                         <tr className="text-xs sm:text-sm md:text-base">
-                            <td className="w-4/12 border">הערה</td>
-                            <td className="w-1/12 border">תאריך</td>
-                            <td className="w-1/12 border">דירוג</td>
-                            <td className="w-4/12 border">שם</td>
+                            <th className="w-4/12 border">הערה</th>
+                            <th className="w-1/12 border">תאריך</th>
+                            <th className="w-1/12 border">דירוג</th>
+                            <th className="w-4/12 border">שם</th>
                         </tr>
                     </thead>
 

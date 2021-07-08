@@ -46,9 +46,9 @@ export function Friends(props) {
 
 
     return (
-        <div className="flex flex-col w-full text-white mt-8">
+        <div className="flex flex-col w-full text-white">
 
-            <div className="h-96 overflow-y-auto">
+            <div className="h-full overflow-y-auto">
 
                 <table className="w-full table-fixed self-end text-center border-separate ">
 

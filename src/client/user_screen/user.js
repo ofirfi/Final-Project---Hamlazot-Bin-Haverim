@@ -12,11 +12,11 @@ import { useHistory } from 'react-router-dom'
 
 const UserPage = (props) => {
     const user = props.match.params.userName;
-    const [fullName, setFullName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [surName, setSurName] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [myRecommendations, setMyRecommendations] = useState('');
     const [myFriends, setMyFriends] = useState('');
-    const [showRecommendations, setShowRecommendations] = useState(false);
-    const [showFriends, setShowFriends] = useState(false);
     const history = useHistory();
     const headers = {
         headers: {
@@ -31,9 +31,11 @@ const UserPage = (props) => {
             self: false
         }, headers)
             .then(res => {
-                setFullName(res.data.data.firstName + " " + res.data.data.lastName)
+                setFirstName(res.data.data.firstName);
+                setSurName(res.data.data.lastName);
                 setMyRecommendations(res.data.data.recommendations);
                 setMyFriends(res.data.data.friends)
+                setIsLoaded(true);
             })
             .catch(() => history.push('/404'))
     }, [])
@@ -45,54 +47,58 @@ const UserPage = (props) => {
         >
             <Navbar />
 
-            <div className="flex flex-row-reverse items-center bg-green-600 w-56 md:w-72 mt-8 border-4 border-b-0 border-black">
-                <div className="w-1/2">
-                    <img className="rounded-full"
-                        src={default_user}
-                    />
-                </div>
-                <div className="w-1/2 flex flex-col text-center">
-                    <div className="h-1/2 self-center md:text-xl">
+            <div className="flex flex-row w-3/4 bg-gray-600 bg-opacity-30 m-12 p-5 rounded-xl">
+                {/* user details */}
+                <div className="flex flex-col self-center h-full w-1/3 mr-5 text-white items-center bg-green-800">
+
+                    <h1 className="text-xl font-black my-3">
                         {user}
+                    </h1>
+
+                    <div className="flex flex-col">
+                        <div className="flex flex-col w-full mb-5 self-center">
+                            <img className="flex w-1/2 self-center rounded-full"
+                                src={default_user}
+                            />
+                        </div>
+                        <div className="flex flex-row-reverse mb-5 text-center">
+                            <h2 className="w-1/2">שם פרטי</h2>
+                            <h2 className="w-1/2">{firstName}</h2>
+                        </div>
+                        <div className="flex flex-row-reverse mb-5 text-center">
+                            <h2 className="w-1/2">שם משפחה</h2>
+                            <h2 className="w-1/2">{surName}</h2>
+                        </div>
+                        <div className="text-center my-5">
+                            <UserManageButton friend={user} />
+                        </div>
                     </div>
-                    <div className="h-1/2 self-center text-sm md:text-lg">
-                        {fullName}
-                    </div>
-                    <div>
-                        <UserManageButton friend={user} />
-                    </div>
+
                 </div>
+
+
+                <div className="flex flex-col w-2/3 h-1/2">
+
+
+                    <div className="flex flex-col w-full h-52 mb-3 text-white text-center bg-green-800">
+                        <h1 className="font-black underline">חברים</h1>
+                        <div className="overflow-y-auto mt-2">
+                            {isLoaded ? <Friends myFriends={myFriends} /> : null}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col w-full h-52 mb-3 text-white text-center bg-green-800">
+                        <h1 className="font-black underline">המלצות</h1>
+                        <div className="overflow-y-auto mt-2">
+                            {isLoaded ? <Recommendations myRecommendations={myRecommendations} /> : null}
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div className="flex flex-row w-full md:w-4/5 mb-10">
 
-                <div className="w-1/2 self-start grid justify-items-center bg-green-600 border-l-4 border-r-2 border-t-4 border-b-4 border-black">
-                    <div>
-                        <button className="h-6 md:h-12 w-18 md:w-36 text-xs md:text-sm bg-white rounded-lg hover:bg-gray-300 focus:outline-none"
-                            onClick={() => setShowFriends(!showFriends)}
-                        >
-                            {showFriends ? 'הסתר רשימת חברים' : 'הצג רשימת חברים'}</button>
-                    </div>
-                    <div className="w-full">
-                        {showFriends ? <Friends myFriends={myFriends} /> : null}
-                    </div>
-
-                </div>
-
-
-                <div className="w-1/2 self-start grid justify-items-center bg-green-600 border-l-2 border-r-4 border-t-4 border-b-4 border-black">
-                    <div>
-                        <button className="h-6 md:h-12 w-18 md:w-36 text-xs md:text-sm bg-white rounded-lg hover:bg-gray-300 focus:outline-none"
-                            onClick={() => setShowRecommendations(!showRecommendations)}
-                        >
-                            {showRecommendations ? 'הסתר רשימת המלצות' : 'הצג רשימת המלצות'}</button>
-                    </div>
-                    <div className="w-full">
-                        {showRecommendations ? <Recommendations myRecommendations={myRecommendations} /> : null}
-                    </div>
-                </div>
-
-            </div>
 
         </div>
     )
