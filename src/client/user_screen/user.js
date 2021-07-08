@@ -17,6 +17,7 @@ const UserPage = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [myRecommendations, setMyRecommendations] = useState('');
     const [myFriends, setMyFriends] = useState('');
+    const [display, setDisplay] = useState(null)
     const history = useHistory();
     const headers = {
         headers: {
@@ -36,10 +37,16 @@ const UserPage = (props) => {
                 setMyRecommendations(res.data.data.recommendations);
                 setMyFriends(res.data.data.friends)
                 setIsLoaded(true);
+                setDisplay(<Friends myFriends={res.data.data.friends} />);
+                setDisplay(<Recommendations myRecommendations={res.data.data.recommendations} />);
             })
             .catch(() => history.push('/404'))
     }, [])
 
+
+    const changeDisplay = screen => {
+        setDisplay(screen)
+    }
 
     return (
         <div className="flex flex-col bg-fixed items-center min-h-full"
@@ -47,7 +54,7 @@ const UserPage = (props) => {
         >
             <Navbar />
 
-            <div className="flex flex-row w-3/4 bg-gray-600 bg-opacity-30 m-12 p-5 rounded-xl">
+            <div className="hidden sm:inline-flex flex flex-row w-3/4 m-12 p-5 bg-gray-600 bg-opacity-30 rounded-xl">
                 {/* user details */}
                 <div className="flex flex-col self-center h-full w-1/3 mr-5 text-white items-center bg-green-800">
 
@@ -98,6 +105,38 @@ const UserPage = (props) => {
 
             </div>
 
+
+
+            <div className="sm:hidden flex flex-col w-4/5 m-12 p-5 text-sm text-white bg-gray-600 bg-opacity-30 rounded-xl">
+                {/* User info + buttons */}
+                <div className="flex flex-row-reverse text-center  bg-green-800">
+                    {/* Info + buddy button */}
+                    <div className="flex flex-col w-1/3 my-4">
+                        <h1 className="font-black">{user}</h1>
+                        <h3 className="my-3">{`${firstName}  ${surName}`}</h3>
+                        <UserManageButton friend={user} />
+                    </div>
+                    <div className="flex flex-col w-1/3 self-center">
+                        <button className="flex flex-col w-1/2 self-center text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                            onClick={() => changeDisplay(<Friends myFriends={myFriends} />)}
+                        >
+                            רשימת חברים
+                        </button>
+                    </div>
+                    <div className="flex flex-col w-1/3 self-center">
+                        <button className="flex flex-col w-1/2 self-center text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                            onClick={() => changeDisplay(<Recommendations myRecommendations={myRecommendations} />)}
+                        >
+                            רשימת המלצות
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex mt-5 max-h-56 bg-green-800 overflow-y-auto">
+                    {isLoaded ? display : null}
+                </div>
+
+            </div>
 
 
         </div>

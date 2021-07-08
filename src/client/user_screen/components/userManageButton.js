@@ -56,7 +56,11 @@ export function UserManageButton(props) {
             friend,
             reliability: "בינוני"
         }, headers)
-            .then(res => Alert(`${friend} נוסף לרשימת החברים שלך`, `ניתן לשנות את רמת האמינות מדף הפרופיל`, "success", 5000))
+            .then(res => {
+                setLabel("הסר");
+                setIsAFriend(true);
+                Alert(`${friend} נוסף לרשימת החברים שלך`, `ניתן לשנות את רמת האמינות מדף הפרופיל`, "success", 5000)
+            })
             .catch(err => Alert("שגיאה", `קרתה תקלה, אנא נסה שנית בעוד מספר דקות`, "danger", 5000))
 
 

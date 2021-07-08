@@ -22,6 +22,7 @@ const LoginPage = () => {
       Alert("שגיאה","אנא הכנס מייל וסיסמא","danger",5000);
       return;
     }
+    
     setIsLogin(true);
     axios.post("https://rbfserver.herokuapp.com/auth/login", {
       email,
@@ -46,6 +47,11 @@ const LoginPage = () => {
   }
 
 
+  const clearFields = () =>{
+    setEmail('');
+    setPassword('');
+  }
+
   const forgot_password = () => {
     if (email === "") {
       Alert("שגיאה",'אנא הכנס מייל לשחזור סיסמא',"danger",5000);
@@ -58,11 +64,11 @@ const LoginPage = () => {
     })
       .then(res => {
         Alert("",message,"success",5000);
-        setEmail('');
+        clearFields();
       })
       .catch(err => {
         Alert("",message,"success",5000);
-        setEmail('');
+        clearFields();
       })
   }
 
