@@ -117,14 +117,14 @@ const UserPage = (props) => {
                         <UserManageButton friend={user} />
                     </div>
                     <div className="flex flex-col w-1/3 self-center">
-                        <button className="flex flex-col w-1/2 self-center text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        <button className="flex flex-col w-1/2 self-center text-xs text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
                             onClick={() => changeDisplay(<Friends myFriends={myFriends} />)}
                         >
                             רשימת חברים
                         </button>
                     </div>
                     <div className="flex flex-col w-1/3 self-center">
-                        <button className="flex flex-col w-1/2 self-center text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
+                        <button className="flex flex-col w-1/2 self-center text-xs text-white rounded-xl bg-blue-500 hover:bg-blue-700 focus:outline-none"
                             onClick={() => changeDisplay(<Recommendations myRecommendations={myRecommendations} />)}
                         >
                             רשימת המלצות

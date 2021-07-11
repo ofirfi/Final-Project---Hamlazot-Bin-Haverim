@@ -169,13 +169,13 @@ const RegistrationPage = () => {
             <AiOutlineLoading3Quarters className="grid justify-self-center w-1/2 h-1/2 mt-6 animate-spin focus:outline-none" />
             :
             <div className="h-24 w-full my-2 flex flex-col items-center">
-              <button className="flex flex-row-reverse items-center grid h-24 w-1/2 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+              <button className="flex flex-row-reverse items-center grid h-10 sm:h-24 w-1/2 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
                 onClick={signup}
               >
                 הרשם
               </button>
 
-              <button className="flex flex-row-reverse items-center grid w-1/2 h-24 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
+              <button className="flex flex-row-reverse items-center grid w-1/2 h-10 sm:h-24 my-2 rounded-lg text-white bg-indigo-500 hover:bg-indigo-700 focus:ring-4 focus:ring-white focus:ring-opacity-50 focus:outline-none"
                 onClick={() => history.goBack()}
               >
                 התחבר
