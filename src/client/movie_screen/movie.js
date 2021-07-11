@@ -71,7 +71,7 @@ const MoviePage = (props) => {
             <div className="flex flex-col my-24 bg-white box-border w-3/4 sm:h-5/6 sm:w-2/4 border-4 rounded-lg">
 
                 {/*title + genres + release*/}
-                <div className="flex flex-col w-full sm:h-2/6 grid divide-y-2  divide-black divide-opacity-25 bg-white mt-4">
+                <div className="flex flex-col w-full h-2/6 grid divide-y-2  divide-black divide-opacity-25 bg-white mt-4">
                     <div className="flex items-center h-3/4 text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black  justify-self-center text-center">
                         {movie.title}
                     </div>
