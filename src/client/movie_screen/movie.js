@@ -95,8 +95,8 @@ const MoviePage = (props) => {
                 </div>
 
                 {/*Photo*/}
-                <div className="flex flex-row w-full h-2/6  grid justify-items-center bg-gray-300">
-                    <div className="flex flex-row w-1/2">
+                <div className="flex flex-col w-full h-2/6  grid justify-items-center bg-gray-300">
+                    <div className="flex flex-col sm:h-full w-24 sm:w-1/2">
                         <img src={poster} alt="" />
                     </div>
                 </div>
