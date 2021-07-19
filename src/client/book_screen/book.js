@@ -150,7 +150,7 @@ const BookPage = (props) => {
                         {book.publisher}, {book.publishedDate}
                     </div>
                     <div className="w-1/4 text-center border-2">
-                        דירוג: {rating !== 0 ? 5 / rating : voteAverage}
+                        דירוג: 5 / {rating !== 0 ? rating : voteAverage}
                     </div>
                     <div className="w-1/4 text-center border-2">
                         חברים שדרגו: {raters}
