@@ -38,24 +38,23 @@ export function Recommendations(props) {
 
     const createRecommendation = (rec, isFriend) => {
         let newRec =
-            <div class="flex flex-col mb-5 box-border border-2 bg-red-400 rounded-xl text-xs sm:text-sm ms:text-base cursor-pointer"
+            <div class="flex flex-col mb-5 box-border border-2 bg-green-300 rounded-xl text-xs sm:text-sm ms:text-base cursor-pointer p-2"
                 onClick={() => history.push(`/user/${rec.userName}`)}
             >
                 <div class="flex flex-row-reverse">
-                    <div class="w-1/6">ממליץ</div>
-                    <div class="w-3/6">{rec.userName}</div>
-                    <div class="w-2/6 text-2xl">{isFriend ? '😎' : null}</div>
+                    <div class="text-base font-bold"> {isFriend ? '😎' : null} {rec.userName} ההמלצה של </div>
+                   
                 </div>
                 <div class="flex flex-row-reverse">
-                    <div class="w-1/6">דירוג</div>
-                    <div class="w-5/6">{rec.rate}</div>
+                    <div class="w-1/12">דירוג</div>
+                    <div class="w-11/12">{rec.rate}</div>
                 </div>
                 <div class="flex flex-row-reverse">
-                    <div class="w-1/6">תאריך</div>
-                    <div class="w-5/6">{rec.date.substring(0, 10)}</div>
+                    <div class="w-1/12">תאריך</div>
+                    <div class="w-11/12">{rec.date.substring(0, 10)}</div>
                 </div>
                 <div class="flex flex-col">
-                    <div class="">:תגובה</div>
+                    <div class="">תגובה</div>
                     <div class="h-12 overflow-y-auto">{rec.comment}</div>
                 </div>
             </div>
