@@ -41,9 +41,8 @@ export function Recommendations(props) {
             <div class="flex flex-col mb-5 box-border border-2 bg-green-300 rounded-xl text-xs sm:text-sm ms:text-base cursor-pointer p-2"
                 onClick={() => history.push(`/user/${rec.userName}`)}
             >
-                <div class="flex flex-row-reverse">
-                    <div class="text-base font-bold"> {isFriend ? '😎' : null} {rec.userName} ההמלצה של </div>
-                   
+                <div class="flex flex-col-reverse">
+                    <div className="text-base font-bold mb-2"> {isFriend ? '😎' : null} {rec.userName} </div>
                 </div>
                 <div class="flex flex-row-reverse">
                     <div class="w-1/12">דירוג</div>
