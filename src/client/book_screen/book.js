@@ -167,7 +167,7 @@ const BookPage = (props) => {
 
                     <div className="text-xl self-center my-2 font-bold underline">המלצות</div>
 
-                    <div className="h-56 mb-5 w-full sm:w-3/4 mx-2 overflow-y-auto text-right">
+                    <div className="h-56 mb-5 w-full mx-2 overflow-y-auto text-right">
                         <Recommendations rId={bookId} closeness={props.closeness} />
                     </div>
 
