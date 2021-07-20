@@ -8,20 +8,21 @@ import { Form } from '../utils/form'
 import { useSelector, useDispatch } from 'react-redux'
 import { MOVIE_API_KEY } from '../utils/config.json'
 import { useHistory } from 'react-router-dom'
-
+import { FaCalendarAlt, FaTheaterMasks, FaChartBar, FaUserFriends } from 'react-icons/fa'
 
 const MoviePage = (props) => {
     const movieId = props.match.params.id;
     const [movie, setMovie] = useState('');
     const [genres, setGenres] = useState('');
     const [poster, setPoster] = useState('');
+    const [video,setVideo] = useState('');
+    const [voteAverage, setvoteAverage] = useState('');
     const closeness = (props.location && props.location.state) ? props.location && props.location.state.closeness : 1;
     const isForm = useSelector(state => state.isForm);
     const dispatch = useDispatch();
     const history = useHistory();
     const rating = useSelector(state => state.rating);
     const raters = useSelector(state => state.raters);
-    const [voteAverage, setvoteAverage] = useState('');
 
     
     useEffect(() => {
@@ -35,6 +36,9 @@ const MoviePage = (props) => {
             .catch(() => {
                 history.push('/404');
             })
+            axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${MOVIE_API_KEY}`)
+            .then(res => setVideo(res.data.results[0].key))
+            .catch(() => { })
     }, [])
 
 
@@ -77,27 +81,40 @@ const MoviePage = (props) => {
                     </div>
 
                     <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
-                        <div className="">
-                            תאריך יציאה: {movie.release_date}
+                        <div className="flex text-center justify-center">
+                            <div className="mr-2"> {movie.release_date} </div>
+                            <div className="self-center"> <FaCalendarAlt /> </div>
                         </div>
-                        <div className="">
-                            ג'נאר: {genres}
+                        <div className="flex text-center justify-center">
+                            <div className="mr-2"> {genres} </div>
+                            <div className="self-center"> <FaTheaterMasks /> </div>
                         </div>
                     </div>
                     <div className="h-1/4 grid grid-cols-2 divide-x divide-green-500 text-xs sm:text-sm text-center">
-                        <div className="">
-                            חברים שדרגו: {raters}
+                        <div className="flex text-center justify-center">
+                            <div className="mr-2"> {raters} </div>
+                            <div className="self-center"> <FaUserFriends /> </div>
                         </div>
-                        <div className="text-red-700 font-black">
-                            דירוג: 5 / {rating !== 0 ? rating : voteAverage}
+                        <div className="flex text-center justify-center">
+                            <div className="mr-2"> {rating !== 0 ? rating : voteAverage} / 5 </div>
+                            <div className="self-center"> <FaChartBar /> </div>
                         </div>
                     </div>
                 </div>
 
-                {/*Photo*/}
-                <div className="flex flex-row w-full h-2/6  grid justify-items-center bg-gray-300">
-                    <div className="flex flex-row w-1/2">
+                {/*Photo + video*/}
+                <div className="flex flex-row w-full h-2/6 bg-gray-300">
+                    <div className="flex flex-row w-1/2 p-2 pr-1">
                         <img src={poster} alt="" />
+                    </div>
+                    <div className="w-1/2">
+                        <iframe className="w-full h-full p-2 pl-1"
+                            src={`https://www.youtube.com/embed/${video}`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title="Embedded youtube"
+                        />
                     </div>
                 </div>
 

@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { BOOKS_API_KEY } from '../utils/config.json'
 import { useHistory } from 'react-router-dom'
 import picture_unavailable from '../images/picture_unavailable.jpg'
+import { FaUserFriends, FaChartBar, FaBookOpen } from 'react-icons/fa'
+import { GiBookCover } from 'react-icons/gi'
 
 
 export const getAuthor = (res) => {
@@ -146,14 +148,17 @@ const BookPage = (props) => {
 
                 {/* Author + rating */}
                 <div className="flex flex-row-reverse text-md md:text-lg text-center border-2">
-                    <div className="w-1/2 border-2">
-                        {book.publisher}, {book.publishedDate}
+                    <div className="flex w-1/2 text-center justify-center border-2">
+                        <div className="mr-2"> {book.publisher}, {book.publishedDate} </div>
+                        <div className="self-center"> <GiBookCover /> </div>
                     </div>
-                    <div className="w-1/4 text-center border-2">
-                        דירוג: 5 / {rating !== 0 ? rating : voteAverage}
+                    <div className="flex w-1/4 text-center justify-center border-2">
+                        <div className="mr-2"> {rating !== 0 ? rating : voteAverage} / 5 </div>
+                        <div className="self-center"> <FaChartBar /> </div>
                     </div>
-                    <div className="w-1/4 text-center border-2">
-                        חברים שדרגו: {raters}
+                    <div className="flex w-1/4 text-center justify-center border-2">
+                        <div className="mr-2"> {raters} </div>
+                        <div className="self-center"> <FaUserFriends /> </div>
                     </div>
                 </div>
 
